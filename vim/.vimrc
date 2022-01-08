@@ -15,7 +15,7 @@ syntax on
 
 " Better command-line completion
 set wildmenu
-" Show pariial commands in the last line of the screen
+" Show partial commands in the last line of the screen
 set showcmd
 " Highlight searches (use <C-L> to temporarily turn off highlighting; see the
 " mapping of <C-L> below)
@@ -39,6 +39,8 @@ set number
 " Display relative number
 set relativenumber
 
+" change PWD to the file I'm editting'"
+set autochdir
 
 set expandtab
 set shiftwidth=2
@@ -122,3 +124,10 @@ inoremap {<CR> {<CR>}<ESC>O
 " display tabs and whitespaces
 set list
 set listchars=tab:▸·,trail:·,eol:⏎
+
+""" ------------------- custom commands ---------------------
+" skip golden files
+command GFilesNoGolden call fzf#run({'source': 'git ls-files | grep -v golden', 'sink': 'e'})
+
+" leader+c to copy to clipboard from visual mode
+vnoremap <leader>c "*y
