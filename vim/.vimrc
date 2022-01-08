@@ -39,9 +39,6 @@ set number
 " Display relative number
 set relativenumber
 
-" change PWD to the file I'm editting'"
-set autochdir
-
 set expandtab
 set shiftwidth=2
 set softtabstop=2
