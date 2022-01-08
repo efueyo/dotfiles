@@ -98,6 +98,8 @@ autocmd BufEnter *.go nmap <leader>ii  <Plug>(go-implements)
 autocmd BufEnter *.go nmap <leader>ci  <Plug>(go-describe)
 autocmd BufEnter *.go nmap <leader>cc  <Plug>(go-callers)
 autocmd BufEnter *.go nmap <leader>cs  <Plug>(go-callstack)
+" insert if err != nil {...} and return to insert mode
+autocmd BufEnter *.go imap iferr  <ESC><Plug>(go-iferr)2ki
 nmap <leader>r <Plug>(coc-rename)
 
 """ -------------------- Colors -------------------- 
@@ -111,11 +113,17 @@ autocmd ColorScheme * highlight CocWarningSign guibg=#ffffff
 
 
 """ -------------------- Add closing elements on insert more  -------------------- 
+" Avoid writing four elements when typed twice"
 inoremap " ""<left>
+inoremap "" ""
 inoremap ' ''<left>
+inoremap '' ''
 inoremap ( ()<left>
+inoremap () ()
 inoremap [ []<left>
+inoremap [] []
 inoremap { {}<left>
+inoremap {} {}
 inoremap {<CR> {<CR>}<ESC>O
 
 " display tabs and whitespaces
