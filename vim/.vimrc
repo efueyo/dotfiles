@@ -65,6 +65,7 @@ Plugin 'fannheyward/coc-pyright', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'junegunn/fzf.vim'
+Plugin 'vim-airline/vim-airline'
 Plugin 'leafgarland/typescript-vim'
 
 """ -------------------- Config for vim-go  -------------------- 
