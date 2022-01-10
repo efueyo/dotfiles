@@ -71,6 +71,9 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'leafgarland/typescript-vim'
 
+""" -------------------- Config for NERDTree  -------------------- 
+let g:NERDTreeShowHidden=1
+
 """ -------------------- Config for vim-go  -------------------- 
 " disable all linters as that is taken care of by coc.nvim
 " let g:go_diagnostics_enabled = 0
