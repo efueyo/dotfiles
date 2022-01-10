@@ -1,7 +1,7 @@
 " Set 'nocompatible' to ward off unexpected things that your distro might
 " have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
- 
+
 " Attempt to determine the type of a file based on its name and possibly
 "  its
 " contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -56,6 +56,8 @@ Plugin 'VundleVim/Vundle.vim'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
+Plugin 'scrooloose/nerdtree'
+Plugin 'xuyuanp/nerdtree-git-plugin'
 Plugin 'neoclide/coc.nvim'
 Plugin 'josa42/coc-go', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
