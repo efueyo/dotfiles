@@ -58,6 +58,7 @@ filetype plugin indent on    " required
 
 Plugin 'scrooloose/nerdtree'
 Plugin 'xuyuanp/nerdtree-git-plugin'
+Plugin 'tpope/vim-fugitive'
 Plugin 'neoclide/coc.nvim'
 Plugin 'josa42/coc-go', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
