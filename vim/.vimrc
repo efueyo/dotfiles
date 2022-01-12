@@ -11,6 +11,8 @@ filetype indent plugin on
 " Enable syntax highlighting
 syntax on
 
+let mapleader = "," " map leader to comma
+
 "set spell spelllang=en_us
 
 " Better command-line completion
@@ -20,6 +22,7 @@ set showcmd
 " Highlight searches (use <C-L> to temporarily turn off highlighting; see the
 " mapping of <C-L> below)
 set hlsearch
+map <leader>h :noh<CR>
 " show search results as you type
 set incsearch
 
@@ -36,8 +39,15 @@ set cmdheight=2
 
 " Display line numbers on the left
 set number
-" Display relative number
+" Display relative number and change it with <leader>r
 set relativenumber
+function! ToggleLineNumber()
+  if v:version > 703
+    set norelativenumber!
+  endif
+  set nonumber!
+endfunction
+map <leader>r :call ToggleLineNumber()<CR>
 
 set expandtab
 set shiftwidth=2
@@ -73,6 +83,8 @@ Plugin 'leafgarland/typescript-vim'
 
 """ -------------------- Config for NERDTree  -------------------- 
 let g:NERDTreeShowHidden=1
+map <leader>t :NERDTreeToggle<CR>
+let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
 
 """ -------------------- Config for vim-go  -------------------- 
 " disable all linters as that is taken care of by coc.nvim
@@ -143,3 +155,6 @@ command GFilesNoGolden call fzf#run({'source': 'git ls-files | grep -v golden', 
 
 " leader+c to copy to clipboard from visual mode
 vnoremap <leader>c "*y
+
+" list buffers and prepare to move to one of them
+nnoremap <leader>b :buffers<cr>:buffer<space>
