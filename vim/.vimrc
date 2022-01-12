@@ -73,6 +73,7 @@ Plugin 'neoclide/coc.nvim'
 Plugin 'josa42/coc-go', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+Plugin 'neoclide/coc-yaml', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'fannheyward/coc-pyright', {'do': 'yarn install --frozen-lockfile'}
 
 Plugin 'morhetz/gruvbox'
