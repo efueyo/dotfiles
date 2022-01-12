@@ -85,8 +85,11 @@ Plugin 'majutsushi/tagbar'
 
 """ -------------------- Config for NERDTree  -------------------- 
 let g:NERDTreeShowHidden=1
-map <leader>t :NERDTreeToggle<CR>
+map <leader>t :NERDTreeToggleVCS<CR>
 let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
+
+""" -------------------- Config for Tagbar  -------------------- 
+map <leader>tb :TagbarToggle<CR>
 
 """ -------------------- Config for vim-go  -------------------- 
 " disable all linters as that is taken care of by coc.nvim
