@@ -81,6 +81,7 @@ Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'junegunn/fzf.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'leafgarland/typescript-vim'
+Plugin 'majutsushi/tagbar'
 
 """ -------------------- Config for NERDTree  -------------------- 
 let g:NERDTreeShowHidden=1
