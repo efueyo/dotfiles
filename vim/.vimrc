@@ -85,6 +85,10 @@ let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
 """ -------------------- Config for Tagbar  -------------------- 
 map <leader>tb :TagbarToggle<CR>
 
+""" -------------------- Config for CoC  -------------------- 
+" Make <CR> auto-select the first completion item and notify coc.nvim to format on enter
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+				\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 """ -------------------- Config for vim-go  -------------------- 
 " disable all linters as that is taken care of by coc.nvim
 " let g:go_diagnostics_enabled = 0
