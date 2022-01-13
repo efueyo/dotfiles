@@ -41,13 +41,6 @@ set cmdheight=2
 set number
 " Display relative number and change it with <leader>r
 set relativenumber
-function! ToggleLineNumber()
-  if v:version > 703
-    set norelativenumber!
-  endif
-  set nonumber!
-endfunction
-map <leader>r :call ToggleLineNumber()<CR>
 
 set expandtab
 set shiftwidth=2
@@ -85,7 +78,8 @@ Plugin 'majutsushi/tagbar'
 
 """ -------------------- Config for NERDTree  -------------------- 
 let g:NERDTreeShowHidden=1
-map <leader>t :NERDTreeToggleVCS<CR>
+map <leader>nt :NERDTreeToggleVCS<CR>
+map <leader>ntf :NERDTreeFind<CR>
 let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
 
 """ -------------------- Config for Tagbar  -------------------- 
