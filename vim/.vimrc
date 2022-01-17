@@ -23,7 +23,6 @@ set showcmd
 " Highlight searches (use <C-L> to temporarily turn off highlighting; see the
 " mapping of <C-L> below)
 set hlsearch
-map <leader>h :noh<CR>
 " show search results as you type
 set incsearch
 
@@ -160,3 +159,8 @@ command GFilesNoGolden call fzf#run({'source': 'git ls-files | grep -v golden', 
 
 " leader+c to copy to clipboard from visual mode
 vnoremap <leader>c "*y
+" move between windows
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
+nnoremap <leader>h <C-w>h
