@@ -11,7 +11,8 @@ filetype indent plugin on
 " Enable syntax highlighting
 syntax on
 
-let mapleader = "," " map leader to comma
+nnoremap <SPACE> <Nop>
+let mapleader = " " " map leader to space
 
 "set spell spelllang=en_us
 
