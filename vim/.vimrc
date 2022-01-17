@@ -56,12 +56,10 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
-call vundle#end()            " required
-filetype plugin indent on    " required
-
 Plugin 'scrooloose/nerdtree'
 Plugin 'xuyuanp/nerdtree-git-plugin'
 Plugin 'tpope/vim-fugitive'
+Plugin 'rbong/vim-flog'
 Plugin 'neoclide/coc.nvim'
 Plugin 'josa42/coc-go', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
@@ -75,6 +73,9 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'majutsushi/tagbar'
+
+call vundle#end()            " required
+filetype plugin indent on    " required
 
 """ -------------------- Config for NERDTree  -------------------- 
 let g:NERDTreeShowHidden=1
@@ -158,6 +159,3 @@ command GFilesNoGolden call fzf#run({'source': 'git ls-files | grep -v golden', 
 
 " leader+c to copy to clipboard from visual mode
 vnoremap <leader>c "*y
-
-" list buffers and prepare to move to one of them
-nnoremap <leader>b :buffers<cr>:buffer<space>
