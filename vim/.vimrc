@@ -84,6 +84,13 @@ map <leader>nt :NERDTreeToggleVCS<CR>
 map <leader>ntf :NERDTreeFind<CR>
 let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
 
+""" -------------------- Config for CtrlP  -------------------- 
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\.git$\|node_modules',
+  \ 'file': '\.DS_Store$\|\.golden$'
+  \ }
+
 """ -------------------- Config for Tagbar  -------------------- 
 map <leader>tb :TagbarToggle<CR>
 
