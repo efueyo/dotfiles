@@ -11,3 +11,7 @@ install:
 	ln -s $(CURDIR)/.gitignore ~/.gitignore || true
 	echo "Configuring git global ~/.gitignore"
 	git config --global core.excludesfile ~/.gitignore || true
+	echo "------- Neovim -------"
+	echo "Linkning nvim to ~/.config/nvim"
+	ln -s $(CURDIR)/nvim ~/.config/nvim || true
+
