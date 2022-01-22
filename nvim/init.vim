@@ -121,4 +121,4 @@ runtime ./colors.vim
 " Extras "{{{
 " ---------------------------------------------------------------------
 "}}}
-
+" vim: set foldmethod=marker foldlevel=0:

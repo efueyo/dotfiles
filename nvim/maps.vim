@@ -1,10 +1,15 @@
 " Description: Keymaps
 nnoremap <SPACE> <Nop>
-let mapleader = " " " map leader to space
+let mapleader = "\<space>" " map leader to space
+
+" move line down
+nnoremap - ddp
+" move line up
+nnoremap _ ddkP
 
 """ -------------------- Add closing elements on insert more  -------------------- 
-" Avoid writing four elements when typed twice"
 inoremap " ""<left>
+" Avoid writing four elements when typed twice"
 inoremap "" ""
 inoremap ' ''<left>
 inoremap '' ''
