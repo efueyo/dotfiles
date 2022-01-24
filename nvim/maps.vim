@@ -64,6 +64,7 @@ nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 
 " mappins for NERDTree
-nnoremap <leader>nt <cmd>NERDTreeToggle<cr>
-nnoremap <leader>ntf <cmd>NERDTreeFind<cr>
-
+let g:NERDTreeShowHidden=1
+noremap <leader>nt <cmd>NERDTreeToggle<cr>
+noremap <leader>ntf <cmd>NERDTreeFind<cr>
+let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
