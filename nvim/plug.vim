@@ -5,6 +5,7 @@ endif
 call plug#begin()
 
 Plug 'tpope/vim-fugitive'
+Plug 'rbong/vim-flog'
 
 if has("nvim")
 
