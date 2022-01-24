@@ -2,10 +2,17 @@
 nnoremap <SPACE> <Nop>
 let mapleader = "\<space>" " map leader to space
 
+" --- Some useful maps
 " move line down
 nnoremap - ddp
 " move line up
 nnoremap _ ddkP
+" Delete without yank
+nnoremap <leader>d "_d
+nnoremap x "_x
+
+" delete a single line when in insert mode
+inoremap <c-d> <esc>ddi
 
 """ -------------------- Add closing elements on insert more  -------------------- 
 inoremap " ""<left>
