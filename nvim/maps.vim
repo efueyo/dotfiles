@@ -24,10 +24,6 @@ vnoremap <Right> <nop>
 vnoremap <Up> <nop>
 vnoremap <Down> <nop>
 
-inoremap <Left> <nop>
-inoremap <Right> <nop>
-inoremap <Up> <nop>
-inoremap <Down> <nop>
 inoremap jk <esc>
 inoremap <esc> <nop>
 
