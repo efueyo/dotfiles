@@ -14,6 +14,21 @@ nnoremap x "_x
 " delete a single line when in insert mode
 inoremap <c-d> <esc>ddi
 
+nnoremap <Left> <nop>
+nnoremap <Right> <nop>
+nnoremap <Up> <nop>
+nnoremap <Down> <nop>
+
+vnoremap <Left> <nop>
+vnoremap <Right> <nop>
+vnoremap <Up> <nop>
+vnoremap <Down> <nop>
+
+inoremap <Left> <nop>
+inoremap <Right> <nop>
+inoremap <Up> <nop>
+inoremap <Down> <nop>
+
 """ -------------------- Add closing elements on insert more  -------------------- 
 inoremap " ""<left>
 " Avoid writing four elements when typed twice"
