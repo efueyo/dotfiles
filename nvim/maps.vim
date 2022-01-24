@@ -28,6 +28,8 @@ inoremap <Left> <nop>
 inoremap <Right> <nop>
 inoremap <Up> <nop>
 inoremap <Down> <nop>
+inoremap jk <esc>
+inoremap <esc> <nop>
 
 """ -------------------- Add closing elements on insert more  -------------------- 
 inoremap " ""<left>
