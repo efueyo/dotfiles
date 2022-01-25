@@ -23,10 +23,10 @@ if has("nvim")
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-telescope/telescope-fzy-native.nvim'
+  Plug 'ryanoasis/vim-devicons'
 
   Plug 'nvim-lualine/lualine.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
-  Plug 'ryanoasis/vim-devicons'
 
   Plug 'gruvbox-community/gruvbox'
 
