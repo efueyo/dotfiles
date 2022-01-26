@@ -79,5 +79,5 @@ noremap <leader>nt <cmd>NERDTreeToggle<cr>
 noremap <leader>ntf <cmd>NERDTreeFind<cr>
 let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
 "
-""" -------------------- Config for Tagbar  -------------------- 
-map <leader>tb :TagbarToggle<CR>
+""" -------------------- Config for SymbolsOutline  -------------------- 
+map <leader>so :SymbolsOutline<CR>

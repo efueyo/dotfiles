@@ -7,7 +7,6 @@ call plug#begin()
 Plug 'tpope/vim-fugitive'
 Plug 'rbong/vim-flog'
 Plug 'preservim/nerdtree'
-Plug 'preservim/tagbar'
 
 if has("nvim")
 
@@ -33,6 +32,7 @@ if has("nvim")
 
 
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  Plug 'simrat39/symbols-outline.nvim'
 endif
 
 
