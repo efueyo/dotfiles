@@ -7,6 +7,7 @@ call plug#begin()
 Plug 'tpope/vim-fugitive'
 Plug 'rbong/vim-flog'
 Plug 'preservim/nerdtree'
+Plug 'preservim/tagbar'
 
 if has("nvim")
 
