@@ -7,6 +7,7 @@ nnoremap <leader>fs <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fr <cmd>lua require'telescope.builtin'.lsp_references{}<CR>
+nnoremap <leader>fi <cmd>lua require'telescope.builtin'.lsp_implementations{}<CR>
 
 lua << EOF
 function telescope_buffer_dir()
