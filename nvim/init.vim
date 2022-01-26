@@ -43,7 +43,7 @@ set lazyredraw
 " How many tenths of a second to blink when matching brackets
 "set mat=2
 " Ignore case when searching
-set ignorecase
+set noignorecase
 " Be smart when using tabs ;)
 set smarttab
 " indents
