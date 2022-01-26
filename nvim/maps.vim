@@ -3,17 +3,31 @@ nnoremap <SPACE> <Nop>
 let mapleader = "\<space>" " map leader to space
 
 " --- Some useful maps
-" move line down
-nnoremap - ddp
-" move line up
-nnoremap _ ddkP
+" yank from cursor
+nnoremap Y yg$
+" keep the screen centered while searching
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
+
+" move lines
+vnoremap - :m '>+1<CR>gv=gv
+vnoremap _ :m '<-2<CR>gv=gv
+nnoremap - :m .+1<cr>==
+nnoremap _ :m .-2<cr>==
+
 " Delete without yank
 nnoremap <leader>d "_d
 nnoremap x "_x
 
 " delete a single line when in insert mode
 inoremap <c-d> <esc>ddi
+" break undo sequence when inserting this characters
+inoremap . .<c-g>u
+inoremap , ,<c-g>u
 
+
+" force myself to use hjkl
 nnoremap <Left> <nop>
 nnoremap <Right> <nop>
 nnoremap <Up> <nop>
