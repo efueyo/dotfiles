@@ -100,7 +100,7 @@ augroup Filetypes
   au BufNewFile,BufRead *.go set filetype=go
   " insert if err != nil {...} and return to insert mode
   au BufEnter *.go imap iferr  <ESC><Plug>(go-iferr)2ki
-  autocmd FileType go setlocal shiftwidth=8 tabstop=8
+  autocmd FileType go setlocal noexpandtab shiftwidth=8 tabstop=8
 
   autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 augroup END
