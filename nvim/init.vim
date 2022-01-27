@@ -99,9 +99,10 @@ augroup Filetypes
   au BufNewFile,BufRead *.mdx set filetype=markdown
   " Go
   au BufNewFile,BufRead *.go set filetype=go
-  " insert if err != nil {...} and return to insert mode
-  au BufEnter *.go imap iferr  <ESC><Plug>(go-iferr)2ki
   autocmd FileType go setlocal noexpandtab shiftwidth=8 tabstop=8
+  " insert if err != nil {...} and return to insert mode
+  autocmd FileType go inoremap iferr  <ESC><Plug>(go-iferr)2ki
+  autocmd FileType go nnoremap <leader>ga <cmd>GoAlternate<cr>
 
   autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 augroup END
