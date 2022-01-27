@@ -34,6 +34,7 @@ if has("nvim")
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'airblade/vim-gitgutter'
   Plug 'simrat39/symbols-outline.nvim'
+  Plug 'hashivim/vim-terraform'
 endif
 
 
