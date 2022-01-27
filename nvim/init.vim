@@ -105,6 +105,7 @@ augroup Filetypes
   autocmd FileType go nnoremap <leader>ga <cmd>GoAlternate<cr>
 
   autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
+  autocmd FileType floggraph nnoremap <leader>cc <cmd>call flog#copy_commits()<cr>
 augroup END
 "}}}
 
