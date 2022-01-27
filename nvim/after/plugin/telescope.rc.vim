@@ -6,8 +6,8 @@ nnoremap <leader>fg <cmd>Telescope git_files<cr>
 nnoremap <leader>fs <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap <leader>fr <cmd>lua require'telescope.builtin'.lsp_references{}<CR>
-nnoremap <leader>fi <cmd>lua require'telescope.builtin'.lsp_implementations{}<CR>
+nnoremap <leader>fr <cmd>Telescope lsp_references theme=dropdown layout_config={width=0.8}<cr>
+nnoremap <leader>fi <cmd>Telescope lsp_references theme=dropdown layout_config={width=0.8}<cr>
 
 lua << EOF
 function telescope_buffer_dir()
