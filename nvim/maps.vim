@@ -18,6 +18,7 @@ nnoremap _ :m .-2<cr>==
 
 " Delete without yank
 nnoremap <leader>d "_d
+nnoremap <leader>D "_D
 nnoremap x "_x
 
 " delete a single line when in insert mode
