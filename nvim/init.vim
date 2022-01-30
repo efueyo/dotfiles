@@ -106,6 +106,7 @@ augroup Filetypes
 
   autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
   autocmd FileType floggraph nnoremap <leader>cc <cmd>call flog#copy_commits()<cr>
+  autocmd BufWritePre * %s/\s\+$//e
 augroup END
 "}}}
 
