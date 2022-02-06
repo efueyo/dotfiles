@@ -13,9 +13,4 @@ for _, lsp in ipairs(servers) do
   }
 end
 
---require'nvim-treesitter.configs'.setup {
---  highlight = {
---      enable = true
---  },
---}
 EOF
