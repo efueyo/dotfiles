@@ -8,6 +8,7 @@ nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fr <cmd>Telescope lsp_references theme=dropdown layout_config={width=0.8}<cr>
 nnoremap <leader>fi <cmd>Telescope lsp_implementations theme=dropdown layout_config={width=0.8}<cr>
+nnoremap <leader>fts <cmd>Telescope treesitter<cr>
 
 lua << EOF
 function telescope_buffer_dir()
