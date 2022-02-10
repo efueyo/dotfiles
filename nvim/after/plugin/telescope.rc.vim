@@ -29,6 +29,13 @@ telescope.setup{
         ["q"] = actions.close
       },
     },
+  },
+  pickers = {
+    live_grep = {
+      additional_args = function(opts)
+        return {"--hidden"}
+      end
+    },
   }
 }
 EOF
