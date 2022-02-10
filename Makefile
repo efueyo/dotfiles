@@ -14,4 +14,6 @@ install:
 	echo "------- Neovim -------"
 	echo "Linkning nvim to ~/.config/nvim"
 	ln -s $(CURDIR)/nvim ~/.config/nvim || true
+	echo "Linkning .rgignore to ~/.rgignore"
+	ln -s $(CURDIR)/.rgignore ~/.rgignore || true
 
