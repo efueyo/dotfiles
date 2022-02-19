@@ -42,7 +42,7 @@ vnoremap <Down> <nop>
 inoremap jk <esc>
 inoremap <esc> <nop>
 
-""" -------------------- Add closing elements on insert more  -------------------- 
+""" -------------------- Add closing elements on insert more  --------------------
 inoremap " ""<left>
 " Avoid writing four elements when typed twice"
 inoremap "" ""
@@ -71,8 +71,8 @@ nnoremap <silent> <leader>i <cmd>lua vim.lsp.buf.hover()<CR>
 inoremap <silent> <C-i> <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 inoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
-nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+nnoremap <silent> <C-n> <cmd>lua vim.diagnostic.goto_prev()<CR>
+nnoremap <silent> <C-p> <cmd>lua vim.diagnostic.goto_next()<CR>
 
 " mappins for NERDTree
 let g:NERDTreeShowHidden=1
@@ -80,5 +80,5 @@ noremap <leader>nt <cmd>NERDTreeToggle<cr>
 noremap <leader>ntf <cmd>NERDTreeFind<cr>
 let NERDTreeQuitOnOpen=1 " Automatically close NERDTree when you open a file
 "
-""" -------------------- Config for SymbolsOutline  -------------------- 
+""" -------------------- Config for SymbolsOutline  --------------------
 map <leader>so :SymbolsOutline<CR>
