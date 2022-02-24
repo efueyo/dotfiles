@@ -9,7 +9,6 @@ Plug 'rbong/vim-flog'
 
 Plug 'junegunn/fzf', {'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'  " General fuzzy finder
-Plug 'stsewd/fzf-checkout.vim'
 
 Plug 'preservim/nerdtree'
 
