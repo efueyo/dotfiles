@@ -57,7 +57,7 @@ set nowrap "No Wrap lines
 set backspace=start,eol,indent
 " display tabs and whitespaces
 set list
-set listchars=tab:▸·,trail:·,eol:⏎
+set listchars=tab:▸·,trail:·
 " Finding files - Search down into subfolders
 set path+=**
 set wildmode=longest,list,full
