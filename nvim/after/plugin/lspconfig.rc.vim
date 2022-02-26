@@ -2,14 +2,13 @@ if !exists('g:lspconfig') | finish | endif
 
 lua << EOF
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-
-local nvim_lsp = require('lspconfig')
+local my_lsp = require("user.lsp")
+my_lsp.setup()
 local servers = {'pyright', 'gopls', 'tsserver'}
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    capabilities = capabilities,
+  require('lspconfig')[lsp].setup {
+    on_attach = my_lsp.on_attach,
+    capabilities = my_lsp.capabilities,
   }
 end
 
