@@ -27,20 +27,7 @@ inoremap <c-d> <esc>ddi
 inoremap . .<c-g>u
 inoremap , ,<c-g>u
 
-
-" force myself to use hjkl
-nnoremap <Left> <nop>
-nnoremap <Right> <nop>
-nnoremap <Up> <nop>
-nnoremap <Down> <nop>
-
-vnoremap <Left> <nop>
-vnoremap <Right> <nop>
-vnoremap <Up> <nop>
-vnoremap <Down> <nop>
-
 inoremap jk <esc>
-inoremap <esc> <nop>
 
 """ -------------------- Add closing elements on insert more  --------------------
 inoremap " ""<left>
