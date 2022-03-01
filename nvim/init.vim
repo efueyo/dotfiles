@@ -121,8 +121,12 @@ if has("unix")
   endif
 endif
 
-runtime ./maps.vim
+lua <<EOF
+require("user.keymaps")
+EOF
+"" runtime ./maps.vim
 runtime ./colors.vim
+
 "}}}
 
 " Extras "{{{
