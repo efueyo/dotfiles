@@ -3,72 +3,6 @@
 
 " init autocmd
 autocmd!
-" set script encoding
-scriptencoding utf-8
-" stop loading config if it's on tiny or small
-if !1 | finish | endif
-
-set nocompatible
-set number
-set relativenumber
-syntax enable
-set fileencodings=utf-8,sjis,euc-jp,latin
-set encoding=utf-8
-set title
-set autoindent
-set background=dark
-set nobackup
-set hlsearch
-set showcmd
-set cmdheight=1
-set updatetime=250
-" Always display the status line, even if only one window is displayed
-set laststatus=2
-set scrolloff=10
-set expandtab
-"let loaded_matchparen = 1
-
-" incremental substitution (neovim)
-if has('nvim')
-  set inccommand=split
-endif
-
-" Suppress appending <PasteStart> and <PasteEnd> when pasting
-set t_BE=
-
-set noruler
-set noshowmatch
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-"set showmatch
-" How many tenths of a second to blink when matching brackets
-"set mat=2
-" Ignore case when searching
-set noignorecase
-" Be smart when using tabs ;)
-set smarttab
-" indents
-filetype plugin indent on
-set shiftwidth=2
-set tabstop=2
-set ai "Auto indent
-set si "Smart indent
-set nowrap "No Wrap lines
-set backspace=start,eol,indent
-" display tabs and whitespaces
-set list
-set listchars=tab:▸·,trail:·
-" Finding files - Search down into subfolders
-set path+=**
-set wildmode=longest,list,full
-set wildmenu
-set wildignore+=*.pyc
-set wildignore+=*_build/*
-set wildignore+=**/coverage/*
-set wildignore+=**/node_modules/*
-set wildignore+=**/android/*
-set wildignore+=**/.git/*
-
 
 "}}}
 
@@ -122,6 +56,7 @@ if has("unix")
 endif
 
 lua <<EOF
+require("user.options")
 require("user.keymaps")
 EOF
 "" runtime ./maps.vim
