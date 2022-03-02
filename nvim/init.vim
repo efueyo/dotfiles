@@ -8,8 +8,6 @@ autocmd!
 
 " Highlights "{{{
 " ---------------------------------------------------------------------
-set cursorline
-"set cursorcolumn
 
 augroup BgHighlight
   autocmd!
