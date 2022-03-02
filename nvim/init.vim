@@ -49,9 +49,9 @@ runtime ./plug.vim
 lua <<EOF
 require("user.options")
 require("user.keymaps")
+require("user.colorscheme")
 EOF
-"" runtime ./maps.vim
-runtime ./colors.vim
+" runtime ./maps.vim
 
 "}}}
 
