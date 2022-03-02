@@ -1,5 +1,6 @@
 local options = {
   ignorecase = false,
+  number = true,
   relativenumber = true,
   mouse = "a",
   syntax="enable",
