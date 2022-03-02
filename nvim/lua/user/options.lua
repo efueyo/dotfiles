@@ -1,6 +1,7 @@
 local options = {
   ignorecase = false,
   relativenumber = true,
+  mouse = "a",
   syntax="enable",
   fileencodings= "utf-8,latin",
   encoding="utf-8",
