@@ -32,7 +32,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 
-Plug 'gruvbox-community/gruvbox'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 
 
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
