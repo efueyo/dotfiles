@@ -50,6 +50,7 @@ lua <<EOF
 require("user.options")
 require("user.keymaps")
 require("user.colorscheme")
+require("user.telescope")
 EOF
 " runtime ./maps.vim
 
