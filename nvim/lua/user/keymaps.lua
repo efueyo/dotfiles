@@ -32,7 +32,8 @@ keymap("n", "J", "mzJ`z", opts)
 
 -- clear search highligh
 keymap("n", "<leader>'", ":noh<CR>",opts)
-
+-- Quicker save
+keymap("n", "<leader>w", ":w<CR>",opts)
 -- Insert --
 -- delete a single line when in insert mode
 keymap("i", "<c-d>", "<esc>ddi", opts)
