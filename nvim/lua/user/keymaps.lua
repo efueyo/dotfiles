@@ -22,13 +22,16 @@ keymap("n", "<leader>d", '"_d', opts)
 keymap("n", "<leader>D", '"_D', opts)
 keymap("n", "x", '"_x', opts)
 
-keymap("n", "Y", "yg$", opts)
 -- yank from cursor
+keymap("n", "Y", "yg$", opts)
 
 -- keep the screen centered while searching
 keymap("n", "n", "nzzzv", opts)
 keymap("n", "N", "Nzzzv", opts)
 keymap("n", "J", "mzJ`z", opts)
+
+-- clear search highligh
+keymap("n", "<leader>'", ":noh<CR>",opts)
 
 -- Insert --
 -- delete a single line when in insert mode
