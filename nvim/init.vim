@@ -38,11 +38,11 @@ augroup END
 
 " Imports "{{{
 " ---------------------------------------------------------------------
-runtime ./plug.vim
 
 lua <<EOF
 require("user.options")
 require("user.keymaps")
+require("user.plugins")
 require("user.colorscheme")
 require("user.telescope")
 require("user.cmp")
