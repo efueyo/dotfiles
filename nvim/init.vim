@@ -9,12 +9,6 @@ autocmd!
 " Highlights "{{{
 " ---------------------------------------------------------------------
 
-augroup BgHighlight
-  autocmd!
-  autocmd WinEnter * set cul
-  autocmd WinLeave * set nocul
-augroup END
-
 
 "}}}
 
@@ -60,4 +54,4 @@ EOF
 " Extras "{{{
 " ---------------------------------------------------------------------
 "}}}
-" vim: set foldmethod=marker foldlevel=0:
+" vim: set foldmethod=marker foldlevel=1:
