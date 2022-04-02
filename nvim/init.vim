@@ -51,6 +51,7 @@ require("user.options")
 require("user.keymaps")
 require("user.colorscheme")
 require("user.telescope")
+require("user.cmp")
 EOF
 " runtime ./maps.vim
 
