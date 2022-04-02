@@ -1,6 +1,5 @@
 local cmp = require('cmp')
 local luasnip = require('luasnip')
-require("luasnip.loaders.from_vscode").load()
 
 local check_backspace = function()
   local col = vim.fn.col "." - 1
@@ -93,7 +92,7 @@ cmp.setup {
       vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
       vim_item.menu = ({
         nvim_lsp = "[LSP]",
-        luasnip = "[Snippet]",
+        luasnip = "[Snip]",
         buffer = "[Text]",
         path = "[Path]",
       })[entry.source.name]
