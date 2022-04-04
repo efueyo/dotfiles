@@ -45,13 +45,13 @@ ls.add_snippets("go", {
     trig = "desc",
     name = "Describe(\"\", func () {...})",
   },{
-    t("Describe(\""), i(1), t({"\", func() {", "    "}), i(2), t({"","})"})
+    t("Describe(\""), i(1), t({"\", func() {", ""}), i(2), t({"","})"})
   }),
   s({
     trig = "it",
     name = "It(\"\", func () {...})",
   },{
-    t("It(\""), i(1), t({"\", func() {", "    "}), i(2), t({"","})"})
+    t("It(\""), i(1), t({"\", func() {", ""}), i(2), t({"","})"})
   }),
   s({
     trig = "impginkgo",
@@ -70,6 +70,14 @@ ls.add_snippets("go", {
   },{
     t("func ("), i(1), t(") "), i(2, "funcName"), t("("), i(3,"arguments"), t(") "), c(4, {t(""), t("error"), i(1, "retValue")}), t({" {",""}),
     t("\t"),i(5),
+    t({"","}"}),
+  }),
+  s({
+    trig = "func",
+    name = "Func",
+  },{
+    t("func "), i(1, "funcName"), t("("), i(2,"arguments"), t(") "), c(3, {t(""), t("error"), i(1, "retValue")}), t({" {",""}),
+    t("\t"),i(4),
     t({"","}"}),
   }),
 })
