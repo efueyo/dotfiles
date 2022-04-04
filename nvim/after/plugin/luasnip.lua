@@ -43,9 +43,15 @@ ls.add_snippets("go", {
   }),
   s({
     trig = "desc",
-    name = "Describe It (\"\", func () {...})",
+    name = "Describe(\"\", func () {...})",
   },{
-    c(1, {t("Describe"), t("It")}), t("(\""), i(2), t({"\", func() {", "    "}), i(3), t({"","})"})
+    t("Describe(\""), i(1), t({"\", func() {", "    "}), i(2), t({"","})"})
+  }),
+  s({
+    trig = "it",
+    name = "It(\"\", func () {...})",
+  },{
+    t("It(\""), i(1), t({"\", func() {", "    "}), i(2), t({"","})"})
   }),
   s({
     trig = "impginkgo",
