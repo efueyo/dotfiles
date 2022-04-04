@@ -39,7 +39,24 @@ ls.add_snippets("go", {
     trig = "expeq",
     name = "Expect(A).To(Equal(B))",
   },{
-    t("Expect("), i(1), t(")."), t("To(Equal("), i(2), t("))")
+    t("Expect("), i(1), t(").To(Equal("), i(2), t("))")
+  }),
+  s({
+    trig = "desc",
+    name = "Describe It (\"\", func () {...})",
+  },{
+    c(1, {t("Describe"), t("It")}), t("(\""), i(2), t({"\", func() {", "    "}), i(3), t({"","})"})
+  }),
+  s({
+    trig = "impginkgo",
+    name = "Ginkgo and Gomega import",
+  },{
+    t({
+      "import (",
+      "  . \"github.com/onsi/ginkgo/v2\"",
+      "  . \"github.com/onsi/gomega\"",
+      ")"
+    })
   }),
 })
 
