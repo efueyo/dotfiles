@@ -33,7 +33,7 @@ ls.add_snippets("go", {
     trig = "expe",
     name = "Expect(err).To(HaveOccurred())",
   },{
-    t("Expect(err)."), c(1, {t("To"), t("ToNot")}), t("(HaveOccurred())")
+    t("Expect(err)."), c(1, {t("ToNot"), t("To")}), t("(HaveOccurred())")
   }),
   s({
     trig = "expeq",
