@@ -64,6 +64,14 @@ ls.add_snippets("go", {
       ")"
     })
   }),
+  s({
+    trig = "funcm",
+    name = "Func method",
+  },{
+    t("func ("), i(1), t(") "), i(2, "funcName"), t("("), i(3,"arguments"), t(") "), c(4, {t(""), t("error"), i(1, "retValue")}), t({" {",""}),
+    t("\t"),i(5),
+    t({"","}"}),
+  }),
 })
 
 
