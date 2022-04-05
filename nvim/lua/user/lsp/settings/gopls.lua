@@ -5,7 +5,6 @@ return {
           unusedparams = true,
       },
       staticcheck = true,
-      buildFlags =  {"-tags=wireinject"},
     },
   },
 }
