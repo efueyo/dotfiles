@@ -46,6 +46,7 @@ require("user.plugins")
 require("user.colorscheme")
 require("user.telescope")
 require("user.cmp")
+require("user.lsp")
 EOF
 " runtime ./maps.vim
 
