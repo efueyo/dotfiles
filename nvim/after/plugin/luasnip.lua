@@ -27,10 +27,16 @@ local d = ls.dynamic_node
 ls.add_snippets("all", {
 })
 
+ls.add_snippets("gitcommit", {
+  s("feat", {t("feat("), i(1), t("): "), i(2)}),
+  s("fix", {t("fix("), i(1), t("): "), i(2)}),
+  s("chore", {t("chore("), i(1), t("): "), i(2)}),
+  s("hack", {t("hack("), i(1), t("): "), i(2)}),
+})
 -- Go
 ls.add_snippets("go", {
   s({
-    trig = "expe",
+    trig = "experr",
     name = "Expect(err).To(HaveOccurred())",
   },{
     t("Expect(err)."), c(1, {t("ToNot"), t("To")}), t("(HaveOccurred())")
