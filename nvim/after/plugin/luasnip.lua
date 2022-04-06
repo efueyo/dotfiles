@@ -48,6 +48,12 @@ ls.add_snippets("go", {
     t("Expect("), i(1), t(").To(Equal("), i(2), t("))")
   }),
   s({
+    trig = "expelen",
+    name = "Expect(A).To(HaveLen(B))",
+  },{
+    t("Expect("), i(1), t(").To(HaveLen("), i(2, "0"), t("))")
+  }),
+  s({
     trig = "desc",
     name = "Describe(\"\", func () {...})",
   },{
