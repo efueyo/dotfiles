@@ -25,14 +25,14 @@ local c = ls.choice_node
 local d = ls.dynamic_node
 
 ls.add_snippets("all", {
-})
+}, {key = "all"})
 
 ls.add_snippets("gitcommit", {
   s("feat", {t("feat("), i(1), t("): "), i(2)}),
   s("fix", {t("fix("), i(1), t("): "), i(2)}),
   s("chore", {t("chore("), i(1), t("): "), i(2)}),
   s("hack", {t("hack("), i(1), t("): "), i(2)}),
-})
+}, {key = "gitcommit"})
 -- Go
 ls.add_snippets("go", {
   s({
@@ -77,6 +77,44 @@ ls.add_snippets("go", {
     })
   }),
   s({
+    trig = "typestruct",
+    name = "type A struct {}",
+  },{
+    t("type "), i(1), t({" struct {", "\t"}),
+    i(2),
+    t({"","}",""}),
+  }),
+  s({
+    trig = "typeinterface",
+    name = "type A interface {}",
+  },{
+    t("type "), i(1), t({" interface {", "\t"}),
+    i(2),
+    t({"","}",""}),
+  }),
+  s({
+    trig = "forrange",
+    name = "for _, a := range X {...}",
+  },{
+    t("for "), c(1, {t("_, "), t("i, ")}),i(2,"e"), t(" := range "), i(3), t({" {", "\t"}),
+    i(4),
+    t({"","}",""}),
+  }),
+  s({
+    trig = "map",
+    name = "map[A]B{}",
+  },{
+    t("map["), i(1), t("]"), i(2), t("{}"),
+  }),
+  s({
+    trig = "if",
+    name = "if condition {}",
+  },{
+    t("if "), i(1, "condition"), t({" {", "\t"}),
+    i(2),
+    t({"", "}"}),
+  }),
+  s({
     trig = "funcm",
     name = "Func method",
   },{
@@ -92,7 +130,7 @@ ls.add_snippets("go", {
     t("\t"),i(4),
     t({"","}"}),
   }),
-})
+}, {key = "gopls"})
 
 
 -- <c-k> is expansion key
