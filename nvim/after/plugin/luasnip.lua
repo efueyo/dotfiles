@@ -2,6 +2,7 @@
 
 local ls = require"luasnip"
 local types = require "luasnip.util.types"
+local extras = require "luasnip.extras"
 
 ls.config.set_config {
   -- This tells LuaSnip to remember to keep around the last snippet.
@@ -23,6 +24,7 @@ local i = ls.insert_node
 local f = ls.function_node
 local c = ls.choice_node
 local d = ls.dynamic_node
+local rep = extras.rep
 
 ls.add_snippets("all", {
 }, {key = "all"})
@@ -129,6 +131,12 @@ ls.add_snippets("go", {
     t("func "), i(1, "funcName"), t("("), i(2,"arguments"), t(") "), c(3, {t(""), t("error"), i(1, "retValue")}), t({" {",""}),
     t("\t"),i(4),
     t({"","}"}),
+  }),
+  s({
+    trig = "printvar",
+    name = "fmt.Printf(\"A; %+v\\n\", A)",
+  },{
+    t("fmt.Printf(\""), rep(1), t(": %+v\\n\", "), i(1, "variable"), t(")"),
   }),
 }, {key = "gopls"})
 
