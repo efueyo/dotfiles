@@ -14,7 +14,13 @@ ls.config.set_config {
 
   -- Autosnippets:
   enable_autosnippets = true,
-
+  ext_opts = {
+    [types.choiceNode] = {
+      active = {
+        virt_text = { { " <- Current Choice", "NonTest" } },
+      },
+    },
+  },
 }
 
 
