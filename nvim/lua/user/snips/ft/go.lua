@@ -7,6 +7,7 @@ local snake_case = shared.snake_case
 
 
 local s = ls.s
+local sn = ls.snippet_node
 local t = ls.text_node
 local i = ls.insert_node
 local c = ls.choice_node
@@ -75,8 +76,12 @@ return {
     trig = "forrange",
     name = "for _, a := range X {...}",
   },{
-    t("for "), c(1, {t("_, "), t("i, ")}),i(2,"e"), t(" := range "), i(3), t({" {", "\t"}),
-    i(4),
+    t("for "), c(1, {
+      sn(nil, {t("_, "), i(1,"e")}),
+      sn(nil, {t("i, "), i(1,"e")}),
+      t("i"),
+    }), t(" := range "), i(2), t({" {", "\t"}),
+    i(3),
     t({"","}",""}),
   }),
   s({
@@ -99,6 +104,14 @@ return {
   },{
     t("func ("), i(1), t(") "), i(2, "funcName"), t("("), i(3,"arguments"), t(") "), c(4, {t(""), t("error"), i(1, "retValue")}), t({" {",""}),
     t("\t"),i(5),
+    t({"","}"}),
+  }),
+  s({
+    trig = "funca",
+    name = "Annonymous Func",
+  },{
+    t({"func () {", ""}),
+    t("\t"),i(1),
     t({"","}"}),
   }),
   s({
