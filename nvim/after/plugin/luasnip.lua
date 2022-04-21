@@ -26,6 +26,12 @@ local c = ls.choice_node
 local d = ls.dynamic_node
 local rep = extras.rep
 
+local snake_case = function (word)
+  -- (%u) caputres any Uppercase, (%l) captures any lowercase.
+  return string.lower(string.gsub(word, "(%l)(%u)", "%1_%2"))
+end
+
+
 ls.add_snippets("all", {
 }, {key = "all"})
 
@@ -137,6 +143,16 @@ ls.add_snippets("go", {
     name = "fmt.Printf(\"A; %+v\\n\", A)",
   },{
     t("fmt.Printf(\""), rep(1), t(": %+v\\n\", "), i(1, "variable"), t(")"),
+  }),
+  s({
+    trig = "moq",
+    name = "go:generate moq interface",
+  },{
+    t("//go:generate moq -rm -out "),
+    f(function(args)
+      return snake_case(args[1][1])
+    end, {1}),
+    t("_mock.go . "), i(1, "Interface")
   }),
 }, {key = "gopls"})
 
