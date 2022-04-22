@@ -3,16 +3,45 @@ local extras = require "luasnip.extras"
 
 local shared = require "user.snips"
 local snake_case = shared.snake_case
-
+local choices_from_list = shared.choices_from_list
 
 
 local s = ls.s
 local sn = ls.snippet_node
 local t = ls.text_node
 local i = ls.insert_node
+local d = ls.dynamic_node
 local c = ls.choice_node
 local f = ls.function_node
 local rep = extras.rep
+
+
+
+local q = require'vim.treesitter.query'
+
+local get_interface_declarations = function ()
+  local bufnr = 0 -- 0 means current buffer
+  local language_tree = vim.treesitter.get_parser(bufnr)
+  local syntax_tree = language_tree:parse()
+  local root = syntax_tree[1]:root()
+  local interface_ts_query = vim.treesitter.parse_query('go', [[
+  (type_declaration
+    (type_spec
+      name: (type_identifier) @interface-name
+      type: (interface_type)
+    )
+  )
+  ]])
+
+  local res = {}
+
+  for id, captures, metadata in interface_ts_query:iter_matches(root, bufnr) do
+      table.insert(res, q.get_node_text(captures[1], bufnr))
+  end
+  return res
+end
+
+
 
 return {
   s({
@@ -136,7 +165,12 @@ return {
     f(function(args)
       return snake_case(args[1][1])
     end, {1}),
-    t("_mock.go . "), i(1, "Interface")
+    t("_mock.go . "),
+    d(1, function ()
+      local values = get_interface_declarations()
+      return sn(nil, {
+        choices_from_list(1, values, {i(nil, "OtherInterface")})
+      })
+    end )
   }),
-
 }
