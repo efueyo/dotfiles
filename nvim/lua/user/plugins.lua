@@ -58,6 +58,12 @@ return packer.startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use {
+    'nvim-treesitter/playground',
+    config = function()
+        require'nvim-treesitter.configs'.setup({})
+    end,
+  }
   -- telescope requirements
   use 'nvim-lua/popup.nvim'
   use 'nvim-lua/plenary.nvim'
