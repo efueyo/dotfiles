@@ -45,22 +45,30 @@ end
 
 return {
   s({
-    trig = "experr",
+    trig = "expecterror",
     name = "Expect(err).To(HaveOccurred())",
   },{
     t("Expect(err)."), c(1, {t("ToNot"), t("To")}), t("(HaveOccurred())")
   }),
   s({
-    trig = "expeq",
+    trig = "expectequal",
     name = "Expect(A).To(Equal(B))",
   },{
     t("Expect("), i(1), t(").To(Equal("), i(2), t("))")
   }),
   s({
-    trig = "expelen",
+    trig = "expectlen",
     name = "Expect(A).To(HaveLen(B))",
   },{
     t("Expect("), i(1), t(").To(HaveLen("), i(2, "0"), t("))")
+  }),
+  s({
+    trig = "expectconsistof",
+    name = "Expect(A).To(ConsistOf({...})",
+  },{
+    t("Expect("), i(1), t({").To(ConsistOf(","\t"}),
+    i(2),
+    t({"","))"}),
   }),
   s({
     trig = "desc",
@@ -172,5 +180,13 @@ return {
         choices_from_list(1, values, {i(nil, "OtherInterface")})
       })
     end )
+  }),
+  s({
+    trig = "vars",
+    name = "Block of var declaration",
+  },{
+    t({"var (", "\t"}),
+    i(1),
+    t({"",")",""}),
   }),
 }
