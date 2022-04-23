@@ -26,6 +26,9 @@ for _, ft_path in ipairs(vim.api.nvim_get_runtime_file("lua/user/snips/ft/*.lua"
   local ft = vim.fn.fnamemodify(ft_path, ":t:r")
   local snips = loadfile(ft_path)()
   ls.add_snippets(ft, snips, {key = ft})
+  if ft == "typescript" then
+    ls.add_snippets("typescriptreact", snips, {key = "typescriptreact"})
+  end
 end
 
 -- <c-k> is expansion key
