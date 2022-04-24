@@ -15,8 +15,6 @@ local options = {
   showcmd=true,
   cmdheight=1,
   updatetime=250,
-  -- Always display the status line, even if only one window is displayed
-  laststatus=2,
   scrolloff=10,
   expandtab=true,
   inccommand="split",

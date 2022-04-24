@@ -7,7 +7,8 @@ lualine.setup {
     theme = 'tokyonight',
     section_separators = {left = '', right = ''},
     component_separators = {left = '', right = ''},
-    disabled_filetypes = {}
+    disabled_filetypes = {},
+    globalstatus = true,
   },
   sections = {
     lualine_a = {'mode'},
