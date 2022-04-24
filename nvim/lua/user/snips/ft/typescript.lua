@@ -37,4 +37,26 @@ return {
     t("\t"), i(2),
     t({"","}"}),
   }),
+  s({
+    trig = "describe",
+    name = "describe(a, () => {})",
+  },{
+    t("describe(\""), i(1), t({"\", () => {", "\t"}),
+    i(2),
+    t({"","})"}),
+  }),
+  s({
+    trig = "test",
+    name = "test(a, () => {})",
+  },{
+    t("test(\""), i(1), t({"\", () => {", "\t"}),
+    i(2),
+    t({"","})"}),
+  }),
+  s({
+    trig = "expect",
+    name = "expect(A).toEqual(B)",
+  },{
+    t("expect("), i(1), t(").toEqual("), i(2), t(")"),
+  }),
 }
