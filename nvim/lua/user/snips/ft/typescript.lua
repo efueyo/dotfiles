@@ -16,10 +16,18 @@ return {
     t("console.log(\""), rep(1), t("\", "), i(1, "variable"), t(")"),
   }),
   s({
-    trig = "jsonstringify",
-    name = "JSON.stringify(variable, null, 2)",
+    trig = "consolevarjson",
+    name = "console.log('a', JSON.stringify(a, null, 2))",
   },{
-    t("JSON.stringify("), i(1, "variable"), t(", null, 2)"),
+    t("console.log(\""), rep(1), t("\", JSON.stringify("), i(1, "variable"), t(", null, 2))"),
+  }),
+  s({
+    trig = "if",
+    name = "if(...) {...}",
+  },{
+    t("if ("), i(1, "condition"), t({") {","\t"}),
+    i(2),
+    t({"","}"}),
   }),
   s({
     trig = "interface",
