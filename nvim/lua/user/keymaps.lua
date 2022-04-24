@@ -1,50 +1,47 @@
-local opts = { noremap = true }
--- Shorten function name
-
-local keymap = vim.api.nvim_set_keymap
+local keymap = vim.keymap.set
 --Remap space as leader key
-keymap("", "<Space>", "<Nop>", opts)
+keymap("", "<Space>", "<Nop>")
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- navigation between windows
-keymap("n", "<leader>j", "<C-w>j", opts)
-keymap("n", "<leader>k", "<C-w>k", opts)
-keymap("n", "<leader>l", "<C-w>l", opts)
-keymap("n", "<leader>h", "<C-w>h", opts)
+keymap("n", "<leader>j", "<C-w>j")
+keymap("n", "<leader>k", "<C-w>k")
+keymap("n", "<leader>l", "<C-w>l")
+keymap("n", "<leader>h", "<C-w>h")
 
 -- move lines up and down
-keymap("n", "-", ":m .+1<cr>==", opts)
-keymap("n", "_", ":m .-2<cr>==", opts)
+keymap("n", "-", ":m .+1<cr>==")
+keymap("n", "_", ":m .-2<cr>==")
 
 -- delete without yank
-keymap("n", "<leader>d", '"_d', opts)
-keymap("n", "<leader>D", '"_D', opts)
-keymap("n", "x", '"_x', opts)
+keymap("n", "<leader>d", '"_d')
+keymap("n", "<leader>D", '"_D')
+keymap("n", "x", '"_x')
 
 -- yank from cursor
-keymap("n", "Y", "yg$", opts)
+keymap("n", "Y", "yg$")
 
 -- keep the screen centered while searching
-keymap("n", "n", "nzzzv", opts)
-keymap("n", "N", "Nzzzv", opts)
-keymap("n", "J", "mzJ`z", opts)
+keymap("n", "n", "nzzzv")
+keymap("n", "N", "Nzzzv")
+keymap("n", "J", "mzJ`z")
 
 -- clear search highligh
-keymap("n", "<leader>'", ":noh<CR>",opts)
+keymap("n", "<leader>'", ":noh<CR>")
 -- Quicker save
-keymap("n", "<leader>w", ":w<CR>",opts)
+keymap("n", "<leader>w", ":w<CR>")
 -- Insert --
 -- delete a single line when in insert mode
-keymap("i", "<c-d>", "<esc>ddi", opts)
-keymap("i", "jk", "<ESC>", opts)
+keymap("i", "<c-d>", "<esc>ddi")
+keymap("i", "jk", "<ESC>")
 
 -- Visual --
 -- Stay in indent mode
-keymap("v", "<", "<gv", opts)
-keymap("v", ">", ">gv", opts)
+keymap("v", "<", "<gv")
+keymap("v", ">", ">gv")
 
 -- move lines up and down
-keymap("v", "-", ":m '>+1<CR>gv=gv", opts)
-keymap("v", "_", ":m '<-2<CR>gv=gv", opts)
+keymap("v", "-", ":m '>+1<CR>gv=gv")
+keymap("v", "_", ":m '<-2<CR>gv=gv")
 
