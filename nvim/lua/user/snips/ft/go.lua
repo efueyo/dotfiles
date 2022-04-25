@@ -4,7 +4,7 @@ local extras = require "luasnip.extras"
 local shared = require "user.snips"
 local snake_case = shared.snake_case
 local choices_from_list = shared.choices_from_list
-
+local ends_with = shared.ends_with
 
 local s = ls.s
 local sn = ls.snippet_node
@@ -19,11 +19,16 @@ local rep = extras.rep
 
 local q = require'vim.treesitter.query'
 
-local get_interface_declarations = function ()
+local get_ts_root = function ()
   local bufnr = 0 -- 0 means current buffer
   local language_tree = vim.treesitter.get_parser(bufnr)
   local syntax_tree = language_tree:parse()
   local root = syntax_tree[1]:root()
+  return bufnr, root
+end
+
+local get_interface_declarations = function ()
+  local bufnr, root = get_ts_root()
   local interface_ts_query = vim.treesitter.parse_query('go', [[
   (type_declaration
     (type_spec
@@ -41,6 +46,24 @@ local get_interface_declarations = function ()
   return res
 end
 
+local get_struct_declarations = function ()
+  local bufnr, root = get_ts_root()
+  local struct_ts_query = vim.treesitter.parse_query('go', [[
+  (type_declaration
+    (type_spec
+      name: (type_identifier) @struct-name
+      type: (struct_type)
+    )
+  )
+  ]])
+
+  local res = {}
+
+  for id, captures, metadata in struct_ts_query:iter_matches(root, bufnr) do
+      table.insert(res, q.get_node_text(captures[1], bufnr))
+  end
+  return res
+end
 
 
 return {
@@ -139,7 +162,26 @@ return {
     trig = "funcm",
     name = "Func method",
   },{
-    t("func ("), i(1), t(") "), i(2, "funcName"), t("("), i(3,"arguments"), t(") "), c(4, {t(""), t("error"), i(1, "retValue")}), t({" {",""}),
+    t("func ("),
+    d(1, function ()
+      local values = get_struct_declarations()
+      local choices = {}
+      for _, v in pairs(values) do
+        local p = "p"
+        if ends_with(v, "Handler") then
+          p = "h"
+        elseif ends_with(v, "Server") then
+          p = "s"
+        end
+        table.insert(choices, t(p.." *"..v))
+      end
+      table.insert(choices, i(nil, "p OtherReceiver"))
+
+      return sn(nil, {
+        c(1, choices),
+      })
+    end),
+    t(") "), i(2, "funcName"), t("("), i(3,"arguments"), t(") "), c(4, {t(""), t("error"), i(1, "retValue")}), t({" {",""}),
     t("\t"),i(5),
     t({"","}"}),
   }),

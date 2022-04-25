@@ -14,15 +14,22 @@ end
 M.choices_from_list = function (position, opts, extra_nodes)
   extra_nodes = extra_nodes or {}
   local choices =  {}
-  for k,v in pairs(opts) do
-    choices[k] = t(v)
+  for _,v in pairs(opts) do
+    table.insert(choices, t(v))
   end
-  local offset = #(opts)
-  for k,v in pairs(extra_nodes) do
-    choices[offset + k] = v
+  for _,v in pairs(extra_nodes) do
+    table.insert(choices, v)
   end
 
   return c(position, choices)
 end
+
+M.starts_with = function (s, prefix)
+  return string.find(s, prefix, 1) == 1
+end
+M.ends_with = function (s, suffix)
+  return string.sub(s, -string.len(suffix)) == suffix
+end
+
 
 return M
