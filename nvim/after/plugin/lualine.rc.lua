@@ -8,7 +8,6 @@ lualine.setup {
     section_separators = {left = '', right = ''},
     component_separators = {left = '', right = ''},
     disabled_filetypes = {},
-    globalstatus = true,
   },
   sections = {
     lualine_a = {'mode'},
