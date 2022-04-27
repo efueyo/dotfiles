@@ -97,13 +97,13 @@ return {
     trig = "desc",
     name = "Describe(\"\", func () {...})",
   },{
-    t("Describe(\""), i(1), t({"\", func() {", ""}), i(2), t({"","})"})
+    t("Describe(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
   }),
   s({
     trig = "it",
     name = "It(\"\", func () {...})",
   },{
-    t("It(\""), i(1), t({"\", func() {", ""}), i(2), t({"","})"})
+    t("It(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
   }),
   s({
     trig = "impginkgo",
