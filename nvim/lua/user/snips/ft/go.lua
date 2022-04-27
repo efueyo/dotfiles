@@ -71,19 +71,33 @@ return {
     trig = "expecterror",
     name = "Expect(err).To(HaveOccurred())",
   },{
-    t("Expect(err)."), c(1, {t("ToNot"), t("To")}), t("(HaveOccurred())")
+    t("Expect(err)."), c(1, {t("ToNot"), t("To")}), t("(HaveOccurred())"),
   }),
   s({
     trig = "expectequal",
     name = "Expect(A).To(Equal(B))",
   },{
-    t("Expect("), i(1), t(").To(Equal("), i(2), t("))")
+    t("Expect("), i(1), t(").To(Equal("), i(2), t("))"),
   }),
   s({
     trig = "expectlen",
     name = "Expect(A).To(HaveLen(B))",
   },{
-    t("Expect("), i(1), t(").To(HaveLen("), i(2, "0"), t("))")
+    t("Expect("), i(1), t(").To(HaveLen("), i(2, "0"), t("))"),
+  }),
+  s({
+    trig = "expectnil",
+    name = "Expect(A).To(BeNil())",
+  },{
+    t("Expect("), i(1), t(").To(BeNil())"),
+  }),
+  s({
+    trig = "eventually",
+    name = "Eventually block for ginkgo",
+  },{
+		t({"Eventually(func(g Gomega) {","\t"}),
+		i(1, "g.Expect(true).To(Equal(true))"),
+		t({"", "}).Should(Succeed())",""}),
   }),
   s({
     trig = "expectconsistof",
@@ -92,6 +106,12 @@ return {
     t("Expect("), i(1), t({").To(ConsistOf(","\t"}),
     i(2),
     t({"","))"}),
+  }),
+  s({
+    trig = "betemporally",
+    name = "BeTemporally(\"~\", value, time.Millisecond),",
+  },{
+    t("BeTemporally(\"~\", "), i(1, "value"), t(", time.Millisecond)"),
   }),
   s({
     trig = "desc",
