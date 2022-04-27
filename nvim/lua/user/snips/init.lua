@@ -9,6 +9,17 @@ M.snake_case = function (word)
   return string.lower(string.gsub(word, "(%l)(%u)", "%1_%2"))
 end
 
+M.camel_split = function (text)
+  local words = {}
+  for word in string.gmatch(text, "(%u%l*)") do
+    table.insert(words, word)
+  end
+  if #words == 0 then
+    return {text}
+  end
+  return words
+end
+
 -- returns a choice node with all options as text nodes from opts and optional extra_nodes appended as last choices
 -- useful for choices_from_list(1, {"opt1", "opt2"}, i(nil, "otherValueYouCanEdit"))
 M.choices_from_list = function (position, opts, extra_nodes)

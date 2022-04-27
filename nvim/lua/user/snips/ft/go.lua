@@ -3,8 +3,8 @@ local extras = require "luasnip.extras"
 
 local shared = require "user.snips"
 local snake_case = shared.snake_case
+local camel_split = shared.camel_split
 local choices_from_list = shared.choices_from_list
-local ends_with = shared.ends_with
 
 local s = ls.s
 local sn = ls.snippet_node
@@ -167,12 +167,13 @@ return {
       local values = get_struct_declarations()
       local choices = {}
       for _, v in pairs(values) do
-        local p = "p"
-        if ends_with(v, "Handler") then
-          p = "h"
-        elseif ends_with(v, "Server") then
-          p = "s"
-        end
+        -- get last word of a camelCased name (words[#words])
+        -- get the first character of this word (string.sub(word,(1,1))
+        -- lowercase it
+        -- ThisAmazingHandler => h
+        -- SomeInternalServer => s
+        local words = camel_split(v)
+        local p = string.lower( string.sub(words[#words], 1, 1))
         table.insert(choices, t(p.." *"..v))
       end
       table.insert(choices, i(nil, "p OtherReceiver"))
