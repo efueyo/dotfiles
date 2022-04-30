@@ -19,7 +19,7 @@ return {
     trig = "consolevarjson",
     name = "console.log('a', JSON.stringify(a, null, 2))",
   },{
-    t("console.log(\""), rep(1), t("\", JSON.stringify("), i(1, "variable"), t(", null, 2))"),
+    t("console.log('"), rep(1), t("', JSON.stringify("), i(1, "variable"), t(", null, 2))"),
   }),
   s({
     trig = "if",
@@ -41,7 +41,7 @@ return {
     trig = "describe",
     name = "describe(a, () => {})",
   },{
-    t("describe(\""), i(1), t({"\", () => {", "\t"}),
+    t("describe('"), i(1), t({"', () => {", "\t"}),
     i(2),
     t({"","})"}),
   }),
@@ -49,7 +49,7 @@ return {
     trig = "test",
     name = "test(a, () => {})",
   },{
-    t("test(\""), i(1), t({"\", () => {", "\t"}),
+    t("test('"), i(1), t({"', () => {", "\t"}),
     i(2),
     t({"","})"}),
   }),
