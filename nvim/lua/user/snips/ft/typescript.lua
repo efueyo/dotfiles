@@ -5,6 +5,7 @@ local extras = require "luasnip.extras"
 local s = ls.s
 local t = ls.text_node
 local i = ls.insert_node
+local c = ls.choice_node
 local rep = extras.rep
 
 
@@ -46,11 +47,11 @@ return {
     t({"","})"}),
   }),
   s({
-    trig = "test",
-    name = "test(a, () => {})",
+    trig = "it",
+    name = "it(a, () => {})",
   },{
-    t("test('"), i(1), t({"', () => {", "\t"}),
-    i(2),
+    t("it('"), i(1), t("', "), c(2,{ t(""), t("async ")}), t({"() => {", "\t"}),
+    i(3),
     t({"","})"}),
   }),
   s({
