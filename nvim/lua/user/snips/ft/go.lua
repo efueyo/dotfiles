@@ -1,6 +1,8 @@
 local ls = require"luasnip"
 local extras = require "luasnip.extras"
 
+local ts_funcs = require"user.treesitter.go"
+
 local shared = require "user.snips"
 local snake_case = shared.snake_case
 local camel_split = shared.camel_split
@@ -15,63 +17,12 @@ local c = ls.choice_node
 local f = ls.function_node
 local rep = extras.rep
 
-
-
-local q = require'vim.treesitter.query'
-
-local get_ts_root = function ()
-  local bufnr = 0 -- 0 means current buffer
-  local language_tree = vim.treesitter.get_parser(bufnr)
-  local syntax_tree = language_tree:parse()
-  local root = syntax_tree[1]:root()
-  return bufnr, root
-end
-
-local get_interface_declarations = function ()
-  local bufnr, root = get_ts_root()
-  local interface_ts_query = vim.treesitter.parse_query('go', [[
-  (type_declaration
-    (type_spec
-      name: (type_identifier) @interface-name
-      type: (interface_type)
-    )
-  )
-  ]])
-
-  local res = {}
-
-  for id, captures, metadata in interface_ts_query:iter_matches(root, bufnr) do
-      table.insert(res, q.get_node_text(captures[1], bufnr))
-  end
-  return res
-end
-
-local get_struct_declarations = function ()
-  local bufnr, root = get_ts_root()
-  local struct_ts_query = vim.treesitter.parse_query('go', [[
-  (type_declaration
-    (type_spec
-      name: (type_identifier) @struct-name
-      type: (struct_type)
-    )
-  )
-  ]])
-
-  local res = {}
-
-  for id, captures, metadata in struct_ts_query:iter_matches(root, bufnr) do
-      table.insert(res, q.get_node_text(captures[1], bufnr))
-  end
-  return res
-end
-
-
 return {
   s({
     trig = "expecterror",
     name = "Expect(err).To(HaveOccurred())",
   },{
-    t("Expect(err)."), c(1, {t("ToNot"), t("To")}), t("(HaveOccurred())"),
+    t("Expect(err)."), c(1, {t("ToNot"), t("To")}), t({"(HaveOccurred())",""}),
   }),
   s({
     trig = "expectequal",
@@ -184,7 +135,7 @@ return {
   },{
     t("func ("),
     d(1, function ()
-      local values = get_struct_declarations()
+      local values = ts_funcs.find_structs()
       local choices = {}
       for _, v in pairs(values) do
         -- get last word of a camelCased name (words[#words])
@@ -238,7 +189,7 @@ return {
     end, {1}),
     t("_mock.go . "),
     d(1, function ()
-      local values = get_interface_declarations()
+      local values = ts_funcs.find_interfaces()
       return sn(nil, {
         choices_from_list(1, values, {i(nil, "OtherInterface")})
       })
