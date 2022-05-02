@@ -48,7 +48,7 @@ M.find_interfaces = function ()
 end
 
 
--- find_structs_info returns a table where each key is a struct name and each element has the form:
+-- find_structs_info returns a table where each element has the form:
 --
 -- {
 --   name = "StructName"
@@ -83,15 +83,19 @@ M.find_structs_info = function ()
     )
   ]])
   local bufnr, root = get_ts_root()
-  local res = {}
+  local structs = {}
   for _, captures, _ in query:iter_matches(root, bufnr) do
     local struct_name = q.get_node_text(captures[1], bufnr)
     local field_name = q.get_node_text(captures[2], bufnr)
     local field_type = q.get_node_text(captures[3], bufnr)
-    if res[struct_name] == nil then
-      res[struct_name] = { name = struct_name, fields = {}}
+    if structs[struct_name] == nil then
+      structs[struct_name] = { name = struct_name, fields = {}}
     end
-    table.insert(res[struct_name].fields, {fname= field_name, ftype = field_type})
+    table.insert(structs[struct_name].fields, {fname= field_name, ftype = field_type})
+  end
+  local res = {}
+  for _, struct_info in pairs(structs) do
+    table.insert(res, struct_info)
   end
   return res
 end

@@ -7,6 +7,7 @@ local shared = require "user.snips"
 local snake_case = shared.snake_case
 local camel_split = shared.camel_split
 local choices_from_list = shared.choices_from_list
+local lowercase_first = shared.lowercase_first
 
 local s = ls.s
 local sn = ls.snippet_node
@@ -96,6 +97,42 @@ return {
     t({"","}",""}),
   }),
   s({
+    trig = "newstruct",
+    name = "struct function initializer",
+  },{
+    d(1, function ()
+      local nodes_for_struct = function (struct_info)
+        local struct_name = struct_info.name
+        local arguments_table = {}
+        for _, field in pairs(struct_info.fields) do
+          table.insert(arguments_table, lowercase_first(field.fname) .. " " .. field.ftype)
+        end
+        local arguments = table.concat(arguments_table, ", ")
+
+        local nodes = {
+         t("func New"), t(struct_name), t("("), t(arguments), t(") "), t(struct_name), t({" {","\t"}),
+         t("res := "), t(struct_name), t({"{", "\t"}),
+        }
+        for _, field in pairs(struct_info.fields) do
+          local field_assignation = "\t" .. field.fname .. ": " .. lowercase_first(field.fname) ..","
+          table.insert(nodes, t({field_assignation, "\t"}))
+        end
+        table.insert(nodes, t({"}", "\treturn res", "}", ""}))
+        -- this last insert node is necessary!
+        -- we need something to jump and here there are only text nodes
+        table.insert(nodes, i(1))
+        return nodes
+      end
+      local choices = {}
+      for _, struct_info in pairs(ts_funcs.find_structs_info()) do
+        table.insert(choices, sn(nil, nodes_for_struct(struct_info)))
+      end
+      return sn(nil, {
+        c(1, choices),
+      })
+    end),
+  }),
+  s({
     trig = "typeinterface",
     name = "type A interface {}",
   },{
@@ -144,7 +181,7 @@ return {
         -- ThisAmazingHandler => h
         -- SomeInternalServer => s
         local words = camel_split(v)
-        local p = string.lower( string.sub(words[#words], 1, 1))
+        local p = string.lower(string.sub(words[#words], 1, 1))
         table.insert(choices, t(p.." *"..v))
       end
       table.insert(choices, i(nil, "p OtherReceiver"))

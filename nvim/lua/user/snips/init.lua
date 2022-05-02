@@ -20,6 +20,12 @@ M.camel_split = function (text)
   return words
 end
 
+M.lowercase_first = function (text)
+  return string.gsub(text, "^.", function (s)
+    return string.lower(s)
+  end)
+end
+
 -- returns a choice node with all options as text nodes from opts and optional extra_nodes appended as last choices
 -- useful for choices_from_list(1, {"opt1", "opt2"}, i(nil, "otherValueYouCanEdit"))
 M.choices_from_list = function (position, opts, extra_nodes)
