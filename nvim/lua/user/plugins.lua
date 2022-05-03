@@ -77,7 +77,7 @@ return packer.startup(function(use)
 
   use { 'folke/tokyonight.nvim', branch = 'main' }
 
-  use { 'fatih/vim-go',  run = ':GoUpdateBinaries' }
+  use 'ray-x/go.nvim'
   use 'airblade/vim-gitgutter'
 
   use 'hashivim/vim-terraform'
