@@ -18,6 +18,16 @@ local c = ls.choice_node
 local f = ls.function_node
 local rep = extras.rep
 
+local receiver_name = function (v)
+  -- get last word of a camelCased name (words[#words])
+  -- get the first character of this word (string.sub(word,(1,1))
+  -- lowercase it
+  -- ThisAmazingHandler => h
+  -- SomeInternalServer => s
+  local words = camel_split(v)
+  local p = string.lower(string.sub(words[#words], 1, 1))
+  return p
+end
 return {
   s({
     trig = "expecterror",
@@ -175,13 +185,7 @@ return {
       local values = ts_funcs.find_structs()
       local choices = {}
       for _, v in pairs(values) do
-        -- get last word of a camelCased name (words[#words])
-        -- get the first character of this word (string.sub(word,(1,1))
-        -- lowercase it
-        -- ThisAmazingHandler => h
-        -- SomeInternalServer => s
-        local words = camel_split(v)
-        local p = string.lower(string.sub(words[#words], 1, 1))
+        local p = receiver_name(v)
         table.insert(choices, t(p.." *"..v))
       end
       table.insert(choices, i(nil, "p OtherReceiver"))
@@ -201,6 +205,42 @@ return {
     t({"func () {", ""}),
     t("\t"),i(1),
     t({"","}"}),
+  }),
+  s({
+    trig = "funcaccessor",
+    name = "func (x X) ID {return ID} to access fields",
+  },{
+    d(1, function ()
+      local accessor_func = function (sname, fname, ftype)
+        local p = receiver_name(sname)
+        -- uppercase first character
+        local func_name = string.gsub(fname, "^.", string.upper)
+        if fname == "id" then
+          func_name = "ID"
+        end
+
+        local nodes = {
+          t({"func (" .. p .. " ".. sname .. ") " .. func_name .. "() " .. ftype .. " {", "\t"}),
+          t({"return " .. p .. "." .. fname, "}", ""}),
+        }
+        -- this last insert node is necessary!
+        -- we need something to jump and here there are only text nodes
+        table.insert(nodes, i(1))
+        return nodes
+      end
+      local choices = {}
+      for _, struct_info in pairs(ts_funcs.find_structs_info()) do
+        for _, field in pairs(struct_info.fields) do
+          -- only private fields (first letter is lowercase)
+          if string.find(field.fname, "^%l") then
+            table.insert(choices, sn(nil, accessor_func(struct_info.name, field.fname, field.ftype)))
+          end
+        end
+      end
+      return sn(nil, {
+        c(1, choices),
+      })
+    end),
   }),
   s({
     trig = "func",
