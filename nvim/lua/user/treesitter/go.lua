@@ -1,5 +1,7 @@
 local q = require'vim.treesitter.query'
 local parse_query = vim.treesitter.parse_query
+local ts_locals = require "nvim-treesitter.locals"
+local ts_utils = require "nvim-treesitter.ts_utils"
 
 local lang = 'go'
 
@@ -45,6 +47,81 @@ M.find_interfaces = function ()
     table.insert(res, q.get_node_text(captures[1], bufnr))
   end
   return res
+end
+
+
+
+local default_value_from_type = function (t)
+  if t == "int" then
+    return "0"
+  elseif t == "error" then
+    return "err"
+  elseif t == "bool" then
+    return "false"
+  elseif t == "string" then
+    return '""'
+  elseif string.find(t, "*", 1, true) then --starts with * => a pointer
+    return "nil"
+  elseif string.find(t, "[", 1, true) then --starts with [ => a slice
+    return "nil"
+  end
+  return t .. "{}" -- an empty struct
+end
+
+-- ret_values returns a list of initialized values for the function where the cursor is
+M.ret_values = function ()
+  local query = parse_query(lang, [[
+   [
+    (method_declaration result: (
+     [
+      (parameter_list
+       (parameter_declaration
+        type: (_) @res
+       )
+      )
+      [(type_identifier) (qualified_type) (pointer_type)(slice_type)(map_type)] @res
+    ]
+   ))
+   (function_declaration result: (
+     [
+      (parameter_list
+       (parameter_declaration
+        type: (_) @res
+       )
+      )
+      [(type_identifier) (qualified_type) (pointer_type)(slice_type)(map_type)] @res
+    ]
+   ))
+   (func_literal result: (
+     [
+      (parameter_list
+       (parameter_declaration
+        type: (_) @res
+       )
+      )
+      [(type_identifier) (qualified_type) (pointer_type)(slice_type)(map_type)] @res
+    ]
+   ))
+   ]
+  ]])
+  local cursor_node = ts_utils.get_node_at_cursor()
+  local scope = ts_locals.get_scope_tree(cursor_node, 0)
+  local function_node
+  for _, v in ipairs(scope) do
+    if v:type() == "function_declaration" or v:type() == "method_declaration" or v:type() == "func_literal" then
+      function_node = v
+      break
+    end
+  end
+  local res = {}
+  if function_node == nil then
+    return res
+  end
+  for _, node in query:iter_captures(function_node, 0) do
+    table.insert(res, default_value_from_type(q.get_node_text(node, 0)))
+  end
+  return res
+
 end
 
 

@@ -177,6 +177,17 @@ return {
     t({"", "}"}),
   }),
   s({
+    trig = "iferr",
+    name = "if err != nil { return values }",
+  },{
+   t({"if err != nil {", "\t"}),
+   f(function ()
+     local ret_values = ts_funcs.ret_values()
+     return {"return " .. table.concat(ret_values, ", "), ""}
+   end),
+   t({"}", ""}),
+  }),
+  s({
     trig = "funcm",
     name = "Func method",
   },{
