@@ -218,7 +218,7 @@ return {
     t({"","}"}),
   }),
   s({
-    trig = "funcaccessor",
+    trig = "accessor",
     name = "func (x X) ID {return ID} to access fields",
   },{
     d(1, function ()
@@ -231,7 +231,7 @@ return {
         end
 
         local nodes = {
-          t({"func (" .. p .. " ".. sname .. ") " .. func_name .. "() " .. ftype .. " {", "\t"}),
+          t({"", "func (" .. p .. " ".. sname .. ") " .. func_name .. "() " .. ftype .. " {", "\t"}),
           t({"return " .. p .. "." .. fname, "}", ""}),
         }
         -- this last insert node is necessary!
@@ -288,6 +288,14 @@ return {
     name = "Block of var declaration",
   },{
     t({"var (", "\t"}),
+    i(1),
+    t({"",")",""}),
+  }),
+  s({
+    trig = "consts",
+    name = "Block of const declaration",
+  },{
+    t({"const (", "\t"}),
     i(1),
     t({"",")",""}),
   }),
