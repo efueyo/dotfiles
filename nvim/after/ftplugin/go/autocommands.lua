@@ -4,7 +4,7 @@ vim.api.nvim_create_autocmd("FileType", {
   command = "setlocal noexpandtab shiftwidth=8 tabstop=8",
   group = group,
 })
-vim.api.nvim_create_autocmd("BufWritePost", {
+vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*.go",
   callback = function ()
    require('go.format').goimport()
