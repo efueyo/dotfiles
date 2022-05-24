@@ -32,7 +32,10 @@ local options = {
   wildmode="longest,list,full",
   wildmenu=true,
 
-  cursorline = true
+  cursorline = true,
+
+  laststatus=3,
+  winbar="%=%m %f %n", -- aligned to the right + isModified + filename + buf number
 }
 
 for k, v in pairs(options) do
