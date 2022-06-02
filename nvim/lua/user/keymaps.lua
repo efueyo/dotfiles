@@ -31,6 +31,9 @@ keymap("n", "J", "mzJ`z")
 keymap("n", "<leader>'", ":noh<CR>")
 -- Quicker save
 keymap("n", "<leader>w", ":w<CR>")
+
+keymap("n", "<leader>et", ":e ~/notes/TODO.md<CR>")
+
 -- Insert --
 -- delete a single line when in insert mode
 keymap("i", "<c-d>", "<esc>ddi")
