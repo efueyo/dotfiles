@@ -81,6 +81,18 @@ return packer.startup(function(use)
   use 'ray-x/go.nvim'
   use 'airblade/vim-gitgutter'
 
+
+  use {
+    'mfussenegger/nvim-dap',
+    config = function()
+      require("user.dap").setup()
+    end,
+  }
+  use 'leoluz/nvim-dap-go'
+  use 'rcarriga/nvim-dap-ui'
+  use 'theHamsta/nvim-dap-virtual-text'
+  use 'nvim-telescope/telescope-dap.nvim'
+
   use 'hashivim/vim-terraform'
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
