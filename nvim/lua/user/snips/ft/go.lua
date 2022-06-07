@@ -82,10 +82,10 @@ return {
     t("Describe(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
   }),
   s({
-    trig = "it",
-    name = "It(\"\", func () {...})",
+    trig = "itshould",
+    name = "It(\"should\", func () {...})",
   },{
-    t("It(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
+    t("It(\"should "), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
   }),
   s({
     trig = "impginkgo",
@@ -298,5 +298,10 @@ return {
     t({"const (", "\t"}),
     i(1),
     t({"",")",""}),
+  }),
+  s({
+    trig = "returnnil",
+  },{
+    t("return nil"),
   }),
 }
