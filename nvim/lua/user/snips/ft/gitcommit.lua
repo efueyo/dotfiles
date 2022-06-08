@@ -33,4 +33,5 @@ return {
       return "#"..tag
     end)
   }),
+  s("noci", {t("[no ci]")}),
 }
