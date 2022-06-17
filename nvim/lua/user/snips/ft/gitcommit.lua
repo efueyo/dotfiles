@@ -34,4 +34,5 @@ return {
     end)
   }),
   s("noci", {t("[no ci]")}),
+  s("wip", {t("#WIP")}),
 }

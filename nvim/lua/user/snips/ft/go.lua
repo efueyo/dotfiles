@@ -76,7 +76,7 @@ return {
     t("BeTemporally(\"~\", "), i(1, "value"), t(", time.Millisecond)"),
   }),
   s({
-    trig = "desc",
+    trig = "describe",
     name = "Describe(\"\", func () {...})",
   },{
     t("Describe(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
