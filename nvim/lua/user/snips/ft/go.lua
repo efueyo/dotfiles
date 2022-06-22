@@ -111,7 +111,7 @@ return {
     name = "struct function initializer",
   },{
     d(1, function ()
-      local nodes_for_struct = function (struct_info)
+      local nodes_for_struct = function (struct_info, return_pointer_value)
         local struct_name = struct_info.name
         local arguments_table = {}
         for _, field in pairs(struct_info.fields) do
@@ -123,6 +123,12 @@ return {
          t("func New"), t(struct_name), t("("), t(arguments), t(") "), t(struct_name), t({" {","\t"}),
          t("res := "), t(struct_name), t({"{", "\t"}),
         }
+        if return_pointer_value then
+          nodes = {
+           t("func New"), t(struct_name), t("("), t(arguments), t(") *"), t(struct_name), t({" {","\t"}),
+           t("res := &"), t(struct_name), t({"{", "\t"}),
+          }
+        end
         for _, field in pairs(struct_info.fields) do
           local field_assignation = "\t" .. field.fname .. ": " .. lowercase_first(field.fname) ..","
           table.insert(nodes, t({field_assignation, "\t"}))
@@ -135,7 +141,8 @@ return {
       end
       local choices = {}
       for _, struct_info in pairs(ts_funcs.find_structs_info()) do
-        table.insert(choices, sn(nil, nodes_for_struct(struct_info)))
+        table.insert(choices, sn(nil, nodes_for_struct(struct_info, false)))
+        table.insert(choices, sn(nil, nodes_for_struct(struct_info, true)))
       end
       return sn(nil, {
         c(1, choices),
@@ -198,7 +205,8 @@ return {
       local choices = {}
       for _, v in pairs(values) do
         local p = receiver_name(v)
-        table.insert(choices, t(p.." *"..v))
+        table.insert(choices, t(p.." *"..v)) -- with pointer receiver
+        table.insert(choices, t(p.." "..v)) -- without pointer receiver
       end
       table.insert(choices, i(nil, "p OtherReceiver"))
 
