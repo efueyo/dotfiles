@@ -70,6 +70,15 @@ return {
     t({"","))"}),
   }),
   s({
+    trig = "selecttimeout",
+    name = "select { cases with timeout}",
+  },{
+    t({"select {", ""}),
+    t("case "), i(1, "<- syncChan"), t({":", ""}),
+    t({"case <- time.After(1 * time.Second):", "\tFail(\"timeout\")"}),
+    t({"", "}"}),
+  }),
+  s({
     trig = "betemporally",
     name = "BeTemporally(\"~\", value, time.Millisecond),",
   },{
