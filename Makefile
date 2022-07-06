@@ -18,4 +18,6 @@ install:
 	ln -s $(CURDIR)/.rgignore ~/.rgignore || true
 	echo "Linking bin/tat to ~/bin/tat"
 	ln -s $(CURDIR)/bin/tat ~/bin/tat || true
+	echo "Linking bin/list_instances to ~/bin/list_instances"
+	ln -s $(CURDIR)/bin/list_instances ~/bin/list_instances || true
 

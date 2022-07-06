@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+export AWS_PROFILE=mfa
+
+_select_region() {
+  echo
+  echo "Select the AWS region: "
+  export AWS_REGION="eu-west-1" #a region must be configured to describe-regions
+  region=$(aws ec2 describe-regions | jq -r '.Regions[].RegionName' | fzf --reverse --height 40% )
+  export AWS_REGION=$region
+}
+
+_list_instances() {
+  aws ec2 describe-instances \
+    --query 'Reservations[].Instances[].[InstanceId,PublicIpAddress,PrivateIpAddress,Tags[?Key==`Name`]| [0].Value]' \
+    --output table
+}
+
+_select_region
+_list_instances
+
