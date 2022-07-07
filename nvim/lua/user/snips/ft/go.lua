@@ -322,4 +322,10 @@ return {
   },{
     t("return nil"),
   }),
+  s({
+    trig = "chanstruct",
+    name = "chan struct{}",
+  },{
+    t("chan struct{}")
+  }),
 }
