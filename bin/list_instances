@@ -14,7 +14,7 @@ _select_region() {
 
 _list_instances() {
   aws ec2 describe-instances \
-    --query 'Reservations[].Instances[].[InstanceId,PublicIpAddress,PrivateIpAddress,Tags[?Key==`Name`]| [0].Value]' \
+    --query 'Reservations[].Instances[].[InstanceId,PublicDnsName,PrivateIpAddress,Tags[?Key==`Name`]| [0].Value]' \
     --output table
 }
 
