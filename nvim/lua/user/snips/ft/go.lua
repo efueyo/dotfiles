@@ -91,6 +91,12 @@ return {
     t("Describe(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
   }),
   s({
+    trig = "context",
+    name = "Context(\"\", func () {...})",
+  },{
+    t("Context(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
+  }),
+  s({
     trig = "itshould",
     name = "It(\"should\", func () {...})",
   },{
