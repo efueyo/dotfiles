@@ -130,14 +130,24 @@ return {
       local nodes_for_struct = function (struct_info, return_pointer_value)
         local struct_name = struct_info.name
         local nodes = {
-         t("func New"), t(struct_name), t({"(","\t"}),
+         t("func New"), t(struct_name), t("("),
         }
+        local arguments = {}
         for _, field in pairs(struct_info.fields) do
-          local argument = lowercase_first(field.fname) .. " " .. field.ftype ..","
-          table.insert(nodes, t({argument, "\t"}))
+          local argument = lowercase_first(field.fname) .. " " .. field.ftype
+          table.insert(arguments, argument)
+        end
+        -- more than 3 arugments, split them in several rows
+        if #arguments > 3 then
+          for _, argument in pairs(arguments) do
+            table.insert(nodes, t({"", "\t"..argument..","}))
+          end
+          table.insert(nodes, t({"",") "}))
+        else
+          table.insert(nodes, t(table.concat(arguments, ", ")))
+          table.insert(nodes, t(") "))
         end
 
-        table.insert(nodes, t(") "))
         if return_pointer_value then
           table.insert(nodes, t("*"))
         end
