@@ -64,6 +64,8 @@ local default_value_from_type = function (t)
     return "nil"
   elseif string.find(t, "[", 1, true) then --starts with [ => a slice
     return "nil"
+  elseif string.find(t, "<-", 1, true) then --starts with <- => a channel
+    return "nil"
   end
   return t .. "{}" -- an empty struct
 end
