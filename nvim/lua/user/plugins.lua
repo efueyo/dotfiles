@@ -45,7 +45,6 @@ return packer.startup(function(use)
 
   -- GIT
   use 'tpope/vim-fugitive'
-  use 'rbong/vim-flog'
 
   use 'neovim/nvim-lspconfig'
   use 'williamboman/nvim-lsp-installer'
