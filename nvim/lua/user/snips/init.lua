@@ -26,6 +26,11 @@ M.lowercase_first = function (text)
   end)
 end
 
+-- add all elements from table b at the end of table a
+M.append_to_list = function (a,b)
+  return table.move(b, 1 ,#b, #a+1, a)
+end
+
 -- returns a choice node with all options as text nodes from opts and optional extra_nodes appended as last choices
 -- useful for choices_from_list(1, {"opt1", "opt2"}, i(nil, "otherValueYouCanEdit"))
 M.choices_from_list = function (position, opts, extra_nodes)

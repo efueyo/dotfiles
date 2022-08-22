@@ -8,6 +8,7 @@ local snake_case = shared.snake_case
 local camel_split = shared.camel_split
 local choices_from_list = shared.choices_from_list
 local lowercase_first = shared.lowercase_first
+local append_to_list = shared.append_to_list
 
 local s = ls.s
 local sn = ls.snippet_node
@@ -128,22 +129,27 @@ return {
     d(1, function ()
       local nodes_for_struct = function (struct_info, return_pointer_value)
         local struct_name = struct_info.name
-        local arguments_table = {}
-        for _, field in pairs(struct_info.fields) do
-          table.insert(arguments_table, lowercase_first(field.fname) .. " " .. field.ftype)
-        end
-        local arguments = table.concat(arguments_table, ", ")
-
         local nodes = {
-         t("func New"), t(struct_name), t("("), t(arguments), t(") "), t(struct_name), t({" {","\t"}),
-         t("res := "), t(struct_name), t({"{", "\t"}),
+         t("func New"), t(struct_name), t({"(","\t"}),
         }
-        if return_pointer_value then
-          nodes = {
-           t("func New"), t(struct_name), t("("), t(arguments), t(") *"), t(struct_name), t({" {","\t"}),
-           t("res := &"), t(struct_name), t({"{", "\t"}),
-          }
+        for _, field in pairs(struct_info.fields) do
+          local argument = lowercase_first(field.fname) .. " " .. field.ftype ..","
+          table.insert(nodes, t({argument, "\t"}))
         end
+
+        table.insert(nodes, t(") "))
+        if return_pointer_value then
+          table.insert(nodes, t("*"))
+        end
+        append_to_list(nodes, {
+          t(struct_name), t({" {","\t"}),
+          t("res := "),
+        })
+
+        if return_pointer_value then
+          table.insert(nodes, t("&"))
+        end
+        append_to_list(nodes, { t(struct_name), t({"{", "\t"}), })
         for _, field in pairs(struct_info.fields) do
           local field_assignation = "\t" .. field.fname .. ": " .. lowercase_first(field.fname) ..","
           table.insert(nodes, t({field_assignation, "\t"}))
