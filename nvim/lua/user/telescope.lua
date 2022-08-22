@@ -4,6 +4,7 @@ end
 
 local telescope = require('telescope')
 local actions = require('telescope.actions')
+local builtin = require('telescope.builtin')
 
 telescope.setup{
   defaults = {
@@ -32,7 +33,7 @@ telescope.load_extension('ui-select')
 
 local M = {}
 M.git_branches = function()
-	require("telescope.builtin").git_branches({
+	builtin.git_branches({
     layout_config = {
       height = 0.6,
     },
@@ -42,6 +43,15 @@ M.git_branches = function()
 			return true
 		end,
 	})
+end
+M.buffers = function ()
+	builtin.buffers({
+    attach_mappings = function (_, map)
+      map("i", "<c-d>", actions.delete_buffer)
+      map("n", "<c-d>", actions.delete_buffer)
+      return true
+    end
+  })
 end
 
 
