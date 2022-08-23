@@ -61,6 +61,12 @@ return {
     t("expect("), i(1), t(").toEqual("), i(2), t(")"),
   }),
   s({
+    trig = "expectlen",
+    name = "expect(A).toHaveLength(B)",
+  },{
+    t("expect("), i(1), t(").toHaveLength("), i(2,"0"), t(")"),
+  }),
+  s({
     trig = "funca",
     name = "()=>{}",
   },{
