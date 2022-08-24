@@ -12,29 +12,25 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   group = group,
 })
 
-local wire_output_buf = vim.api.nvim_create_buf(false, true)
--- execute wire on wire.go save
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "wire.go",
   callback = function ()
-    local buf = wire_output_buf
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "wire output:" })
-    local log_data = function (_, data)
+    local log_data = function (data, level)
       if data then
-        vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
+        for _, m in ipairs(data) do
+          if #m > 0 then
+            vim.api.nvim_notify(m, level, {})
+          end
+        end
       end
     end
-    vim.cmd('botright split')
-    local win = vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_buf(win, buf)
+    log_data({ "wire output:" }, vim.log.levels.INFO)
     local cmd = "wire " .. vim.fn.expand("<amatch>:h")
     vim.fn.jobstart(cmd, {
       stdout_buffered = true,
-      on_stdout = log_data,
-      on_stderr = log_data,
-      on_exit = function ()
-        vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"wire done", "#######"})
-      end
+      on_stdout = function (_, data) log_data(data, vim.log.levels.INFO) end,
+      on_stderr = function (_, data) log_data(data, vim.log.levels.ERROR) end,
+      on_exit = function () log_data({"wire done", "#######"}, vim.log.levels.INFO) end,
     })
   end,
   group = group,
