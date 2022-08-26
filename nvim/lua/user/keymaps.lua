@@ -34,6 +34,7 @@ keymap("n", "<leader>w", ":w<CR>")
 keymap("n", "<leader>ww", ":wa<CR>")
 
 keymap("n", "<leader>et", ":e ~/notes/TODO.md<CR>")
+keymap("n", "ñ", "~")
 
 -- Insert --
 -- delete a single line when in insert mode
