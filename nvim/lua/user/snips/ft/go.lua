@@ -98,6 +98,12 @@ return {
     t("Context(\""), i(1), t({"\", func() {", "\t"}), i(2), t({"","})"})
   }),
   s({
+    trig = "beforeeach",
+    name = "BeforeEach(func () {...})",
+  },{
+    t({"BeforeEach(func() {", "\t"}), i(1), t({"","})"})
+  }),
+  s({
     trig = "itshould",
     name = "It(\"should\", func () {...})",
   },{
