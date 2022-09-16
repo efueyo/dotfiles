@@ -19,6 +19,7 @@ end
 return {
   s("feat", {t("feat("), i(1), t("): "), i(2)}),
   s("fix", {t("fix("), i(1), t("): "), i(2)}),
+  s("refactor", {t("refactor("), i(1), t("): "), i(2)}),
   s("chore", {t("chore("), i(1), t("): "), i(2)}),
   s("hack", {t("hack("), i(1), t("): "), i(2)}),
   s("branchtag", {
