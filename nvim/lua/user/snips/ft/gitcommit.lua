@@ -22,6 +22,8 @@ return {
   s("refactor", {t("refactor("), i(1), t("): "), i(2)}),
   s("chore", {t("chore("), i(1), t("): "), i(2)}),
   s("hack", {t("hack("), i(1), t("): "), i(2)}),
+  s("test", {t("test("), i(1), t("): "), i(2)}),
+  s("docs", {t("docs("), i(1), t("): "), i(2)}),
   s("branchtag", {
     f(function ()
       local branch = capture_cmd("git branch --show-current")
