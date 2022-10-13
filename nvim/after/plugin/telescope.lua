@@ -13,6 +13,5 @@ vim.keymap.set("n", "<leader>fb", user_telescope.buffers)
 vim.keymap.set("n", "<leader>fh", builtin.help_tags)
 vim.keymap.set("n", "<leader>fr", function () return builtin.lsp_references(themes.get_dropdown({ layout_config = { width = 0.8 } })) end)
 vim.keymap.set("n", "<leader>fi", function () return builtin.lsp_implementations(themes.get_dropdown({ layout_config = { width = 0.8 } })) end)
-vim.keymap.set("n", "<leader>fts", builtin.treesitter)
 vim.keymap.set("n", "<leader>gc", user_telescope.git_branches)
 
