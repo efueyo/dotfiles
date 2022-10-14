@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -e
+
+export AWS_PROFILE=mfa
+
+_select_region() {
+  echo
+  echo "Select the AWS region: "
+  export AWS_REGION="eu-west-1" # a region must be configured to describe-regions
+  region=$(aws ec2 describe-regions | jq -r '.Regions[].RegionName' | fzf --reverse --height 40% )
+  export AWS_REGION=$region
+}
+
+_select_sec_group_id() {
+  echo
+  echo "Select the Sec Group: "
+  sg=$(aws ec2 describe-security-groups --query 'SecurityGroups[?Tags[?Key==`Name` && contains(Value,`bastion`)]]' | \
+    jq -r '.[] | "\(.GroupId) \(.GroupName)"' | fzf --reverse --height 40% )
+  sg_id=$(echo $sg | awk '{ print $1 }')
+  sg_name=$(echo $sg | awk '{ print $2 }')
+}
+
+_check_authoize_access() {
+  description="EF access on $(date '+%Y-%m-%d')"
+  public_ip_address=$(wget -qO- http://checkip.amazonaws.com)
+  port=22
+  echo "=> Allowing \"${public_ip_address}\" access to \"${sg_name} (${sg_id})\" on region \"${region}\" via port \"${port}\" with description \"${description}\""
+  while true; do
+    read -p "Is that information ok? [y/n]" yn
+    case $yn in
+      [yY] )
+        echo "Thank you!, adding the ingress rule to the security group.";
+        _authoize_access
+        break;;
+      [nN] )
+        echo "Skipping the operation. Bye :wave:"
+        break
+        ;;
+      * )
+        echo invalid response. Please type "y" or "n"
+        ;;
+    esac
+  done
+}
+_authoize_access() {
+  aws ec2 authorize-security-group-ingress \
+  --region $region \
+  --group-id $sg_id \
+  --ip-permissions "[{\"IpProtocol\": \"tcp\", \"FromPort\": ${port}, \"ToPort\": ${port}, \"IpRanges\": [{\"CidrIp\": \"${public_ip_address}/31\", \"Description\": \"${description}\"}]}]"
+}
+_select_region
+_select_sec_group_id
+_check_authoize_access
+
+
