@@ -1,6 +1,5 @@
 local q = require'vim.treesitter.query'
 local parse_query = vim.treesitter.parse_query
-local ts_locals = require "nvim-treesitter.locals"
 local ts_utils = require "nvim-treesitter.ts_utils"
 
 local lang = 'go'
@@ -106,14 +105,14 @@ M.ret_values = function ()
    ))
    ]
   ]])
-  local cursor_node = ts_utils.get_node_at_cursor()
-  local scope = ts_locals.get_scope_tree(cursor_node, 0)
+  local cur_node = ts_utils.get_node_at_cursor()
   local function_node
-  for _, v in ipairs(scope) do
-    if v:type() == "function_declaration" or v:type() == "method_declaration" or v:type() == "func_literal" then
-      function_node = v
+  while cur_node do
+    if cur_node:type() == "function_declaration" or cur_node:type() == "method_declaration" or cur_node:type() == "func_literal" then
+      function_node = cur_node
       break
     end
+    cur_node = cur_node:parent()
   end
   local res = {}
   if function_node == nil then
