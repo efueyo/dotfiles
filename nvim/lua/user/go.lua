@@ -1,4 +1,6 @@
 
-require('go').setup()
+require('go').setup({
+  test_runner = 'ginkgo',
+})
 
 
