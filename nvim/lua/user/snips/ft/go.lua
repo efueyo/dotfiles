@@ -214,6 +214,12 @@ return {
     t("map["), i(1), t("]"), i(2), t("{}"),
   }),
   s({
+    trig = "mapstringany",
+    name = "map[string]any{}",
+  },{
+    t("map[string]any{}")
+  }),
+  s({
     trig = "if",
     name = "if condition {}",
   },{
