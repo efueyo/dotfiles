@@ -74,7 +74,6 @@ return packer.startup(function(use)
       pcall(require('nvim-treesitter.install').update { with_sync = true })
     end,
   }
-  use { 'nvim-treesitter/nvim-treesitter-textobjects' }
   use { -- Additional text objects via treesitter
     'nvim-treesitter/nvim-treesitter-textobjects',
     after = 'nvim-treesitter',
@@ -113,6 +112,14 @@ return packer.startup(function(use)
   use 'nvim-telescope/telescope-dap.nvim'
 
   use 'hashivim/vim-terraform'
+
+  use {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end
+  }
+
   if is_bootstrap then
     require('packer').sync()
   end
