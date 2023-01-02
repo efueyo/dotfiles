@@ -1,17 +1,27 @@
-local status_ok, telescope = pcall(require, "telescope")
+local status_ok, _ = pcall(require, 'telescope')
 if not status_ok then
   return
 end
 
+
+local function nmap(keys, func, desc)
+  vim.keymap.set('n', keys, func, { desc = desc })
+end
+
 local builtin = require('telescope.builtin')
-local themes = require('telescope.themes')
 local user_telescope = require('user.telescope')
-vim.keymap.set("n", "<leader>ff", builtin.find_files)
-vim.keymap.set("n", "<leader>fg", builtin.git_files)
-vim.keymap.set("n", "<leader>fs", builtin.live_grep)
-vim.keymap.set("n", "<leader>fb", user_telescope.buffers)
-vim.keymap.set("n", "<leader>fh", builtin.help_tags)
-vim.keymap.set("n", "<leader>fr", function () return builtin.lsp_references(themes.get_dropdown({ layout_config = { width = 0.8 } })) end)
-vim.keymap.set("n", "<leader>fi", function () return builtin.lsp_implementations(themes.get_dropdown({ layout_config = { width = 0.8 } })) end)
-vim.keymap.set("n", "<leader>gc", user_telescope.git_branches)
+local themes = require('telescope.themes')
+nmap('<leader>ff', builtin.find_files, '[F]ind [F]ile')
+nmap('<leader>fg', builtin.git_files, '[F]ind [G]it files')
+nmap('<leader>?', builtin.oldfiles, '[?] Find recently opened files')
+nmap('<leader>fs', builtin.live_grep, '[F]ind [S]earch term')
+nmap('<leader>fb', user_telescope.buffers, '[F]ind [B]uffers')
+nmap('<leader>fh', builtin.help_tags, '[F]ind [H]elp')
+nmap('<leader>gc', user_telescope.git_branches, '[G]it [B]ranches')
+nmap('<leader>/', function()
+  builtin.current_buffer_fuzzy_find(themes.get_dropdown {
+    winblend = 10,
+    previewer = false,
+  })
+end, '[/] Fuzzily search in current buffer]')
 
