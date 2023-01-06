@@ -98,7 +98,7 @@ local servers = {
       buildFlags = {"-tags=wireinject"}
     },
   },
-  -- pyright = {},
+  pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
 
