@@ -38,6 +38,7 @@ require'nvim-treesitter.configs'.setup {
     "json",
     "yaml",
     "query",
+    "sql",
   },
   playground = {
     enable = true,
