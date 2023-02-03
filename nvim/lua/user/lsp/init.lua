@@ -101,6 +101,7 @@ local servers = {
   pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
+  terraformls = {},
 
   sumneko_lua = {
     Lua = {
