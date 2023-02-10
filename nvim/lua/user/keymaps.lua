@@ -27,6 +27,12 @@ keymap("n", "n", "nzzzv")
 keymap("n", "N", "Nzzzv")
 keymap("n", "J", "mzJ`z")
 
+-- smooth movements
+keymap("n", "<c-d>", "8j")
+keymap("n", "<c-u>", "8k")
+keymap("v", "<c-d>", "8j")
+keymap("v", "<c-u>", "8k")
+
 -- clear search highligh
 keymap("n", "<leader>'", ":noh<CR>")
 -- Quicker save
