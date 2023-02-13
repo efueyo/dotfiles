@@ -35,6 +35,7 @@ require'nvim-treesitter.configs'.setup {
     "dockerfile",
     "python",
     "tsx",
+    "graphql",
     "json",
     "yaml",
     "query",
