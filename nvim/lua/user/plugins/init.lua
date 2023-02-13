@@ -2,7 +2,6 @@ return {
 
   -- GIT
   'tpope/vim-fugitive',
-  'lewis6991/gitsigns.nvim',
 
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
