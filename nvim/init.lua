@@ -27,8 +27,9 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   group = group
 })
 require("user.options")
+-- make sure to load keymaps before the plugins (lazy) so leader is set before lazy
 require("user.keymaps")
-require("user.plugins")
+require("user.lazy")
 require("user.colorscheme")
 require("user.globals")
 require("user.telescope")
