@@ -139,5 +139,16 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
+require('mason-null-ls').setup({
+    ensure_installed = {
+      'prettier',
+    },
+    automatic_installation = false,
+    automatic_setup = true,
+})
+require('user.lsp.null-ls')
+
+require 'mason-null-ls'.setup_handlers()
+
 require('fidget').setup()
 

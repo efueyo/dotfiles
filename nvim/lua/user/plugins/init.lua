@@ -10,6 +10,9 @@ return {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
 
+      'jay-babu/mason-null-ls.nvim',
+      'jose-elias-alvarez/null-ls.nvim',
+
       -- Useful status updates for LSP
       'j-hui/fidget.nvim',
 
@@ -17,7 +20,6 @@ return {
       'folke/neodev.nvim',
     },
   },
-  'jose-elias-alvarez/null-ls.nvim',
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
