@@ -6,7 +6,7 @@ local f = ls.f
 return {
   s("currentdate",{
     f(function()
-      return os.date("%Y %b %d") .. " => "
+      return os.date("%Y %b %d")
     end)
   }),
 }
