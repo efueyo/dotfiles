@@ -28,10 +28,10 @@ keymap("n", "N", "Nzzzv")
 keymap("n", "J", "mzJ`z")
 
 -- smooth movements
-keymap("n", "<c-d>", "8j")
-keymap("n", "<c-u>", "8k")
-keymap("v", "<c-d>", "8j")
-keymap("v", "<c-u>", "8k")
+keymap("n", "<c-d>", "10j")
+keymap("n", "<c-u>", "10k")
+keymap("v", "<c-d>", "10j")
+keymap("v", "<c-u>", "10k")
 
 -- clear search highligh
 keymap("n", "<leader>'", ":noh<CR>")
