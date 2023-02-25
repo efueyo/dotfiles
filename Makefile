@@ -6,6 +6,9 @@ install:
 	ln -s -f $(CURDIR)/vim/.vimrc ~/.vimrc || true
 	echo "Linking vim/coc-settings.json to ~/.vim/coc-settings.json"
 	ln -s -f $(CURDIR)/vim/coc-settings.json ~/.vim/coc-settings.json || true
+	echo "------- tmux -------"
+	echo "Linking .tmux.conf to ~/.tmux.conf"
+	ln -s -f $(CURDIR)/tmux/.tmux.conf ~/.tmux.conf || true
 	echo "------- .gitignore -------"
 	echo "Linking .gitignore to ~/.gitignore"
 	ln -s -f $(CURDIR)/.gitignore ~/.gitignore || true
