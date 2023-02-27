@@ -1,6 +1,10 @@
-if status is-interactive
-    # Commands to run in interactive sessions can go here
-    # start starship
-    starship init fish | source
-end
+set fish_greeting ""
 
+set -gx EDITOR nvim
+
+# Go
+set -g GOPATH $HOME/go
+set -gx PATH $GOPATH/bin $PATH
+
+
+starship init fish | source
