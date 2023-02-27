@@ -1,7 +1,18 @@
 # dotfiles
 
+Some of the tools and configurations I use.
+
+- Kitty as the Terminal Emulator
+- Fish as the shell
+- Starship as the shell prompt
+- Tmux
+- Nvim
+
 Install with `make install`
 
+Dont forget to install the fonts with `./etc/fonts.sh`
+
+## old MacOS
 
 Other scripts to complete in Makefile:
 
