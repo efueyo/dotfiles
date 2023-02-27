@@ -6,6 +6,9 @@ install:
 	ln -snf $(CURDIR)/vim/.vimrc ~/.vimrc || true
 	echo "Linking vim/coc-settings.json to ~/.vim/coc-settings.json"
 	ln -snf $(CURDIR)/vim/coc-settings.json ~/.vim/coc-settings.json || true
+	echo "------- Kitty -------"
+	echo "Linking kitty to ~/.config/kitty"
+	ln -snf $(CURDIR)/kitty ~/.config/kitty || true
 	echo "------- Fish -------"
 	echo "Linking fish to ~/.config/fish"
 	ln -snf $(CURDIR)/fish ~/.config/fish || true
