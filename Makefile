@@ -9,9 +9,9 @@ install:
 	echo "------- Kitty -------"
 	echo "Linking kitty to ~/.config/kitty"
 	ln -snf $(CURDIR)/kitty ~/.config/kitty || true
-	echo "------- Fish -------"
-	echo "Linking fish to ~/.config/fish"
-	ln -snf $(CURDIR)/fish ~/.config/fish || true
+	echo "------- WezTerm -------"
+	echo "Linking wezterm to ~/.config/wezterm"
+	ln -snf $(CURDIR)/wezterm ~/.config/wezterm || true
 	echo "------- tmux -------"
 	echo "Linking .tmux.conf to ~/.tmux.conf"
 	ln -snf $(CURDIR)/tmux/.tmux.conf ~/.tmux.conf || true
