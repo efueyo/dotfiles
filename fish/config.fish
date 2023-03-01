@@ -6,5 +6,6 @@ set -gx EDITOR nvim
 set -g GOPATH $HOME/go
 set -gx PATH $GOPATH/bin $PATH
 
+direnv hook fish | source
 
 starship init fish | source

@@ -3,3 +3,4 @@
 .netrwhist
 **/*coverprofile*
 nvim/plugin/packer_compiled.lua
+fish/conf.d/private.fish
