@@ -7,6 +7,10 @@ set -g GOPATH $HOME/go
 set -gx PATH $GOPATH/bin $PATH
 set -gx PATH ~/bin $PATH
 
+if not test $TMUX
+  tat
+end
+
 direnv hook fish | source
 
 starship init fish | source
