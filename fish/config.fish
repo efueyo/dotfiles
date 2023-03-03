@@ -4,6 +4,7 @@ set -gx EDITOR nvim
 
 # Go
 set -g GOPATH $HOME/go
+set -gx PATH /usr/local/go/bin $PATH
 set -gx PATH $GOPATH/bin $PATH
 set -gx PATH ~/bin $PATH
 
