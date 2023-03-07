@@ -358,7 +358,7 @@ return {
     t({"",")",""}),
   }),
   s({
-    trig = "returnnil",
+    trig = "retnil",
   },{
     t("return nil"),
   }),
