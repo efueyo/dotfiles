@@ -15,3 +15,5 @@ end
 direnv hook fish | source
 
 starship init fish | source
+
+kubectl completion fish | source
