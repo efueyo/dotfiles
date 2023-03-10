@@ -15,6 +15,9 @@ install:
 	echo "------- tmux -------"
 	echo "Linking .tmux.conf to ~/.tmux.conf"
 	ln -snf $(CURDIR)/tmux/.tmux.conf ~/.tmux.conf || true
+	echo "------- starship -------"
+	echo "Linking starship.toml to ~/.config/starship.toml"
+	ln -snf $(CURDIR)/starship/starship.toml ~/.config/starship.toml || true
 	echo "------- .gitignore -------"
 	echo "Linking .gitignore to ~/.gitignore"
 	ln -snf $(CURDIR)/.gitignore ~/.gitignore || true
