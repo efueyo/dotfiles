@@ -17,3 +17,11 @@ direnv hook fish | source
 starship init fish | source
 
 kubectl completion fish | source
+
+abbr -a k kubectl
+
+if type -q exa
+  alias ll "exa -l -g --icons"
+  alias lla "ll -a"
+end
+
