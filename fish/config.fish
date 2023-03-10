@@ -19,6 +19,7 @@ starship init fish | source
 kubectl completion fish | source
 
 abbr -a k kubectl
+abbr -a g git
 
 if type -q exa
   alias ll "exa -l -g --icons"
