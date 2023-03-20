@@ -3,3 +3,5 @@
 disabled = false
 [kubernetes.context_aliases]
 'arn.*/(?P<var_cluster>[\w-]+)' = 'aws-$var_cluster'
+[terraform]
+disabled = true
