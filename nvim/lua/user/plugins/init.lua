@@ -78,6 +78,7 @@ return {
   'nvim-telescope/telescope-dap.nvim',
 
   'hashivim/vim-terraform',
+  'towolf/vim-helm',
 
   {
     'numToStr/Comment.nvim',
