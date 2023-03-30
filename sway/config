@@ -227,7 +227,19 @@ bar {
     }
 }
 
+#
+# Screenshots
+#
+
 # take screenshot, save it to ~/Pictures/Screenshots and copy it into the clipboard
 bindsym Print exec grim -g "$(slurp)" - | tee ~/Pictures/Screenshots/$(date +'%Y-%m-%d-%H-%M-%S.png') | wl-copy
+
+#
+# Volume control
+#
+
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
+bindsym XF86AudioLowerVolume exec amixer -q set Master 5%-
+bindsym XF86AudioMute exec amixer -q set Master toggle
 
 include /etc/sway/config.d/*
