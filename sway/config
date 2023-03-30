@@ -227,4 +227,7 @@ bar {
     }
 }
 
+# take screenshot, save it to ~/Pictures/Screenshots and copy it into the clipboard
+bindsym Print exec grim -g "$(slurp)" - | tee ~/Pictures/Screenshots/$(date +'%Y-%m-%d-%H-%M-%S.png') | wl-copy
+
 include /etc/sway/config.d/*
