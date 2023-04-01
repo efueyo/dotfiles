@@ -9,7 +9,7 @@ telescope.setup{
     mappings = {
       i = {
         ["qq"] = actions.close,
-        ["<C-q>"] = actions.send_to_qflist,
+        ["<C-q>"] = actions.smart_send_to_qflist,
       },
       n = {
         ["q"] = actions.close,
