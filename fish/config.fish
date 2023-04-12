@@ -20,6 +20,9 @@ kubectl completion fish | source
 
 abbr -a k kubectl
 abbr -a g git
+abbr -a gg ginkgo --race --cover --randomize-all -r .
+abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
+
 
 if type -q exa
   alias ll "exa -l -g --icons"
