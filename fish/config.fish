@@ -22,6 +22,7 @@ abbr -a k kubectl
 abbr -a g git
 abbr -a gg ginkgo --race --cover --randomize-all -r .
 abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
+abbr -a n nvim
 
 
 if type -q exa
