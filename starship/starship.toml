@@ -5,3 +5,5 @@ disabled = false
 'arn.*/(?P<var_cluster>[\w-]+)' = 'aws-$var_cluster'
 [terraform]
 disabled = true
+[gcloud]
+disabled = true
