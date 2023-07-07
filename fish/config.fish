@@ -11,6 +11,9 @@ set -gx PATH ~/bin $PATH
 # Poetry
 set -gx PATH $HOME/.local/bin $PATH
 
+# Krew
+set -gx PATH $HOME/.krew/bin $PATH
+
 if not test $TMUX
   tat
 end
