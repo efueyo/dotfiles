@@ -25,6 +25,8 @@ starship init fish | source
 kubectl completion fish | source
 
 abbr -a k kubectl
+abbr -a kctx kubectl ctx
+abbr -a kns kubectl ns
 abbr -a g git
 abbr -a gg ginkgo --race --cover --randomize-all -r .
 abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
