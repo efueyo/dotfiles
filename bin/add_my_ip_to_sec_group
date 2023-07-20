@@ -2,8 +2,6 @@
 
 set -e
 
-export AWS_PROFILE=mfa
-
 _select_region() {
   echo
   echo "Select the AWS region: "
