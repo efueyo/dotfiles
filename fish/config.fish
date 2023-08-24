@@ -31,6 +31,7 @@ abbr -a g git
 abbr -a gg ginkgo --race --cover --randomize-all -r .
 abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
 abbr -a n nvim
+abbr -a dc docker-compose
 
 
 if type -q exa
