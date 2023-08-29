@@ -148,7 +148,5 @@ require('mason-null-ls').setup({
 })
 require('user.lsp.null-ls')
 
-require 'mason-null-ls'.setup_handlers()
-
 require('fidget').setup()
 
