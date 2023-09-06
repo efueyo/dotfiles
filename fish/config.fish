@@ -31,8 +31,8 @@ abbr -a g git
 abbr -a gg ginkgo --race --cover --randomize-all -r .
 abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
 abbr -a n nvim
-abbr -a dc docker-compose
-abbr -a dcl docker-compose logs --tail=10 -f
+abbr -a dc docker compose
+abbr -a dcl docker compose logs --tail=10 -f
 
 
 if type -q exa
