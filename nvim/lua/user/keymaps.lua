@@ -18,6 +18,7 @@ keymap("n", "_", ":m .-2<cr>==")
 keymap("n", "<leader>d", '"_d')
 keymap("n", "<leader>D", '"_D')
 keymap("n", "x", '"_x')
+keymap("x", "<leader>p", '"_dP')
 
 -- yank from cursor
 keymap("n", "Y", "yg$")
