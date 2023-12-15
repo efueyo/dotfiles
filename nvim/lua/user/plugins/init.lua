@@ -13,9 +13,6 @@ return {
       'jay-babu/mason-null-ls.nvim',
       'jose-elias-alvarez/null-ls.nvim',
 
-      -- Useful status updates for LSP
-      'j-hui/fidget.nvim',
-
       -- Additional lua configuration, makes nvim stuff amazing
       'folke/neodev.nvim',
     },
@@ -61,7 +58,7 @@ return {
 
   'kyazdani42/nvim-web-devicons',
 
-  { 'folke/tokyonight.nvim', branch = 'main' },
+  { "catppuccin/nvim", name = "catppuccin"},
 
   'ray-x/go.nvim',
 
