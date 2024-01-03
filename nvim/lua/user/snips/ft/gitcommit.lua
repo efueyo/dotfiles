@@ -38,4 +38,5 @@ return {
   }),
   s("noci", {t("[no ci]")}),
   s("wip", {t("#WIP")}),
+  s("revertme", {t("#REVERTME")}),
 }
