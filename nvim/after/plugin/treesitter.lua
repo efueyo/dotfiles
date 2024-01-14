@@ -1,4 +1,4 @@
-require'nvim-treesitter.configs'.setup {
+require("nvim-treesitter.configs").setup({
   highlight = {
     enable = true,
     disable = {},
@@ -6,10 +6,10 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = "gnn",
-      node_incremental = "grn",
-      scope_incremental = "grc",
-      node_decremental = "grm",
+      init_selection = "<leader>ss",
+      node_incremental = "<leader>si",
+      scope_incremental = "<leader>sc",
+      node_decremental = "<leader>sd",
     },
   },
   textobjects = {
@@ -23,7 +23,7 @@ require'nvim-treesitter.configs'.setup {
       keymaps = {
         ["af"] = "@function.outer",
         ["if"] = "@function.inner",
-      }
+      },
     },
   },
   indent = {
@@ -47,7 +47,6 @@ require'nvim-treesitter.configs'.setup {
   query_linter = {
     enable = true,
     use_virtual_text = true,
-    lint_events = {"BufWrite", "CursorHold"},
+    lint_events = { "BufWrite", "CursorHold" },
   },
-}
-
+})
