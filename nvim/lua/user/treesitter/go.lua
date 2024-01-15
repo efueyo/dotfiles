@@ -1,77 +1,82 @@
-local q = require'vim.treesitter.query'
-local parse_query = vim.treesitter.parse_query
-local ts_utils = require "nvim-treesitter.ts_utils"
+local q = require("vim.treesitter.query")
+local parse_query = vim.treesitter.query.parse
+local ts_utils = require("nvim-treesitter.ts_utils")
 
-local lang = 'go'
+local lang = "go"
 
-
-local get_ts_root = function ()
-  local bufnr = 0 -- 0 means current buffer
-  local language_tree = vim.treesitter.get_parser(bufnr)
-  local syntax_tree = language_tree:parse()
-  local root = syntax_tree[1]:root()
-  return bufnr, root
+local get_ts_root = function()
+	local bufnr = 0 -- 0 means current buffer
+	local language_tree = vim.treesitter.get_parser(bufnr)
+	local syntax_tree = language_tree:parse()
+	local root = syntax_tree[1]:root()
+	return bufnr, root
 end
 
 local M = {}
-M.find_structs = function ()
-  local query = parse_query(lang, [[
+M.find_structs = function()
+	local query = parse_query(
+		lang,
+		[[
     (type_declaration
       (type_spec
         name: (type_identifier) @struct_name
         type: (struct_type)
       )
     )
-  ]])
-  local bufnr, root = get_ts_root()
-  local res = {}
-  for _, captures, _ in query:iter_matches(root, bufnr) do
-    table.insert(res, q.get_node_text(captures[1], bufnr))
-  end
-  return res
+  ]]
+	)
+	local bufnr, root = get_ts_root()
+	local res = {}
+	for _, captures, _ in query:iter_matches(root, bufnr) do
+		table.insert(res, q.get_node_text(captures[1], bufnr))
+	end
+	return res
 end
 
-M.find_interfaces = function ()
-  local query = parse_query(lang, [[
+M.find_interfaces = function()
+	local query = parse_query(
+		lang,
+		[[
     (type_declaration
       (type_spec
         name: (type_identifier) @interface_name
         type: (interface_type)
       )
     )
-  ]])
-  local bufnr, root = get_ts_root()
-  local res = {}
-  for _, captures, _ in query:iter_matches(root, bufnr) do
-    table.insert(res, q.get_node_text(captures[1], bufnr))
-  end
-  return res
+  ]]
+	)
+	local bufnr, root = get_ts_root()
+	local res = {}
+	for _, captures, _ in query:iter_matches(root, bufnr) do
+		table.insert(res, q.get_node_text(captures[1], bufnr))
+	end
+	return res
 end
 
-
-
-local default_value_from_type = function (t)
-  if t == "int" then
-    return "0"
-  elseif t == "error" then
-    return "err"
-  elseif t == "bool" then
-    return "false"
-  elseif t == "string" then
-    return '""'
-  elseif string.find(t, "*", 1, true) then --starts with * => a pointer
-    return "nil"
-  elseif string.find(t, "[", 1, true) then --starts with [ => a slice
-    return "nil"
-  elseif string.find(t, "<-", 1, true) then --starts with <- => a channel
-    return "nil"
-  end
-  return t .. "{}" -- an empty struct
+local default_value_from_type = function(t)
+	if t == "int" then
+		return "0"
+	elseif t == "error" then
+		return "err"
+	elseif t == "bool" then
+		return "false"
+	elseif t == "string" then
+		return '""'
+	elseif string.find(t, "*", 1, true) then --starts with * => a pointer
+		return "nil"
+	elseif string.find(t, "[", 1, true) then --starts with [ => a slice
+		return "nil"
+	elseif string.find(t, "<-", 1, true) then --starts with <- => a channel
+		return "nil"
+	end
+	return t .. "{}" -- an empty struct
 end
 
 -- ret_values returns a list of initialized values for the function where the cursor is
-M.ret_values = function ()
-  local query = parse_query(lang, [[
+M.ret_values = function()
+	local query = parse_query(
+		lang,
+		[[
    [
     (method_declaration result: (
      [
@@ -104,27 +109,30 @@ M.ret_values = function ()
     ]
    ))
    ]
-  ]])
-  local cur_node = ts_utils.get_node_at_cursor()
-  local function_node
-  while cur_node do
-    if cur_node:type() == "function_declaration" or cur_node:type() == "method_declaration" or cur_node:type() == "func_literal" then
-      function_node = cur_node
-      break
-    end
-    cur_node = cur_node:parent()
-  end
-  local res = {}
-  if function_node == nil then
-    return res
-  end
-  for _, node in query:iter_captures(function_node, 0) do
-    table.insert(res, default_value_from_type(q.get_node_text(node, 0)))
-  end
-  return res
-
+  ]]
+	)
+	local cur_node = ts_utils.get_node_at_cursor()
+	local function_node
+	while cur_node do
+		if
+			cur_node:type() == "function_declaration"
+			or cur_node:type() == "method_declaration"
+			or cur_node:type() == "func_literal"
+		then
+			function_node = cur_node
+			break
+		end
+		cur_node = cur_node:parent()
+	end
+	local res = {}
+	if function_node == nil then
+		return res
+	end
+	for _, node in query:iter_captures(function_node, 0) do
+		table.insert(res, default_value_from_type(q.get_node_text(node, 0)))
+	end
+	return res
 end
-
 
 -- find_structs_info returns a table where each element has the form:
 --
@@ -137,8 +145,10 @@ end
 -- }
 --
 --
-M.find_structs_info = function ()
-  local query = parse_query(lang, [[
+M.find_structs_info = function()
+	local query = parse_query(
+		lang,
+		[[
     (type_declaration
       (type_spec
         name: (type_identifier) @struct_name
@@ -159,23 +169,24 @@ M.find_structs_info = function ()
           )
       )
     )
-  ]])
-  local bufnr, root = get_ts_root()
-  local structs = {}
-  for _, captures, _ in query:iter_matches(root, bufnr) do
-    local struct_name = q.get_node_text(captures[1], bufnr)
-    local field_name = q.get_node_text(captures[2], bufnr)
-    local field_type = q.get_node_text(captures[3], bufnr)
-    if structs[struct_name] == nil then
-      structs[struct_name] = { name = struct_name, fields = {}}
-    end
-    table.insert(structs[struct_name].fields, {fname= field_name, ftype = field_type})
-  end
-  local res = {}
-  for _, struct_info in pairs(structs) do
-    table.insert(res, struct_info)
-  end
-  return res
+  ]]
+	)
+	local bufnr, root = get_ts_root()
+	local structs = {}
+	for _, captures, _ in query:iter_matches(root, bufnr) do
+		local struct_name = q.get_node_text(captures[1], bufnr)
+		local field_name = q.get_node_text(captures[2], bufnr)
+		local field_type = q.get_node_text(captures[3], bufnr)
+		if structs[struct_name] == nil then
+			structs[struct_name] = { name = struct_name, fields = {} }
+		end
+		table.insert(structs[struct_name].fields, { fname = field_name, ftype = field_type })
+	end
+	local res = {}
+	for _, struct_info in pairs(structs) do
+		table.insert(res, struct_info)
+	end
+	return res
 end
 
 return M
