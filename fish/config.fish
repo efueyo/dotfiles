@@ -24,6 +24,8 @@ starship init fish | source
 
 kubectl completion fish | source
 
+op completion fish | source
+
 abbr -a k kubectl
 abbr -a kctx kubectl ctx
 abbr -a kns kubectl ns
