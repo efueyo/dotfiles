@@ -1,4 +1,4 @@
-local q = require("vim.treesitter.query")
+local q = require("vim.treesitter")
 local parse_query = vim.treesitter.query.parse
 local ts_utils = require("nvim-treesitter.ts_utils")
 
