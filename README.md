@@ -1,8 +1,10 @@
 # dotfiles
 
+My dotfiles and some utils
+
 Some of the tools and configurations I use.
 
-- Kitty as the Terminal Emulator
+- Wezterm
 - Fish as the shell
 - Starship as the shell prompt
 - Tmux
