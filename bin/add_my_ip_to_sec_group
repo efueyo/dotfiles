@@ -7,7 +7,7 @@ _select_region() {
   echo "Select the AWS region: "
   # export AWS_REGION="eu-west-1" #a region must be configured to describe-regions
   # region=$(aws ec2 describe-regions | jq -r '.Regions[].RegionName' | fzf --reverse --height 40% )
-  available_regions="eu-west-1 us-east-1 us-east-2 us-west-1 us-west-2 eu-central-1 eu-west-1 eu-west-2 eu-west-3"
+  available_regions="us-east-1 eu-west-1 us-east-2 us-west-1 us-west-2 eu-central-1 eu-west-1 eu-west-2 eu-west-3"
   region=$(echo $available_regions | tr ' ' '\n' | fzf --reverse --height 40% )
   export AWS_REGION=$region
 }
