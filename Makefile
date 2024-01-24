@@ -1,11 +1,6 @@
 .PHONY: install
 .SILENT: install
 install:
-	echo "------- Vim -------"
-	ln -snf $(CURDIR)/vim/.vimrc ~/.vimrc || true
-	ln -snf $(CURDIR)/vim/coc-settings.json ~/.vim/coc-settings.json || true
-	echo "------- Kitty -------"
-	ln -snf $(CURDIR)/kitty ~/.config/kitty || true
 	echo "------- WezTerm -------"
 	ln -snf $(CURDIR)/wezterm ~/.config/wezterm || true
 	echo "------- tmux -------"
