@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Connecto to an ec2 instance using ec2-instance-connect
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-methods.html#ec2-instance-connect-connecting-aws-cli
+# You will need a public and private key pairs to connect to the instance in ~/.ssh
+# To create a key pair:
+#    ssh-keygen -t rsa -f my_key
+# Your public ip must be allowed by the security group of the instance
+
+
+set -e
+_select_region() {
+  echo
+  echo "Select the AWS region: "
+  # export AWS_REGION="eu-west-1" #a region must be configured to describe-regions
+  # region=$(aws ec2 describe-regions | jq -r '.Regions[].RegionName' | fzf --reverse --height 40% )
+  available_regions="us-east-1 eu-west-1 us-east-2 us-west-1 us-west-2 eu-central-1 eu-west-1 eu-west-2 eu-west-3"
+  region=$(echo $available_regions | tr ' ' '\n' | fzf --reverse --height 40% )
+  export AWS_REGION=$region
+  echo "Selected region: $region"
+}
+
+_select_instance() {
+  echo "Select the AWS instance: "
+  instance_data=$(aws ec2 describe-instances \
+    --query 'Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`]| [0].Value,State.Name,PublicIpAddress,PrivateIpAddress]' |
+    jq -r '.[] | "\(.[0]) \(.[1]) \(.[2]) \(.[3])"' | fzf --reverse --height 40%
+  )
+  instance_id=$(echo $instance_data | awk '{print $1}')
+  instance_name=$(echo $instance_data | awk '{print $2}')
+  instance_public_ip=$(echo $instance_data | awk '{print $4}')
+  instance_private_ip=$(echo $instance_data | awk '{print $5}')
+  echo "Selected instance: $instance_name ($instance_id) - $instance_public_ip ($instance_private_ip)"
+}
+
+# asumes your pems are in ~/.ssh
+_select_public_key() {
+  public_key=$(ls ~/.ssh/*.pub | fzf --reverse --height 40%)
+}
+_select_region
+_select_instance
+_select_public_key
+echo $instance_id
+echo $public_key
+aws ec2-instance-connect send-ssh-public-key \
+  --instance-id $instance_id \
+  --instance-os-user ec2-user \
+  --ssh-public-key file://$public_key
+
+private_key="${public_key%.pub}"  # Removes ".pub" from the end of `public_key`
+
+ssh -o "IdentitiesOnly=yes" -i $private_key ec2-user@$instance_public_ip
+
+
