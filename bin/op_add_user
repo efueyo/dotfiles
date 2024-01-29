@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# Check for 1Password CLI installation
+if ! command -v op &> /dev/null; then
+  echo "Error: 1Password CLI not found. Please install it from https://1password.com/downloads/command-line/"
+  exit 1
+fi
+
+# Sign in to your 1Password account, if not already signed in
+if ! op whoami &> /dev/null; then
+  echo "You are not currently signed in to 1Password. Please sign in using:"
+  eval $(op signin)
+  # exit 1
+fi
+
+select_vault() {
+  selected_vault=$(op vault list --format=json |
+    jq -r '.[] | "\(.id) \(.name)"' | fzf --reverse --height 40% | awk '{print $1}'
+  )
+}
+
+select_user() {
+  selected_user=$(op user list --format=json |
+    jq -r '.[] | "\(.id) \(.email) \(.type) \(.state)"' | fzf --reverse --height 40% | awk '{print $1}'
+  )
+}
+
+select_action() {
+  available_actions="add remove"
+  selected_action=$(echo $available_actions | tr ' ' '\n' | fzf --reverse --height 40% )
+}
+
+_add_user() {
+  op vault user grant --vault $current_vault --user $current_user --permissions allow_editing,allow_viewing
+}
+
+_remove_user() {
+  op vault user revoke --vault $current_vault --user $current_user --permissions allow_editing,allow_viewing
+}
+
+
+confirm_action() {
+  current_user=$(op user get $selected_user --format=json | jq -r '.email')
+  current_vault=$(op vault get $selected_vault --format=json | jq -r '.name')
+  echo "Are you sure you want to $selected_action $current_user to $current_vault?"
+  read -p "Press [Enter] to continue or [Ctrl+C] to cancel"
+  case $selected_action in
+    add )
+      _add_user
+      ;;
+    remove )
+      _remove_user
+      ;;
+    * )
+      echo "Invalid action"
+      ;;
+  esac
+}
+
+select_vault
+select_user
+select_action
+confirm_action
+

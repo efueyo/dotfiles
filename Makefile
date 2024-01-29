@@ -19,4 +19,5 @@ install:
 	ln -snf $(CURDIR)/bin/list_instances ~/bin/list_instances || true
 	ln -snf $(CURDIR)/bin/add_my_ip_to_sec_group ~/bin/add_my_ip_to_sec_group || true
 	ln -snf $(CURDIR)/bin/ec2_connect ~/bin/ec2_connect || true
+	ln -snf $(CURDIR)/bin/op_add_user ~/bin/op_add_user || true
 
