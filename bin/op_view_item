@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Check for 1Password CLI installation
+if ! command -v op &> /dev/null; then
+  echo "Error: 1Password CLI not found. Please install it from https://1password.com/downloads/command-line/"
+  exit 1
+fi
+
+# Sign in to your 1Password account, if not already signed in
+if ! op whoami &> /dev/null; then
+  echo "You are not currently signed in to 1Password. Please sign in using:"
+  eval $(op signin)
+  # exit 1
+fi
+
+select_item() {
+  selected_item=$(op item list |
+   fzf --reverse --height 40% | awk '{print $1}'
+  )
+  op item get $selected_item
+}
+
+select_item
+
+
