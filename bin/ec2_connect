@@ -24,7 +24,7 @@ _select_instance() {
   echo "Select the AWS instance: "
   instance_data=$(aws ec2 describe-instances \
     --query 'Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`]| [0].Value,State.Name,PublicIpAddress,PrivateIpAddress]' |
-    jq -r '.[] | "\(.[0]) \(.[1]) \(.[2]) \(.[3])"' | fzf --reverse --height 40%
+    jq -r '.[] | "\(.[0]) \(.[1]) \(.[2]) \(.[3]) \(.[4])"' | fzf --reverse --height 40%
   )
   instance_id=$(echo $instance_data | awk '{print $1}')
   instance_name=$(echo $instance_data | awk '{print $2}')
@@ -49,6 +49,7 @@ aws ec2-instance-connect send-ssh-public-key \
 
 private_key="${public_key%.pub}"  # Removes ".pub" from the end of `public_key`
 
+echo "Connecting to $instance_public_ip"
 ssh -o "IdentitiesOnly=yes" -i $private_key ec2-user@$instance_public_ip
 
 
