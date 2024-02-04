@@ -34,6 +34,7 @@ null_ls.setup({
 		}),
 		formatting.stylua,
 		formatting.black,
+		formatting.terraform_fmt,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then
