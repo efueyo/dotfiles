@@ -31,11 +31,11 @@ select_action() {
 }
 
 _add_user() {
-  op vault user grant --vault $current_vault --user $current_user --permissions allow_editing,allow_viewing
+  op vault user grant --vault "$current_vault" --user $current_user --permissions allow_editing,allow_viewing
 }
 
 _remove_user() {
-  op vault user revoke --vault $current_vault --user $current_user --permissions allow_editing,allow_viewing
+  op vault user revoke --vault "$current_vault" --user $current_user --permissions allow_editing,allow_viewing
 }
 
 
