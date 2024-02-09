@@ -8,6 +8,9 @@ set -gx PATH /usr/local/go/bin $PATH
 set -gx PATH $GOPATH/bin $PATH
 set -gx PATH ~/bin $PATH
 
+# Rust
+set -gx PATH $HOME/.cargo/bin $PATH
+
 # Poetry
 set -gx PATH $HOME/.local/bin $PATH
 
