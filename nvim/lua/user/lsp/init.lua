@@ -91,7 +91,7 @@ local servers = {
 		},
 	},
 	pyright = {},
-	-- rust_analyzer = {},
+	rust_analyzer = {},
 	tsserver = {},
 	-- terraformls = {},
 
