@@ -23,6 +23,9 @@ keymap("x", "<leader>p", '"_dP')
 -- yank from cursor
 keymap("n", "Y", "yg$")
 
+-- yank from cursor
+keymap("n", "<leader>yl", 'f/"+yiW', { desc = "[Y]ank [L]ink" })
+
 -- keep the screen centered while searching
 keymap("n", "n", "nzzzv")
 keymap("n", "N", "Nzzzv")
@@ -56,4 +59,3 @@ keymap("v", ">", ">gv")
 -- move lines up and down
 keymap("v", "-", ":m '>+1<CR>gv=gv")
 keymap("v", "_", ":m '<-2<CR>gv=gv")
-
