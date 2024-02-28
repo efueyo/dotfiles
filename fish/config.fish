@@ -33,7 +33,6 @@ abbr -a k kubectl
 abbr -a kctx kubectl ctx
 abbr -a kns kubectl ns
 abbr -a g git
-abbr -a glog git log --graph --pretty=format:'%Cred%h%Creset - %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 abbr -a gg ginkgo --race --cover --randomize-all -r .
 abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
 abbr -a n nvim
