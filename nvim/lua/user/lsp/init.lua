@@ -90,6 +90,7 @@ local servers = {
 			buildFlags = { "-tags=wireinject" },
 		},
 	},
+	pyright = {},
 	ruff_lsp = {},
 	rust_analyzer = {},
 	tsserver = {},
