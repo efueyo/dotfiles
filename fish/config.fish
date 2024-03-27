@@ -39,6 +39,8 @@ abbr -a n nvim
 abbr -a dc docker compose
 abbr -a dcl docker compose logs --tail=10 -f
 
+abbr -a ai aichat
+abbr -a aig aichat -m gemini
 
 if type -q exa
   alias ll "exa -l -g --icons"
