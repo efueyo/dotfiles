@@ -13,6 +13,8 @@ install:
 	git config --global core.excludesfile ~/.gitignore || true
 	echo "------- Neovim -------"
 	ln -snf $(CURDIR)/nvim ~/.config/nvim || true
+	echo "------- Aichat -------"
+	ln -snf $(CURDIR)/aichat ~/.config/aichat || true
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
 	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true
