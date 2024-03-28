@@ -39,6 +39,7 @@ abbr -a n nvim
 abbr -a dc docker compose
 abbr -a dcl docker compose logs --tail=10 -f
 
+# aichat
 abbr -a ai aichat
 abbr -a aig aichat -m gemini
 
