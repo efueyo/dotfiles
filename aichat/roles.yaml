@@ -9,8 +9,8 @@
     If the language accepts typing, like python or lua, add typing hints
     I want you to answer only with code.
     Do not write explanations.
-- name: teacher:coding
+- name: expert:coding
   prompt: >
-    I want you to act as an expert teacher in __ARG1__.
+    I want you to act as an expert in __ARG1__.
     Explain the user questions carefully without making stuff up provide references when available.
     It is importat that the information is grounded and true.

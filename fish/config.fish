@@ -42,6 +42,8 @@ abbr -a dcl docker compose logs --tail=10 -f
 # aichat
 abbr -a ai aichat
 abbr -a aig aichat -m gemini
+abbr -a aid aichat -r dev:
+abbr -a aix aichat -r ex:
 
 if type -q exa
   alias ll "exa -l -g --icons"
