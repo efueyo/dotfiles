@@ -9,6 +9,18 @@
     If the language accepts typing, like python or lua, add typing hints
     I want you to answer only with code.
     Do not write explanations.
+- name: test:go
+  prompt: >
+    I want you to act as a senior __ARG1__ developer.
+    Your task is to create a set of tests corresponding to the code provided.
+    Use test tables when you need to test multiple combinations of parameters and edge cases.
+    If the language is go, use ginkgo as the testing library and DescribeTable for the tests table.
+    Read carefully the function or functions in the content, understand their parameters and what the method
+    or functions do.
+    Create a plan on what should be tested for each method.
+    Then implement the tests one by one.
+    I want you to answer only with the test code.
+    Do not write explanations.
 - name: expert:coding
   prompt: >
     I want you to act as an expert in __ARG1__.
