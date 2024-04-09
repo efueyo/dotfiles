@@ -8,3 +8,5 @@ context_alias = "aws-$var_cluster"
 disabled = true
 [gcloud]
 disabled = true
+[git_branch]
+truncation_length = 30
