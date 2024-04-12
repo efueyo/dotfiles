@@ -5,11 +5,6 @@ end
 
 local formatting = null_ls.builtins.formatting
 
-local lsp_formatting = function(bufnr)
-	vim.lsp.buf.format({
-		bufnr = bufnr,
-	})
-end
 local augroup = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
 null_ls.setup({
 	debug = false,
@@ -51,9 +46,8 @@ null_ls.setup({
 			vim.api.nvim_create_autocmd("BufWritePre", {
 				group = augroup,
 				buffer = bufnr,
-				-- on 0.8, you should use vim.lsp.buf.format instead
 				callback = function()
-					lsp_formatting(bufnr)
+					vim.lsp.buf.format({ bufnr = bufnr })
 				end,
 			})
 		end
