@@ -32,6 +32,15 @@ null_ls.setup({
 				"handlebars",
 			},
 		}),
+		formatting.eslint_d.with({
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+			},
+			prefer_local = "node_modules/.bin",
+		}),
 		formatting.stylua,
 		formatting.ruff,
 		formatting.terraform_fmt,
