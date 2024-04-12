@@ -24,12 +24,18 @@ _select_instance() {
   echo "Select the AWS instance: "
   instance_data=$(aws ec2 describe-instances \
     --query 'Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`]| [0].Value,State.Name,PublicIpAddress,PrivateIpAddress]' |
-    jq -r '.[] | "\(.[0]) \(.[1]) \(.[2]) \(.[3]) \(.[4])"' | fzf --reverse --height 40%
+    jq -r '.[] | @csv' | fzf --reverse --height 40%
   )
-  instance_id=$(echo $instance_data | awk '{print $1}')
-  instance_name=$(echo $instance_data | awk '{print $2}')
-  instance_public_ip=$(echo $instance_data | awk '{print $4}')
-  instance_private_ip=$(echo $instance_data | awk '{print $5}')
+  IFS=, read -r instance_id instance_name instance_state instance_public_ip instance_private_ip <<< "$instance_data"
+
+  strip_quotes() {
+    echo "$1" | sed -e 's/^"//' -e 's/"$//'
+  }
+  instance_id=$(strip_quotes "$instance_id")
+  instance_name=$(strip_quotes "$instance_name")
+  instance_state=$(strip_quotes "$instance_state")
+  instance_public_ip=$(strip_quotes "$instance_public_ip")
+  instance_private_ip=$(strip_quotes "$instance_private_ip")
   echo "Selected instance: $instance_name ($instance_id) - $instance_public_ip ($instance_private_ip)"
 }
 
@@ -40,8 +46,8 @@ _select_public_key() {
 _select_region
 _select_instance
 _select_public_key
-echo $instance_id
-echo $public_key
+echo InstanceID: $instance_id
+echo Public Key: $public_key
 aws ec2-instance-connect send-ssh-public-key \
   --instance-id $instance_id \
   --instance-os-user ec2-user \
