@@ -34,5 +34,6 @@
   "telescope.nvim": { "branch": "master", "commit": "e54fbf4ab2b64640b639b75c006c23b4bc51c86f" },
   "vim-fugitive": { "branch": "master", "commit": "f116dcc8e21021e6fbfb6b0a9f8f7b9566d933f4" },
   "vim-helm": { "branch": "master", "commit": "fc2259e1f8836304a0526853ddc3fe27045be39a" },
-  "vim-terraform": { "branch": "master", "commit": "3d1cfc8e183f1a58f71587442849510462f5857b" }
+  "vim-terraform": { "branch": "master", "commit": "3d1cfc8e183f1a58f71587442849510462f5857b" },
+  "vim-tmux-navigator": { "branch": "master", "commit": "a26954a585b02a2ac02f87145e204f8798a7cbc2" }
 }
