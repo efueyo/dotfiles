@@ -399,7 +399,6 @@ return {
 	}, {
 		t('fmt.Printf("'),
 		rep(2),
-		t(': %+v\\n", '),
 		c(1, { t(': %+v\\n", '), t(': %s\\n", ') }),
 		i(2, "variable"),
 		t(")"),
