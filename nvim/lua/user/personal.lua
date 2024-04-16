@@ -8,7 +8,7 @@ local todo_group = vim.api.nvim_create_augroup("TODO-au", { clear = true })
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 	pattern = "TODO.md",
 	callback = function()
-		keymap("n", "<leader>ci", "jmmkddGp'm", { desc = "[C]omplete [I]tem", buffer = 0 })
+		keymap("n", "<leader>ci", "jm`kddGp'`", { desc = "[C]omplete [I]tem", buffer = 0 })
 	end,
 	group = todo_group,
 })
