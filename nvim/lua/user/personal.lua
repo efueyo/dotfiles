@@ -9,6 +9,8 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 	pattern = "TODO.md",
 	callback = function()
 		keymap("n", "<leader>ci", "jm`kddGp'`", { desc = "[C]omplete [I]tem", buffer = 0 })
+		-- <C-u> is used to clear the range when : is pressed in visual mode
+		keymap("v", "<leader>ci", ":<C-u>'<,'>d<CR>m`Gp'`", { desc = "[C]omplete [I]tem", buffer = 0 })
 	end,
 	group = todo_group,
 })
