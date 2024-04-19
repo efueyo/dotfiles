@@ -43,13 +43,6 @@ return {
 	"hashivim/vim-terraform",
 	"towolf/vim-helm",
 
-	{
-		"numToStr/Comment.nvim",
-		config = function()
-			require("Comment").setup()
-		end,
-	},
-
 	"github/copilot.vim",
 	-- 'David-Kunz/gen.nvim',
 }
