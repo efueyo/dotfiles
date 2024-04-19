@@ -27,7 +27,13 @@ return {
 
 	{ "catppuccin/nvim", name = "catppuccin" },
 
-	"ray-x/go.nvim",
+	{
+		"ray-x/go.nvim",
+		config = function()
+			require("go").setup()
+		end,
+		ft = { "go", "gomod" },
+	},
 
 	{
 		"mfussenegger/nvim-dap",
