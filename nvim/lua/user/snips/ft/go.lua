@@ -398,9 +398,9 @@ return {
 		name = 'fmt.Printf("A; %+v\\n", A)',
 	}, {
 		t('fmt.Printf("'),
-		rep(2),
-		c(1, { t(': %+v\\n", '), t(': %s\\n", ') }),
-		i(2, "variable"),
+		rep(1),
+		t(': %+v\\n", '),
+		i(1, "variable"),
 		t(")"),
 	}),
 	s({
