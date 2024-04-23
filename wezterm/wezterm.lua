@@ -1,10 +1,5 @@
 local wezterm = require("wezterm")
 
-wezterm.on("gui-startup", function()
-	local _, _, window = wezterm.mux.spawn_window({})
-	window:gui_window():maximize()
-end)
-
 return {
 	font = wezterm.font("Fira Code"),
 	font_size = 13.0,
