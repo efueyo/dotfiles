@@ -35,16 +35,16 @@ return {
 		ft = { "go", "gomod" },
 	},
 
-	{
-		"mfussenegger/nvim-dap",
-		config = function()
-			require("user.dap").setup()
-		end,
-	},
-	"leoluz/nvim-dap-go",
-	"rcarriga/nvim-dap-ui",
-	"theHamsta/nvim-dap-virtual-text",
-	"nvim-telescope/telescope-dap.nvim",
+	-- {
+	-- 	"mfussenegger/nvim-dap",
+	-- 	config = function()
+	-- 		require("user.dap").setup()
+	-- 	end,
+	-- },
+	-- "leoluz/nvim-dap-go",
+	-- "rcarriga/nvim-dap-ui",
+	-- "theHamsta/nvim-dap-virtual-text",
+	-- "nvim-telescope/telescope-dap.nvim",
 
 	"hashivim/vim-terraform",
 	"towolf/vim-helm",
