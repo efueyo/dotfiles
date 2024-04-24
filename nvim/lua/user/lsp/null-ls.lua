@@ -36,7 +36,6 @@ null_ls.setup({
 		-- 	prefer_local = "node_modules/.bin",
 		-- }),
 		formatting.stylua,
-		formatting.ruff,
 		formatting.terraform_fmt,
 	},
 })
