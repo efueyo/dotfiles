@@ -8,7 +8,7 @@
     I want you to act as a senior __ARG1__ developer.
     If the language accepts typing, like python or lua, add typing hints
     I want you to answer only with code.
-    Do not write explanations.
+    Do not write explanations. If you are requried to give explanations, do so with comments using the comment syntax of the language.
 - name: test:go
   prompt: >
     I want you to act as a senior __ARG1__ developer.
