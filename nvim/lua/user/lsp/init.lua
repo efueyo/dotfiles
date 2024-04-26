@@ -33,20 +33,9 @@ local lsp_keymaps = function(bufnr)
 	-- nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
 end
 
-local augroup = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
 	lsp_keymaps(bufnr)
 
-	if client.supports_method("textDocument/formatting") then
-		vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			group = augroup,
-			buffer = bufnr,
-			callback = function()
-				vim.lsp.buf.format({ bufnr = bufnr })
-			end,
-		})
-	end
 	vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
 		vim.lsp.buf.format()
 	end, { desc = "Format current buffer with LSP" })
