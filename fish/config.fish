@@ -45,6 +45,8 @@ abbr -a aig aichat -m gemini
 abbr -a aid aichat -r dev:
 abbr -a aix aichat -r expert:
 
+abbr -a ficp fish_clipboard_copy
+
 if type -q exa
   alias ll "exa -l -g --icons"
   alias lla "ll -a"
