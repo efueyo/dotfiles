@@ -10,3 +10,8 @@ disabled = true
 disabled = true
 [git_branch]
 truncation_length = 30
+[shell]
+fish_indicator = '󰈺 '
+unknown_indicator = 'mystery shell'
+style = 'cyan bold'
+disabled = false
