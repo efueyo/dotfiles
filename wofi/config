@@ -1,0 +1,20 @@
+[settings]
+# General settings
+terminal = kitty
+border = false
+border-width = 10
+columns = 1
+lines = 10
+# Hide scrollbar
+scrollbar = false
+# Prompt text
+prompt = Run:
+
+# Window settings
+width = 50%
+height = 50%
+
+# Alignment settings
+horizontal-align = center
+vertical-align = center
+

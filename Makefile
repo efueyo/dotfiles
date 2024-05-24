@@ -21,6 +21,8 @@ install:
 	ln -snf $(CURDIR)/kitty ~/.config/kitty || true
 	echo "------- Waybar -------"
 	ln -snf $(CURDIR)/waybar ~/.config/waybar || true
+	echo "------- Wofi -------"
+	ln -snf $(CURDIR)/wofi ~/.config/wofi || true
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
 	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true

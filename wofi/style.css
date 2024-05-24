@@ -1,0 +1,55 @@
+* {
+  /* General settings */
+  font: 'Sans 10';
+  background-color: #1e1e2e; /* Base background */
+  color: #cdd6f4; /* Text color */
+}
+
+window {
+  padding: 10px;
+  margin: 10px;
+  border: 2px solid #575268; /* Border color */
+  background-color: #1e1e2e; /* Window background */
+  border-radius: 5px;
+}
+
+header {
+  background-color: #302d41; /* Header background */
+  color: #cdd6f4; /* Header text color */
+  padding: 5px;
+  border-radius: 5px;
+}
+
+entry {
+  background-color: #302d41; /* Entry background */
+  color: #cdd6f4; /* Entry text color */
+  border: 1px solid #575268; /* Entry border */
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+entry:focus {
+  border: 1px solid #96cdfb; /* Entry border focus color */
+  color: #96cdfb; /* Entry text focus color */
+}
+
+list {
+  background-color: #1e1e2e; /* List background */
+  color: #cdd6f4; /* List text color */
+  padding: 5px;
+}
+
+list > listitem {
+  background-color: #302d41; /* List item background */
+  color: #cdd6f4; /* List item text color */
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+list > listitem:focus {
+  background-color: #575268; /* List item focus background */
+  color: #96cdfb; /* List item focus text color */
+  border: 1px solid #96cdfb; /* List item focus border */
+}
