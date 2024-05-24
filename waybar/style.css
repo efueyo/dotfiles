@@ -1,0 +1,41 @@
+@import 'frappe.css';
+* {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  min-height: 0;
+}
+
+window#waybar {
+  background: #1e1e2e;
+  color: #cdd6f4;
+}
+
+#clock {
+  color: @yellow;
+}
+
+#battery {
+  color: @pink;
+}
+
+#network {
+  color: @blue;
+}
+
+#network.disconnected {
+  color: @peach;
+}
+
+#battery.critical {
+  color: @red;
+}
+
+#clock,
+#battery,
+#network {
+  margin: 2px;
+  padding-left: 2px;
+  padding-right: 8px;
+}
