@@ -14,11 +14,10 @@
   "hyprland/workspaces": {
     "format": "{name}: {icon}",
     "format-icons": {
+      "1": "",
       "2": "",
-      "1": "",
-      "3": "",
+      "3": "",
       "4": "",
-      "5": "",
       "active": "",
       "default": "",
     },
