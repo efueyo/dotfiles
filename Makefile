@@ -17,6 +17,8 @@ install:
 	ln -snf $(CURDIR)/aichat ~/.config/aichat || true
 	echo "------- Hyprland -------"
 	ln -snf $(CURDIR)/hypr ~/.config/hypr || true
+	echo "------- Kitty -------"
+	ln -snf $(CURDIR)/kitty ~/.config/kitty || true
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
 	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true
