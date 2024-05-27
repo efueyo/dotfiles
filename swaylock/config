@@ -1,0 +1,16 @@
+color=0E1419
+font-size=56
+font=Fira Code
+hide-keyboard-layout
+ignore-empty-password
+indicator-radius=100
+indicator-thickness=1
+inside-clear-color=A7DFEF
+inside-color=00000000
+inside-ver-color=F6F6B6
+inside-wrong-color=EC6A88
+key-hl-color=00000000
+line-color=00000000
+line-uses-inside
+ring-color=00000000
+separator-color=00000000

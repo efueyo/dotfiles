@@ -23,6 +23,8 @@ install:
 	ln -snf $(CURDIR)/waybar ~/.config/waybar || true
 	echo "------- Wofi -------"
 	ln -snf $(CURDIR)/wofi ~/.config/wofi || true
+	echo "------- Swaylock -------"
+	ln -snf $(CURDIR)/swaylock ~/.config/swaylock || true
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
 	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true
