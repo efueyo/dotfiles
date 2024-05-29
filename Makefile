@@ -27,6 +27,8 @@ install:
 	ln -snf $(CURDIR)/swaylock ~/.config/swaylock || true
 	echo "------- Swayidle -------"
 	ln -snf $(CURDIR)/swayidle ~/.config/swayidle || true
+	echo "------- Rofi -------"
+	ln -snf $(CURDIR)/rofi ~/.config/rofi || true
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
 	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true
