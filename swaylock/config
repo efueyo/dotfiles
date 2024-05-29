@@ -6,7 +6,7 @@ clock
 timestr=%R (%Z)
 datestr=%a %b %d
 
-effect-blur=15x3
+effect-blur=18x5
 
 font-size=56
 font=Fira Code
