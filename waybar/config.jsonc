@@ -9,7 +9,7 @@
     "hyprland/scratchpad",
   ],
   "modules-center": ["clock"],
-  "modules-right": ["network", "power-profiles-daemon", "battery"],
+  "modules-right": ["network", "battery", "custom/exit"],
   // Modules configuration
   "hyprland/workspaces": {
     "format": "{name}: {icon}",
@@ -52,5 +52,10 @@
     "format-linked": "{ifname} (No IP) ",
     "format-disconnected": "Disconnected ⚠",
     "format-alt": "{ifname}: {ipaddr}/{cidr}",
+  },
+  "custom/exit": {
+    "format": "",
+    "tooltip": "Logout",
+    "on-click": "wlogout",
   },
 }

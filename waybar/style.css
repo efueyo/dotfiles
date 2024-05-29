@@ -34,8 +34,13 @@ window#waybar {
 
 #clock,
 #battery,
-#network {
+#network,
+#custom-exit {
   margin: 2px;
   padding-left: 2px;
-  padding-right: 8px;
+}
+
+#custom-exit {
+  color: @red;
+  padding-right: 15px;
 }
