@@ -12,6 +12,7 @@ disabled = true
 truncation_length = 30
 [shell]
 fish_indicator = '󰈺 '
+bash_indicator = '󱆃'
 unknown_indicator = 'mystery shell'
 style = 'cyan bold'
 disabled = false
