@@ -9,7 +9,7 @@
     "hyprland/scratchpad",
   ],
   "modules-center": ["clock"],
-  "modules-right": ["network", "battery", "custom/exit"],
+  "modules-right": ["network", "pulseaudio", "battery", "custom/exit"],
   // Modules configuration
   "hyprland/workspaces": {
     "format": "{name}: {icon}",
@@ -57,5 +57,22 @@
     "format": "",
     "tooltip": "Logout",
     "on-click": "wlogout",
+  },
+  "pulseaudio": {
+    "format": "{volume}% {icon}",
+    "format-bluetooth": "{volume}% {icon}",
+    "format-muted": "",
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": ["", ""],
+    },
+    "scroll-step": 1,
+    "on-click": "pavucontrol",
+    "ignored-sinks": ["Easy Effects Sink"],
   },
 }
