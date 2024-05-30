@@ -33,11 +33,18 @@ window#waybar {
 }
 
 #clock,
-#battery,
 #network,
+#battery,
+#pulseaudio,
 #custom-exit {
   margin: 2px;
   padding-left: 2px;
+}
+#battery {
+  padding-right: 6px;
+}
+#pulseaudio {
+  padding-right: 2px;
 }
 
 #custom-exit {
