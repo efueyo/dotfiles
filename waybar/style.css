@@ -51,3 +51,18 @@ window#waybar {
   color: @red;
   padding-right: 15px;
 }
+
+#custom-vpn {
+  padding: 0 4px;
+  color: #ffffff;
+}
+
+/* Style when VPN is connected */
+#custom-vpn.connected {
+  color: @peach;
+}
+
+/* Style when VPN is disconnected */
+#custom-vpn.disconnected {
+  color: @subtext1;
+}
