@@ -36,15 +36,14 @@ window#waybar {
 #network,
 #battery,
 #pulseaudio,
+#custom-vpn,
 #custom-exit {
-  margin: 2px;
-  padding-left: 2px;
+  padding: 0 2px;
 }
 #battery {
-  padding-right: 6px;
+  padding-right: 10px;
 }
 #pulseaudio {
-  padding-right: 2px;
 }
 
 #custom-exit {
@@ -52,9 +51,12 @@ window#waybar {
   padding-right: 15px;
 }
 
+#network {
+  padding-right: 10px;
+}
 #custom-vpn {
-  padding: 0 4px;
   color: #ffffff;
+  padding-right: 6px;
 }
 
 /* Style when VPN is connected */
