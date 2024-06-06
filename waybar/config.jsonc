@@ -72,7 +72,8 @@
     "on-click": "wlogout",
   },
   "pulseaudio": {
-    "format": "{volume}% {icon}",
+    "format": "{icon}",
+    "tooltip-format": "{volume}% {icon}",
     "format-bluetooth": "{volume}% {icon}",
     "format-muted": "",
     "format-icons": {
