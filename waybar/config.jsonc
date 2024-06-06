@@ -10,6 +10,7 @@
   ],
   "modules-center": ["clock"],
   "modules-right": [
+    "temperature",
     "network",
     "custom/vpn",
     "pulseaudio",
@@ -36,6 +37,11 @@
   "clock": {
     "format": "{:%a %b %d %H:%M (%Z)}",
     "format-alt": "{:%Y-%m-%d}",
+  },
+  "temperature": {
+    "critical-threshold": 80,
+    "format-critical": "{temperatureC}°C ",
+    "format": "",
   },
   "battery": {
     "states": {

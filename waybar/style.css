@@ -35,6 +35,7 @@ window#waybar {
 #clock,
 #network,
 #battery,
+#temperature,
 #pulseaudio,
 #custom-vpn,
 #custom-exit {
