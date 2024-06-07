@@ -32,6 +32,10 @@ window#waybar {
   color: @red;
 }
 
+#temperature.critical {
+  color: @red;
+}
+
 #clock,
 #network,
 #battery,
