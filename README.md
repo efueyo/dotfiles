@@ -4,7 +4,10 @@ My dotfiles and some utils
 
 Some of the tools and configurations I use.
 
-- Wezterm
+- Hyprland as window manager
+- Waybar as status bar
+- Rofi as application launcher
+- Wezterm as terminal
 - Fish as the shell
 - Starship as the shell prompt
 - Tmux
