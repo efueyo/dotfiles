@@ -7,7 +7,7 @@
 
 
 NETWORKS=$(nmcli --fields "SSID,SECURITY" device wifi list | sed '/^--/d' | sed '/^SSID/d' | awk '{print "   " $0}')
-KNOWNCON=$(nmcli connection show)
+KNOWNCON=$(nmcli -t -f NAME,TYPE connection show | awk -F: '$2=="802-11-wireless"{print $1}')
 
 STATUS=$(nmcli -t -fields WIFI g)
 CURRSSID=$(nmcli -t -f active,ssid dev wifi | awk -F: '$1 ~ /^yes/ {print $2}')
@@ -32,5 +32,14 @@ elif [ "$CHENTRY" = "$OFF_MSG" ]; then
 	nmcli radio wifi off
 else
 	echo "Connecting to $CHSSID"
-	nmcli dev wifi connect "$CHSSID"
+  if echo "$KNOWNCON" | grep -q "^${CHSSID}$"; then
+    nmcli con up "$CHSSID"
+  else
+    WIFIPASS=$(echo "Type your Password. No options here." | rofi -dmenu -p "password: " -lines 1 -font "$FONT" )
+    if [ -z "$WIFIPASS" ]; then
+      echo "No password provided"
+      exit 1
+    fi
+    nmcli device wifi connect "$CHSSID" password "$WIFIPASS"
+  fi
 fi
