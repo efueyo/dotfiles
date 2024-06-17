@@ -38,8 +38,9 @@ else
     WIFIPASS=$(echo "Type your Password. No options here." | rofi -dmenu -p "password: " -lines 1 -font "$FONT" )
     if [ -z "$WIFIPASS" ]; then
       echo "No password provided"
-      exit 1
+      nmcli device wifi connect "$CHSSID"
+    else
+      nmcli device wifi connect "$CHSSID" password "$WIFIPASS"
     fi
-    nmcli device wifi connect "$CHSSID" password "$WIFIPASS"
   fi
 fi
