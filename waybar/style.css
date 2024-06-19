@@ -21,10 +21,14 @@ window#waybar {
 }
 
 #network {
-  color: @blue;
+  color: @sky;
 }
 
 #network.disconnected {
+  color: @red;
+}
+
+#network.disabled {
   color: @peach;
 }
 
