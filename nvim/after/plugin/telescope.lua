@@ -7,6 +7,7 @@ local function nmap(keys, func, desc)
 	vim.keymap.set("n", keys, func, { desc = desc })
 end
 
+local telescope = require("telescope")
 local builtin = require("telescope.builtin")
 local user_telescope = require("user.telescope")
 local themes = require("telescope.themes")
@@ -32,3 +33,4 @@ nmap("<leader>/", function()
 		previewer = false,
 	}))
 end, "[/] Fuzzily search in current buffer]")
+nmap("<leader>mr", telescope.extensions.mailman.requests, "[M]ailman [R]equests")
