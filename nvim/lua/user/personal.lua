@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 		keymap(
 			"n",
 			"<leader>ab",
-			"I- Review Notion<CR>- Review Linear<CR>- Review PRs<CR><ESC>",
+			"I- L Review Notion<CR>- L Review Linear<CR>- L Review PRs<CR><ESC>",
 			{ desc = "[A]dd [B]asic items", buffer = 0 }
 		)
 	end,
