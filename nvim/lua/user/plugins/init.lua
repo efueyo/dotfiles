@@ -50,6 +50,6 @@ return {
 	"towolf/vim-helm",
 
 	"github/copilot.vim",
-	"dccsillag/magma-nvim",
+	{ "dccsillag/magma-nvim", build = ":UpdateRemotePlugins" },
 	-- 'David-Kunz/gen.nvim',
 }
