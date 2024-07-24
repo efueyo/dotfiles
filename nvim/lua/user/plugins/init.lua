@@ -50,5 +50,6 @@ return {
 	"towolf/vim-helm",
 
 	"github/copilot.vim",
+	"dccsillag/magma-nvim",
 	-- 'David-Kunz/gen.nvim',
 }
