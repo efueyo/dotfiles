@@ -86,9 +86,11 @@
     packages = with pkgs; [
     #  thunderbird
     ];
+    shell = pkgs.fish;
   };
 
   # Install firefox.
+  programs.fish.enable = true;
   programs.firefox.enable = true;
 
   # Allow unfree packages
