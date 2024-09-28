@@ -9,6 +9,12 @@
     enable = true;
     userName = "efueyo";
     userEmail = "efueyo@lang.ai";
+    extraConfig = {
+      rerere = { enable = true; };
+      init = { defaultBranch = "main"; };
+      pull = { rebase = true; };
+      push = { autoSetupRemote = true; };
+    };
   };
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repos/dotfiles/nvim";
 }
