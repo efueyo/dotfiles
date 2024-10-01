@@ -111,6 +111,7 @@
     ripgrep
     eza
     fzf
+    direnv
 
     wezterm
     fish
