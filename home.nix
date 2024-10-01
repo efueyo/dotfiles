@@ -3,7 +3,7 @@
 {
   home.username = "efueyo";
   home.homeDirectory = "/home/efueyo";
-  home.stateVersion = "24.11";
+  home.stateVersion = "24.05";
   programs.home-manager.enable = true;
   programs.git = {
     enable = true;
