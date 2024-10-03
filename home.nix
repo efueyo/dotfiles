@@ -4,6 +4,7 @@
   home.username = "efueyo";
   home.homeDirectory = "/home/efueyo";
   home.stateVersion = "24.05";
+  home.sessionPath = [ "$HOME/bin" ];
   programs.home-manager.enable = true;
   programs.git = {
     enable = true;
@@ -17,6 +18,7 @@
     };
   };
   home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repos/dotfiles/tmux/tmux.conf";
+  home.file."bin".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repos/dotfiles/bin";
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repos/dotfiles/nvim";
   xdg.configFile."wezterm".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repos/dotfiles/wezterm";
   xdg.configFile."fish".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repos/dotfiles/fish";
