@@ -104,6 +104,9 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    coreutils
+    gcc
+
     neovim
 
     git
@@ -122,6 +125,10 @@
     kubectl
     _1password
     _1password-gui
+    unzip
+    go_1_23
+    python3
+    nodejs_22
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
