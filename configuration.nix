@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, outputs, ... }:
 
 {
   imports =
@@ -95,6 +95,7 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [ outputs.overlays.stable-packages ];
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode"]; })
     # fira-code
@@ -116,7 +117,7 @@
     fzf
     direnv
 
-    wezterm
+    stable.wezterm
     fish
     starship
 

@@ -4,14 +4,19 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, home-manager, nixpkgs, ... }@inputs: {
-    # Please replace my-nixos with your hostname
+  outputs = { self, home-manager, nixpkgs, ... }@inputs: let
+  inherit (self) outputs;
+  in {
+    overlays = import ./overlays {inherit inputs;};
     nixosConfigurations = {
       nixos = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
