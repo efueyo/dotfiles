@@ -47,8 +47,6 @@ abbr -a aix aichat -r expert:
 
 abbr -a ficp fish_clipboard_copy
 
-abbr -a act source .venv/bin/activate.fish
-pyenv init - | source
 
 if type -q exa
   alias ll "exa -l -g --icons"
