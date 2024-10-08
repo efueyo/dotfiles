@@ -117,7 +117,7 @@
     fzf
     direnv
 
-    stable.wezterm
+    wezterm
     fish
     starship
 
