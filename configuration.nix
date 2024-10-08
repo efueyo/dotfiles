@@ -122,7 +122,6 @@
     starship
 
     btop
-    tmux
     kubectl
     _1password
     _1password-gui
