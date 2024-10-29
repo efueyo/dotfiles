@@ -126,6 +126,7 @@
     ruff
     typescript-language-server
     terraform-ls
+    stylua
 
     btop
     kubectl
