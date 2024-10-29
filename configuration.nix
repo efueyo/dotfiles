@@ -123,6 +123,7 @@
     # lsp installation
     lua-language-server
     gopls
+    ruff
     typescript-language-server
     terraform-ls
 
