@@ -120,6 +120,12 @@
     fish
     starship
 
+    # lsp installation
+    lua-language-server
+    gopls
+    typescript-language-server
+    terraform-ls
+
     btop
     kubectl
     _1password
