@@ -89,7 +89,6 @@
     shell = pkgs.fish;
   };
 
-  # Install firefox.
   programs.fish.enable = true;
   programs.firefox.enable = true;
 
