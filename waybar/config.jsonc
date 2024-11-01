@@ -83,7 +83,6 @@
   "custom/vpn": {
     "format": "󱠾",
     "tooltip": true,
-    "tooltip-format": "{icon} {tooltip}",
     "exec": "~/.config/waybar/scripts/check_vpn.sh",
     "on-click": "~/.config/waybar/scripts/toggle_vpn.sh",
     "return-type": "json",
