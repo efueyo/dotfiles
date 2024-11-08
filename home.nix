@@ -11,10 +11,18 @@
     userName = "efueyo";
     userEmail = "efueyo@lang.ai";
     extraConfig = {
-      rerere = { enable = true; };
-      init = { defaultBranch = "main"; };
-      pull = { rebase = true; };
-      push = { autoSetupRemote = true; };
+      rerere = {
+        enable = true;
+      };
+      init = {
+        defaultBranch = "main";
+      };
+      pull = {
+        rebase = true;
+      };
+      push = {
+        autoSetupRemote = true;
+      };
     };
   };
   programs.tmux = {
