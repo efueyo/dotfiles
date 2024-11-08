@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, outputs, ... }:
+{ config, pkgs, inputs, outputs, ... }:
 
 {
   imports =
@@ -127,6 +127,8 @@
     typescript-language-server
     terraform-ls
     stylua
+    nixd
+    alejandra
 
     btop
     kubectl
@@ -137,6 +139,8 @@
     python3
     nodejs_22
   ];
+
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
