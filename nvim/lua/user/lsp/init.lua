@@ -135,11 +135,11 @@ require("neodev").setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-for server, config in pairs(servers) do
+for server, cfg in pairs(servers) do
 	require("lspconfig")[server].setup({
 		capabilities = capabilities,
 		on_attach = on_attach,
-		settings = config,
+		settings = cfg,
 	})
 end
 
