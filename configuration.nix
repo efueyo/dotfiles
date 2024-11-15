@@ -127,6 +127,7 @@
     typescript-language-server
     terraform-ls
     stylua
+    prettierd
     nixd
     alejandra
 
