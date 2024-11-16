@@ -118,6 +118,7 @@
   environment.systemPackages = with pkgs; [
     coreutils
     gcc
+    gnumake
 
     neovim
 
