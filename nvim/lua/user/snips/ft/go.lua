@@ -404,6 +404,16 @@ return {
 		t(")"),
 	}),
 	s({
+		trig = "printvarjson",
+		name = 'x, _ = json.Marshall(A); fmt.Printf("A; %+v\\n", x)',
+	}, {
+		t("printValue, _ := json.Marshal("),
+		i(1, "variable"),
+		t({ ")", 'fmt.Printf("' }),
+		rep(1),
+		t(': %+v\\n", printValue)'),
+	}),
+	s({
 		trig = "moq",
 		name = "go:generate moq interface",
 	}, {
