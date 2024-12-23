@@ -411,7 +411,7 @@ return {
 		i(1, "variable"),
 		t({ ")", 'fmt.Printf("' }),
 		rep(1),
-		t(': %+v\\n", printValue)'),
+		t(': %s\\n", printValue)'),
 	}),
 	s({
 		trig = "moq",
