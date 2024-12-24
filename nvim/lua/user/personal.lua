@@ -22,7 +22,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-	pattern = "TODO.md",
+	pattern = { "TODO.md", ".envrc" },
 	command = "let b:copilot_enabled = v:false",
 	group = todo_group,
 })
