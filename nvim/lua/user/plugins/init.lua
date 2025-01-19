@@ -49,6 +49,12 @@ return {
 	"hashivim/vim-terraform",
 	"towolf/vim-helm",
 
-	"github/copilot.vim",
+	{
+		"github/copilot.vim",
+		cond = function()
+			local isDisabled = vim.fn.getenv("COPILOT_DISABLED") ~= vim.NIL
+			return not isDisabled
+		end,
+	},
 	-- 'David-Kunz/gen.nvim',
 }
