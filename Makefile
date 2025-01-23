@@ -29,6 +29,8 @@ install:
 	ln -snf $(CURDIR)/swayidle ~/.config/swayidle || true
 	echo "------- Rofi -------"
 	ln -snf $(CURDIR)/rofi ~/.config/rofi || true
+	echo "------- direnv -------"
+	ln -snf $(CURDIR)/direnv ~/.config/direnv || true
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
 	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true
