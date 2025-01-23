@@ -41,7 +41,7 @@ keymap("v", "<c-u>", "10k")
 keymap("n", "<leader>'", ":noh<CR>")
 -- Quicker save
 keymap("n", "<leader>w", ":up<CR>") -- use update instead of write to avoid extra writing if buffer hasnt been changed
-keymap("n", "<leader>ww", ":wa<CR>")
+keymap("n", "<leader><leader>w", ":wa<CR>")
 
 keymap("n", "ñ", "~")
 
