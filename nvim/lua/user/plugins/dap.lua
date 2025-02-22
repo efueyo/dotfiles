@@ -21,7 +21,6 @@ return {
 		keymap("n", "<F4>", dap.step_out)
 		keymap("n", "<F5>", dap.continue)
 		keymap("n", "<leader>b", dap.toggle_breakpoint)
-		keymap("n", "<leader>dt", dapgo.debug_test)
 
 		dap.listeners.before.attach.dapui_config = dapui.open
 		dap.listeners.before.launch.dapui_config = dapui.open
