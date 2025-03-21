@@ -17,6 +17,17 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
       "I- L Review Notion<CR>- L Review Linear<CR>- L Review PRs<CR><ESC>",
       { desc = "[A]dd [B]asic items", buffer = 0 }
     )
+    -- Define highlight groups for TODO list markers
+    vim.api.nvim_set_hl(0, "TodoL", { fg = "#3b82f6" })
+    vim.api.nvim_set_hl(0, "TodoP", { fg = "#22c55e" })
+
+    -- Create syntax matching for the markers
+    vim.cmd([[
+			syntax match TodoL /^- L/ contained
+			syntax match TodoP /^- P/ contained
+			syntax cluster TodoMarkers contains=TodoL,TodoP
+			syntax region TodoItem start=/^-/ end=/$/ contains=@TodoMarkers
+		]])
   end,
   group = todo_group,
 })
