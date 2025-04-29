@@ -23,8 +23,8 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 
 		-- Create syntax matching for the markers
 		vim.cmd([[
-			syntax match TodoL /^- L/ contained
-			syntax match TodoP /^- P/ contained
+			syntax match TodoL /^- L / contained
+			syntax match TodoP /^- P / contained
 			syntax cluster TodoMarkers contains=TodoL,TodoP
 			syntax region TodoItem start=/^-/ end=/$/ contains=@TodoMarkers
 		]])
