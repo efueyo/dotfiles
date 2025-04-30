@@ -41,7 +41,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     keymap("n", "<leader>ci", "jm`kddGp'`zz", { desc = "[C]omplete [I]tem", buffer = 0 })
     -- <C-u> is used to clear the range when : is pressed in visual mode
     keymap("v", "<leader>ci", ":<C-u>'<,'>d<CR>m`Gp'`zz", { desc = "[C]omplete [I]tem", buffer = 0 })
-    keymap("n", "Q", "ZZ", { desc = "Save and [Q]uit", buffer = 0 })
+    keymap("n", "<ESC>", "ZZ", { desc = "Exit", buffer = 0 })
     keymap(
       "n",
       "<leader>ab",
