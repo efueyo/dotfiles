@@ -35,6 +35,14 @@ local function open_todo_win()
 end
 
 keymap("n", "<leader>et", open_todo_win)
+vim.api.nvim_create_autocmd({ "BufLeave" }, {
+  pattern = "TODO.md",
+  -- Write the content
+  callback = function()
+    vim.cmd("silent! write")
+  end,
+  group = todo_group,
+})
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = "TODO.md",
   callback = function()
