@@ -47,6 +47,8 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
       "I- L Review Notion<CR>- L Review Linear<CR>- L Review PRs<CR><ESC>",
       { desc = "[A]dd [B]asic items", buffer = 0 }
     )
+    keymap("n", "<leader>al", "o- L ", { desc = "[A]dd [L] item", buffer = 0 })
+    keymap("n", "<leader>ap", "o- P ", { desc = "[A]dd [P] item", buffer = 0 })
     -- Define highlight groups for TODO list markers
     vim.api.nvim_set_hl(0, "TodoL", { fg = "#3b82f6" })
     vim.api.nvim_set_hl(0, "TodoP", { fg = "#22c55e" })
