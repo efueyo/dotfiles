@@ -23,7 +23,8 @@ local function setup_todo_highlights()
     return string.lower(a) < string.lower(b)
   end)
 
-  local colors = { "#C792EA", "#FFC66D", "#F78C6C", "#FFB86C", "#F1FA8C" }
+
+  local colors = { "#FF8F30", "#B966E8", "#9AFF32", "#FF5B37", "#FFB337", "#F0FF30" }
   local tag_colors = {}
   for i, tag in ipairs(tags) do
     tag_colors[tag] = colors[(i - 1) % #colors + 1]
