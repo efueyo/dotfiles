@@ -2,6 +2,76 @@
 
 local keymap = vim.keymap.set
 
+local function setup_todo_highlights()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+  -- Extract, sort, and assign colors to tags
+  local unique_tags = {}
+  for _, line in ipairs(lines) do
+    for tag_capture in string.gmatch(line, "#([%w%-]+)") do
+      local lower_tag = string.lower(tag_capture)
+      if unique_tags[lower_tag] == nil then
+        unique_tags[lower_tag] = true
+      end
+    end
+  end
+  local tags = {}
+  for tag in pairs(unique_tags) do
+    table.insert(tags, tag)
+  end
+  table.sort(tags, function(a, b)
+    return string.lower(a) < string.lower(b)
+  end)
+
+  local colors = { "#C792EA", "#FFC66D", "#F78C6C", "#FFB86C", "#F1FA8C" }
+  local tag_colors = {}
+  for i, tag in ipairs(tags) do
+    tag_colors[tag] = colors[(i - 1) % #colors + 1]
+  end
+
+  local syntax_match_cmds = {}
+  local dynamic_hl_group_names = {}
+  for _, tag in ipairs(tags) do
+    local color = tag_colors[tag]
+    -- Normalize tag for highlight group name: remove non-alphanumeric, prepend "TodoTag_"
+    local normalized_tag_name = string.gsub(tag, "[^%w]", "")
+    local hl_group_name = "TodoTag_" .. normalized_tag_name
+
+    table.insert(dynamic_hl_group_names, hl_group_name)
+    vim.api.nvim_set_hl(0, hl_group_name, { fg = color })
+
+    -- Escape tag for use in regex pattern
+    -- \V for very nomagic, \c for case-insensitive
+    -- local match_cmd = string.format("syntax match %s /\\V#%s\\c/ contained", hl_group_name, tag)
+    local match_cmd = string.format("syntax match %s /#%s\\c/ contained", hl_group_name, tag)
+    table.insert(syntax_match_cmds, match_cmd)
+  end
+
+  -- Define highlight groups for static TODO list markers
+  vim.api.nvim_set_hl(0, "TodoL", { fg = "#3b82f6" })
+  vim.api.nvim_set_hl(0, "TodoP", { fg = "#22c55e" })
+
+  -- Dynamically build and apply syntax commands
+  local all_syntax_cmds = {
+    "syntax match TodoL /^- L / contained",
+    "syntax match TodoP /^- P / contained",
+  }
+
+  for _, cmd in ipairs(syntax_match_cmds) do
+    table.insert(all_syntax_cmds, cmd)
+  end
+
+  local todo_markers_contains = "TodoL,TodoP"
+  if #dynamic_hl_group_names > 0 then
+    todo_markers_contains = todo_markers_contains .. "," .. table.concat(dynamic_hl_group_names, ",")
+  end
+  table.insert(all_syntax_cmds, string.format("syntax cluster TodoMarkers contains=%s", todo_markers_contains))
+
+  table.insert(all_syntax_cmds, "syntax region TodoItem start=/^-/ end=/$/ contains=@TodoMarkers")
+
+  vim.cmd(table.concat(all_syntax_cmds, "\n"))
+end
+
 -- my TODO file
 local todo_group = vim.api.nvim_create_augroup("TODO-au", { clear = true })
 local function open_todo_win()
@@ -46,6 +116,7 @@ vim.api.nvim_create_autocmd({ "BufLeave" }, {
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = "TODO.md",
   callback = function()
+    setup_todo_highlights()
     keymap("n", "<leader>ci", "jm`kddGp'`zz", { desc = "[C]omplete [I]tem", buffer = 0 })
     -- <C-u> is used to clear the range when : is pressed in visual mode
     keymap("v", "<leader>ci", ":<C-u>'<,'>d<CR>m`Gp'`zz", { desc = "[C]omplete [I]tem", buffer = 0 })
@@ -57,17 +128,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     )
     keymap("n", "<leader>al", "o- L ", { desc = "[A]dd [L] item", buffer = 0 })
     keymap("n", "<leader>ap", "o- P ", { desc = "[A]dd [P] item", buffer = 0 })
-    -- Define highlight groups for TODO list markers
-    vim.api.nvim_set_hl(0, "TodoL", { fg = "#3b82f6" })
-    vim.api.nvim_set_hl(0, "TodoP", { fg = "#22c55e" })
-
-    -- Create syntax matching for the markers
-    vim.cmd([[
-      syntax match TodoL /^- L / contained
-      syntax match TodoP /^- P / contained
-      syntax cluster TodoMarkers contains=TodoL,TodoP
-      syntax region TodoItem start=/^-/ end=/$/ contains=@TodoMarkers
-    ]])
   end,
   group = todo_group,
 })
@@ -76,4 +136,9 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = { "TODO.md", ".envrc" },
   command = "let b:copilot_enabled = v:false",
   group = todo_group,
+})
+vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+  pattern = "TODO.md",
+  group = todo_group,
+  callback = setup_todo_highlights,
 })
