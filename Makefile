@@ -39,4 +39,5 @@ install:
 	ln -snf $(CURDIR)/bin/ec2_connect ~/bin/ec2_connect || true
 	ln -snf $(CURDIR)/bin/op_add_user ~/bin/op_add_user || true
 	ln -snf $(CURDIR)/bin/op_view_item ~/bin/op_view_item || true
+	ln -snf $(CURDIR)/bin/tmux-sessionizer ~/bin/tmux-sessionizer || true
 
