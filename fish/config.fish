@@ -38,6 +38,7 @@ abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
 abbr -a n nvim
 abbr -a dc docker compose
 abbr -a dcl docker compose logs --tail=10 -f
+abbr -a t tmux-sessionizer
 
 # aichat
 abbr -a ai aichat
