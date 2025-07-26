@@ -1,8 +1,10 @@
 local ls = require("luasnip")
+local extras = require("luasnip.extras")
 
 local s = ls.s
 local t = ls.text_node
 local i = ls.insert_node
+local rep = extras.rep
 return {
   s({
     trig = "assertcallcount",
@@ -23,5 +25,15 @@ return {
     i(2, "1"),
     t("] == "),
     i(3),
+  }),
+  s({
+    trig = "printvar",
+    name = 'print("A:", A)',
+  }, {
+    t('print("'),
+    rep(1),
+    t(':", '),
+    i(1, "variable"),
+    t(")"),
   }),
 }
