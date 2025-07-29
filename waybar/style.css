@@ -78,3 +78,19 @@ window#waybar {
 #custom-vpn.disconnected {
   color: @subtext1;
 }
+#bluetooth {
+  color: #ffffff;
+  padding-right: 6px;
+}
+
+/* Style when bluetooth is on/connected */
+#bluetooth.on,
+#bluetooth.connected {
+  color: @blue;
+}
+
+/* Style when bluetooth is off/disabled */
+#bluetooth.off,
+#bluetooth.disabled {
+  color: #ffffff;
+}

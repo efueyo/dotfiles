@@ -9,6 +9,7 @@
     "temperature",
     "network",
     "custom/vpn",
+    "bluetooth",
     "pulseaudio",
     "battery",
     "custom/exit",
@@ -46,6 +47,14 @@
     "format-plugged": "{capacity}% ",
     "format-alt": "{time} {icon}",
     "format-icons": ["", "", "", "", ""],
+  },
+  "bluetooth": {
+    "format": "",
+    "format-connected": " ({num_connections})",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "on-click": "blueman-manager",
   },
   "network": {
     // "interface": "wlp2*", // (Optional) To force the use of this interface
