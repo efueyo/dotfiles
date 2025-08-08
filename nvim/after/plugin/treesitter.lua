@@ -42,6 +42,7 @@ require("nvim-treesitter.configs").setup({
     "sql",
     "make",
     "css",
+    "bash",
   },
   playground = {
     enable = true,
