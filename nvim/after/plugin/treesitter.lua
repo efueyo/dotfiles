@@ -32,8 +32,11 @@ require("nvim-treesitter.configs").setup({
   },
   ensure_installed = {
     "go",
+    "gosum",
+    "gomod",
     "dockerfile",
     "python",
+    "requirements",
     "tsx",
     "graphql",
     "json",
