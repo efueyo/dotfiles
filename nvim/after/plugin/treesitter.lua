@@ -48,6 +48,7 @@ require("nvim-treesitter.configs").setup({
     "bash",
     "toml",
     "gitignore",
+    "csv",
   },
   playground = {
     enable = true,
