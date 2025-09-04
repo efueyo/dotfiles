@@ -5,7 +5,5 @@ if vim.fn.isdirectory(local_path) == 1 then
     dir = local_path,
   }
 else
-  return {
-    "efueyo/mailman.nvim",
-  }
+  return {}
 end
