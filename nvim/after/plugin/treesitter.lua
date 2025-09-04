@@ -49,6 +49,7 @@ require("nvim-treesitter.configs").setup({
     "toml",
     "gitignore",
     "csv",
+    "fish",
   },
   playground = {
     enable = true,
