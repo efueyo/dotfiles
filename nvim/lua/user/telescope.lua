@@ -30,7 +30,12 @@ telescope.setup({
 })
 telescope.load_extension("fzy_native")
 telescope.load_extension("ui-select")
-telescope.load_extension("mailman")
+
+-- Only load mailman extension if available
+local mailman_ok, _ = pcall(require, "mailman")
+if mailman_ok then
+  telescope.load_extension("mailman")
+end
 
 local M = {}
 M.git_branches = function()

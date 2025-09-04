@@ -33,5 +33,9 @@ nmap("<leader>/", function()
 		previewer = false,
 	}))
 end, "[/] Fuzzily search in current buffer]")
-nmap("<leader>mr", telescope.extensions.mailman.requests, "[M]ailman [R]equests")
-nmap("<leader>me", telescope.extensions.mailman.environments, "[M]ailman [E]nviornments")
+-- Only set mailman keymaps if available
+local mailman_ok, _ = pcall(require, "mailman")
+if mailman_ok then
+  nmap("<leader>mr", telescope.extensions.mailman.requests, "[M]ailman [R]equests")
+  nmap("<leader>me", telescope.extensions.mailman.environments, "[M]ailman [E]nviornments")
+end
