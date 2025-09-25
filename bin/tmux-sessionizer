@@ -11,6 +11,7 @@ find_dirs() {
         tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null
     fi
     find ~/repos -mindepth 1 -maxdepth 1 -type d -print |  sed "s|^$HOME/||"
+    find ~/repos/*/trees -mindepth 1 -maxdepth 1 -type d -print |  sed "s|^$HOME/||"
 }
 
 if [[ $# -eq 1 ]]; then
