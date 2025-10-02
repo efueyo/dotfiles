@@ -24,17 +24,187 @@ When a user describes a feature to implement, you will:
 
 ### PROMPT.md
 
-A comprehensive guide for the implementing agent that includes:
+A comprehensive guide for the implementing agent that includes these **mandatory sections**:
 
-- **Feature Overview**: Clear description of what's being built and why
-- **Technical Context**: Relevant architecture, patterns, and constraints from CLAUDE.md
-- **Language-Specific Guidelines**:
-  - For Python: Ruff compliance, type hints, no `any` types, PEP 8 adherence
-  - For TypeScript: Strict typing, no `any`, proper React patterns, ESLint compliance
-  - For Go: Proper error handling, idiomatic Go patterns, compilation requirements
-- **Implementation Instructions**: How to read and execute the FIX_PLAN
-- **Quality Standards**: Testing requirements, code review criteria, verification steps
-- **Commit Protocol**: How to update FIX_PLAN and commit changes after each item
+#### 1. Header: Feature Name and Critical Instructions
+
+```markdown
+# [Feature Name] Implementation Agent
+
+You are tasked with implementing [feature description]. The goal is to [specific outcome].
+
+## Your Task
+
+**CRITICAL: IMPLEMENT ONLY ONE ITEM AT A TIME**
+
+1. **Read the [feature]_plan.md** to understand the implementation strategy
+2. **Pick the NEXT SINGLE uncompleted item** from the sequential task list (start with item 1 if none are completed)
+3. **Implement ONLY that specific item completely** ensuring [feature-specific validation]
+4. **Verify no compilation errors** with build commands and **run [linter] linting**
+5. **Update the [feature]_plan.md** to mark ONLY that item as completed
+6. **Commit your changes** with a descriptive message
+7. **STOP IMMEDIATELY** after committing - do not proceed to the next item
+
+**DO NOT IMPLEMENT MULTIPLE ITEMS IN ONE SESSION. Each item must be implemented, tested, committed, and reviewed separately before proceeding to the next item.**
+```
+
+#### 2. Application Context
+
+Describe the current state and architecture:
+
+```markdown
+## Application Context
+
+This is a [tech stack description] that [current purpose]. Currently [current state - e.g., "has authentication but no multitenancy"].
+
+### Current Architecture
+
+**Frontend**: [Framework + version + styling]
+- **Structure**: `path/to/src/` contains the main application
+  - `subdirectory/` - [Purpose]
+  - `another/` - [Purpose]
+- **State Management**: [Approach]
+- **Routing**: [Library and version]
+- **Styling**: [System and conventions]
+
+**Backend**: [Language + framework + patterns]
+- **Structure**: `path/to/src/` contains the main application
+  - `http/` - [Purpose]
+  - `domain/` - [Purpose]
+  - `data/` - [Purpose]
+- **Deployment**: [Environment details]
+- **Dependency Injection**: [Pattern used]
+
+### Key Frontend Patterns
+- [Pattern 1]: [Explanation with example]
+- [Pattern 2]: [Explanation with example]
+
+### Key Backend Patterns
+- [Pattern 1]: [Explanation with example]
+- [Pattern 2]: [Explanation with example]
+
+### [Feature-Specific] Strategy
+- [Key architectural decision 1]
+- [Key architectural decision 2]
+```
+
+#### 3. Implementation Guidelines
+
+Language-specific requirements with code examples:
+
+```markdown
+## Implementation Guidelines
+
+### TypeScript Requirements
+- Define explicit types for all props, state, and function parameters
+- Use interfaces for complex objects
+- Import React types with `import type { ReactNode } from 'react'`
+- Handle all Promises with `void`, `await`, or `.catch()`
+- Use `useState<type>()` with explicit types
+
+### React Patterns
+- Use functional components with hooks
+- Extract complex logic into custom hooks (`useSomething`)
+- Use design system components (Typography instead of h1)
+- Follow existing module structure in `web/src/modules/`
+
+### FastAPI Patterns
+- Follow CQRS pattern (separate commands/queries)
+- Use dependency injection following the service container pattern
+- Implement domain protocols/interfaces
+- Add proper error handling and logging
+- Use Pydantic models for request/response
+
+### Python Code Quality
+- **CRITICAL: Use ruff for linting and formatting** - Run `uv run ruff check` and `uv run ruff check --fix` before committing
+- All Python code must pass ruff linting with no errors or warnings
+- Use ruff format to ensure consistent code formatting
+- Follow PEP 8 style guidelines as enforced by ruff
+- Import organization: stdlib → third-party → local imports
+
+### Pre-commit Hook Handling (if applicable)
+- **CRITICAL: Handle pre-commit hook failures properly**
+- When a pre-commit hook fails (e.g., `ruff-format` hook with status "Failed - files were modified by this hook"):
+  1. The commit has NOT succeeded - the hook modified files but did not commit them
+  2. **IMMEDIATELY** run `git add .` to stage the hook's formatting changes
+  3. **IMMEDIATELY** run the same commit command again - this will commit ALL changes (your work + formatting) in one commit
+  4. **NEVER** create a separate commit just for formatting - the formatting changes should be included in your original commit
+- Always check git status after failed pre-commit hooks to identify modified files
+- Pattern: `git commit -m "original message"` → hook fails → `git add . && git commit -m "original message"`
+
+### [Feature-Specific] Requirements
+- **[Requirement 1]**: [Explanation]
+- **[Requirement 2]**: [Explanation]
+```
+
+#### 4. External Dependencies (if applicable)
+
+```markdown
+## External Dependencies
+
+Some steps require external setup that will be provided:
+- [External requirement 1]
+- [External requirement 2]
+
+**IMPORTANT: When an item is marked as "REQUEST EXTERNAL HELP", you MUST ask the user for help with that specific item instead of skipping to the next item.**
+```
+
+#### 5. Critical Requirements
+
+```markdown
+## Critical Requirements
+
+- **No compilation errors**: Fix all TypeScript/Python issues before completing each item
+- **Build must succeed**: Ensure `npm run build` and backend compilation work
+- **[Feature-specific requirement]**: [Details]
+- **Maintain functionality**: App should work after each step [with specific conditions]
+- **Commit after each step**: Use descriptive commit messages
+```
+
+#### 6. Getting Started
+
+```markdown
+## Getting Started
+
+1. Read `tasks/[feature]/[feature]_plan.md` to understand your specific task
+2. Examine existing [relevant patterns] in `[relevant directories]`
+3. Understand current [related system] patterns in `[paths]`
+4. Implement following the established conventions with [feature-specific context]
+5. Verify compilation with build commands and [linter] linting
+6. Commit your changes
+7. **STOP AND WAIT FOR USER REVIEW**
+
+**IMPORTANT: You MUST implement exactly ONE item from the plan, then STOP. Do not continue to the next item without explicit user approval. This ensures proper review and validation at each step of the [feature] implementation process.**
+```
+
+#### 7. Code Examples (if helpful)
+
+```markdown
+## [Feature Context] Examples
+
+### Backend Patterns
+\```python
+# Example showing expected pattern
+def example_function(org_id: str):
+    # Implementation
+\```
+
+### Frontend Patterns
+\```typescript
+// Example showing expected pattern
+interface Example {
+  field: string;
+}
+\```
+```
+
+#### PROMPT.md Quality Requirements
+
+- Must be specific to the feature being implemented
+- Must reference actual file paths from the project
+- Must include concrete code examples for complex patterns
+- Must clearly state the "stop after one item" workflow
+- Must adapt language requirements to the project's stack
 
 ### FIX_PLAN.md
 
