@@ -1,0 +1,167 @@
+#!/bin/bash
+# ClaudeCode Log Parser - Converts JSON logs to human-readable status
+
+# Color codes
+RESET='\033[0m'
+BOLD='\033[1m'
+DIM='\033[2m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
+RED='\033[0;31m'
+
+# Read from stdin and process each JSON line
+while IFS= read -r line; do
+    # Skip empty lines
+    [[ -z "$line" ]] && continue
+
+    # Parse the JSON
+    TYPE=$(echo "$line" | jq -r '.type // empty' 2>/dev/null)
+
+    case "$TYPE" in
+        "system")
+            SUBTYPE=$(echo "$line" | jq -r '.subtype // empty')
+            if [[ "$SUBTYPE" == "init" ]]; then
+                CWD=$(echo "$line" | jq -r '.cwd')
+                MODEL=$(echo "$line" | jq -r '.model')
+                SESSION=$(echo "$line" | jq -r '.session_id' | cut -c1-8)
+                echo -e "${BOLD}${CYAN}╔════════════════════════════════════════════════════════════════╗${RESET}"
+                echo -e "${BOLD}${CYAN}║${RESET} ${BOLD}Session Started${RESET}                                                ${BOLD}${CYAN}║${RESET}"
+                echo -e "${BOLD}${CYAN}╠════════════════════════════════════════════════════════════════╣${RESET}"
+                echo -e "${BOLD}${CYAN}║${RESET} Directory: ${GREEN}${CWD}${RESET}"
+                echo -e "${BOLD}${CYAN}║${RESET} Model:     ${YELLOW}${MODEL}${RESET}"
+                echo -e "${BOLD}${CYAN}║${RESET} Session:   ${DIM}${SESSION}...${RESET}"
+                echo -e "${BOLD}${CYAN}╚════════════════════════════════════════════════════════════════╝${RESET}"
+                echo ""
+            fi
+            ;;
+
+        "assistant")
+            # Get the content array
+            CONTENT_TYPE=$(echo "$line" | jq -r '.message.content[0].type // empty')
+
+            if [[ "$CONTENT_TYPE" == "text" ]]; then
+                # Assistant is saying something
+                TEXT=$(echo "$line" | jq -r '.message.content[0].text')
+
+                # Skip system reminders
+                if echo "$TEXT" | grep -q "system-reminder"; then
+                    continue
+                fi
+
+                echo -e "${BOLD}${BLUE}Claude:${RESET} ${TEXT}"
+                echo ""
+
+            elif [[ "$CONTENT_TYPE" == "tool_use" ]]; then
+                # Assistant is using a tool
+                TOOL=$(echo "$line" | jq -r '.message.content[0].name')
+
+                case "$TOOL" in
+                    "Read")
+                        FILE=$(echo "$line" | jq -r '.message.content[0].input.file_path')
+                        OFFSET=$(echo "$line" | jq -r '.message.content[0].input.offset // empty')
+                        LIMIT=$(echo "$line" | jq -r '.message.content[0].input.limit // empty')
+
+                        if [[ -n "$OFFSET" ]] || [[ -n "$LIMIT" ]]; then
+                            echo -e "${CYAN}  → Reading${RESET} ${FILE} ${DIM}(partial)${RESET}"
+                        else
+                            echo -e "${CYAN}  → Reading${RESET} ${FILE}"
+                        fi
+                        ;;
+
+                    "Write")
+                        FILE=$(echo "$line" | jq -r '.message.content[0].input.file_path')
+                        echo -e "${GREEN}  ✓ Writing${RESET} ${FILE}"
+                        ;;
+
+                    "Edit")
+                        FILE=$(echo "$line" | jq -r '.message.content[0].input.file_path')
+                        OLD=$(echo "$line" | jq -r '.message.content[0].input.old_string' | head -c 50)
+                        echo -e "${YELLOW}  ✎ Editing${RESET} ${FILE}"
+                        ;;
+
+                    "Bash")
+                        COMMAND=$(echo "$line" | jq -r '.message.content[0].input.command' | head -c 80)
+                        DESC=$(echo "$line" | jq -r '.message.content[0].input.description // empty')
+
+                        if [[ -n "$DESC" ]]; then
+                            echo -e "${MAGENTA}  $ ${DESC}${RESET}"
+                            echo -e "${DIM}    ${COMMAND}${RESET}"
+                        else
+                            echo -e "${MAGENTA}  $ ${COMMAND}${RESET}"
+                        fi
+                        ;;
+
+                    "TodoWrite")
+                        TODOS=$(echo "$line" | jq -r '.message.content[0].input.todos[]? | "[\(.status)] \(.content)"')
+                        if [[ -n "$TODOS" ]]; then
+                            echo -e "${BOLD}${YELLOW}  ☐ Todo List Updated:${RESET}"
+                            while IFS= read -r todo; do
+                                STATUS=$(echo "$todo" | grep -oP '\[\K[^\]]+')
+                                CONTENT=$(echo "$todo" | sed 's/\[.*\] //')
+
+                                case "$STATUS" in
+                                    "completed")
+                                        echo -e "${GREEN}    ✓${RESET} ${DIM}${CONTENT}${RESET}"
+                                        ;;
+                                    "in_progress")
+                                        echo -e "${YELLOW}    ▸${RESET} ${BOLD}${CONTENT}${RESET}"
+                                        ;;
+                                    "pending")
+                                        echo -e "${DIM}    ○${RESET} ${CONTENT}"
+                                        ;;
+                                esac
+                            done <<< "$TODOS"
+                        fi
+                        ;;
+
+                    "Glob")
+                        PATTERN=$(echo "$line" | jq -r '.message.content[0].input.pattern')
+                        echo -e "${CYAN}  → Searching${RESET} ${PATTERN}"
+                        ;;
+
+                    "Grep")
+                        PATTERN=$(echo "$line" | jq -r '.message.content[0].input.pattern')
+                        echo -e "${CYAN}  → Searching${RESET} pattern: ${PATTERN}"
+                        ;;
+
+                    "Task")
+                        AGENT=$(echo "$line" | jq -r '.message.content[0].input.subagent_type // "general"')
+                        DESC=$(echo "$line" | jq -r '.message.content[0].input.description // empty')
+                        echo -e "${BOLD}${MAGENTA}  ⚡ Launching agent:${RESET} ${AGENT}"
+                        [[ -n "$DESC" ]] && echo -e "${DIM}     ${DESC}${RESET}"
+                        ;;
+
+                    *)
+                        echo -e "${DIM}  ⋯ ${TOOL}${RESET}"
+                        ;;
+                esac
+            fi
+            ;;
+
+        "user")
+            # Tool results - only show brief info for some tools
+            CONTENT=$(echo "$line" | jq -r '.message.content[0].content // empty' 2>/dev/null)
+
+            # Check for errors
+            if echo "$CONTENT" | grep -q "<error>"; then
+                ERROR=$(echo "$CONTENT" | grep -oP '<error>\K[^<]+' | head -1)
+                echo -e "${RED}    ✗ Error:${RESET} ${ERROR}"
+                echo ""
+            fi
+
+            # Check for Bash command results
+            if echo "$line" | jq -e '.message.content[0].type == "tool_result"' > /dev/null 2>&1; then
+                TOOL_ID=$(echo "$line" | jq -r '.message.content[0].tool_use_id // empty')
+                # For Bash results, we could show exit status or output summary
+                # But for now, we'll keep it minimal to avoid clutter
+                :
+            fi
+            ;;
+    esac
+done
+
+# Add a final newline
+echo ""

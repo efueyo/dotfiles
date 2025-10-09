@@ -36,10 +36,12 @@ install:
 	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true
 	ln -snf $(CURDIR)/bin/list_instances ~/bin/list_instances || true
 	ln -snf $(CURDIR)/bin/add_my_ip_to_sec_group ~/bin/add_my_ip_to_sec_group || true
+	ln -snf $(CURDIR)/bin/toggle_ec2_instance ~/bin/toggle_ec2_instance || true
 	ln -snf $(CURDIR)/bin/ec2_connect ~/bin/ec2_connect || true
 	ln -snf $(CURDIR)/bin/op_add_user ~/bin/op_add_user || true
 	ln -snf $(CURDIR)/bin/op_view_item ~/bin/op_view_item || true
 	ln -snf $(CURDIR)/bin/tmux-sessionizer ~/bin/tmux-sessionizer || true
+	ln -snf $(CURDIR)/bin/parse_claude_output ~/bin/parse_claude_output || true
 	echo "------- Claude Agents -------"
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
 
