@@ -13,13 +13,13 @@ _select_region() {
 _select_instance() {
   echo
   echo "Select the EC2 instance: "
-  
+
   # Get instances with their status and format for selection
   instances_data=$(aws ec2 describe-instances \
     --region $region \
     --query 'Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`].Value|[0],State.Name]' \
     --output text)
-  
+
   # Format instances for fzf display
   formatted_instances=""
   while IFS=$'\t' read -r instance_id name state; do
@@ -27,7 +27,7 @@ _select_instance() {
     if [ "$name" == "None" ] || [ -z "$name" ]; then
       name="<no-name>"
     fi
-    
+
     # Determine action based on state
     case "$state" in
       "running")
@@ -49,18 +49,18 @@ _select_instance() {
         action="-> ($state)"
         ;;
     esac
-    
+
     formatted_instances+="$instance_id $name $state $action"$'\n'
   done <<< "$instances_data"
-  
+
   if [ -z "$formatted_instances" ]; then
     echo "No EC2 instances found in region $region"
     exit 1
   fi
-  
+
   # Use fzf to select instance
   selected=$(echo "$formatted_instances" | fzf --reverse --height 40%)
-  
+
   # Extract instance details
   instance_id=$(echo "$selected" | awk '{print $1}')
   instance_name=$(echo "$selected" | awk '{print $2}')
@@ -81,14 +81,14 @@ _confirm_action() {
       exit 1
       ;;
   esac
-  
+
   echo "=> About to $action instance \"$instance_name ($instance_id)\" in region \"$region\""
-  
+
   while true; do
     read -p "Is that information ok? [y/n]" yn
     case $yn in
       [yY] )
-        echo "Thank you!, ${action,,}ing the instance."
+        echo "Thank you!."
         _toggle_instance
         break;;
       [nN] )
