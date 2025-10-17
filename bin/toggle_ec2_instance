@@ -62,9 +62,11 @@ _select_instance() {
   selected=$(echo "$formatted_instances" | fzf --reverse --height 40%)
 
   # Extract instance details
+  # Format is: instance_id name... state -> ACTION
+  # Parse from the end since the last 3 fields are always: state -> ACTION
   instance_id=$(echo "$selected" | awk '{print $1}')
-  instance_name=$(echo "$selected" | awk '{print $2}')
-  instance_state=$(echo "$selected" | awk '{print $3}')
+  instance_state=$(echo "$selected" | awk '{print $(NF-2)}')
+  instance_name=$(echo "$selected" | awk '{for(i=2;i<=NF-3;i++) printf "%s%s", $i, (i<NF-3 ? " " : "")}')
 }
 
 _confirm_action() {
