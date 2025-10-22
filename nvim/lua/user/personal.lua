@@ -15,6 +15,37 @@ local function setup_todo_highlights()
       end
     end
   end
+  local function hash_string(str)
+    local hash = 0
+    for i = 1, #str do
+      hash = (hash * 31 + string.byte(str, i)) % 2147483647
+    end
+    return hash
+  end
+
+  -- Catppuccin-inspired colors (more vibrant)
+  local colors = {
+    "#f5c2e7",
+    "#cba6f7",
+    "#f38ba8",
+    "#fab387",
+    "#f9e2af",
+    "#a6e3a1",
+    "#94e2d5",
+    "#89dceb",
+    "#74c7ec",
+    "#89b4fa",
+    "#b4befe",
+    "#f5a97f",
+    "#f28fad",
+    "#96cdfb",
+  }
+  local tag_colors = {}
+  for tag in pairs(unique_tags) do
+    local hash = hash_string(tag)
+    tag_colors[tag] = colors[(hash % #colors) + 1]
+  end
+
   local tags = {}
   for tag in pairs(unique_tags) do
     table.insert(tags, tag)
@@ -22,13 +53,6 @@ local function setup_todo_highlights()
   table.sort(tags, function(a, b)
     return string.lower(a) < string.lower(b)
   end)
-
-
-  local colors = { "#FF8F30", "#B966E8", "#9AFF32", "#FF5B37", "#FFB337", "#F0FF30" }
-  local tag_colors = {}
-  for i, tag in ipairs(tags) do
-    tag_colors[tag] = colors[(i - 1) % #colors + 1]
-  end
 
   local syntax_match_cmds = {}
   local dynamic_hl_group_names = {}
