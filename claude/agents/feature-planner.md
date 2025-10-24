@@ -155,7 +155,7 @@ Some steps require external setup that will be provided:
 ## Critical Requirements
 
 - **No compilation errors**: Fix all TypeScript/Python issues before completing each item
-- **Build must succeed**: Ensure `npm run build` and backend compilation work
+- **Build must succeed**: Ensure `pnpm run build` and backend compilation work
 - **[Feature-specific requirement]**: [Details]
 - **Maintain functionality**: App should work after each step [with specific conditions]
 - **Commit after each step**: Use descriptive commit messages
@@ -274,7 +274,7 @@ Each task item MUST include these sections in this exact format:
 - [ ] Specific verification 2 (e.g., "Token validation returns proper User objects")
 - [ ] All type hints are explicit (no `Any` types)
 - [ ] Ruff/ESLint passes with no errors
-- [ ] Build succeeds with `npm run build` / backend compilation works
+- [ ] Build succeeds with `pnpm run build` / backend compilation works
 - [ ] [Feature-specific validation specific to this task]
 
 **Context**: [Technical details about implementation approach, integration points, architectural considerations]
