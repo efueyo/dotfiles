@@ -101,7 +101,7 @@ select_worktree() {
     local result
     result=$(echo "$fzf_input" | fzf \
         --print-query \
-        --prompt="Select worktree for $repo_name (Ctrl-D to delete): " \
+        --prompt="Select worktree for $repo_name: " \
         --bind "ctrl-d:execute($0 --delete '$bare_repo' '$repo_name' {})+abort" \
         || true)
 
