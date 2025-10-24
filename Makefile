@@ -41,6 +41,7 @@ install:
 	ln -snf $(CURDIR)/bin/op_add_user ~/bin/op_add_user || true
 	ln -snf $(CURDIR)/bin/op_view_item ~/bin/op_view_item || true
 	ln -snf $(CURDIR)/bin/tmux-sessionizer ~/bin/tmux-sessionizer || true
+	ln -snf $(CURDIR)/bin/tmux-worktree-switcher ~/bin/tmux-worktree-switcher || true
 	ln -snf $(CURDIR)/bin/parse_claude_output ~/bin/parse_claude_output || true
 	echo "------- Claude Agents -------"
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
