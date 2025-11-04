@@ -170,10 +170,51 @@ Some steps require external setup that will be provided:
 - **Build must succeed**: Ensure `pnpm run build` and backend compilation work
 - **[Feature-specific requirement]**: [Details]
 - **Maintain functionality**: App should work after each step [with specific conditions]
-- **Commit after each step**: Use descriptive commit messages
+- **Commit after each step**: Use descriptive commit messages following the format below
 ```
 
-#### 6. Getting Started
+#### 6. Commit Message Guidelines
+
+Use this format for all commits:
+
+```markdown
+## Commit Message Guidelines
+
+**Format**: `<type>(item-<number>): <imperative description>`
+
+**Types**:
+- `feat` - New feature or functionality
+- `fix` - Bug fix from implementation issues
+- `refactor` - Code restructuring without behavior change
+- `test` - Adding or updating tests
+- `docs` - Documentation updates
+- `chore` - Dependencies, configs, build changes
+
+**Rules**:
+- Reference item number: `(item-1)`, `(item-3)`, etc.
+- Use imperative mood: "add" not "added" or "adds"
+- Keep description under 72 characters
+- Add optional body for complex changes explaining WHY (not what)
+
+**Examples**:
+```
+feat(item-1): add JWT token validation service
+feat(item-3): integrate auth middleware with user routes
+fix(item-2): handle expired tokens gracefully
+test(item-5): add unit tests for token validation
+refactor(item-4): extract session logic into separate service
+```
+
+**Bad examples to avoid**:
+```
+❌ "item 1" - No type, too vague
+❌ "Added authentication" - Past tense, no item number
+❌ "WIP" or "fix stuff" - Not descriptive
+❌ "feat: stuff" - No item number
+```
+```
+
+#### 7. Getting Started
 
 ```markdown
 ## Getting Started
@@ -189,7 +230,7 @@ Some steps require external setup that will be provided:
 **IMPORTANT: You MUST implement exactly ONE item from the plan, then STOP. Do not continue to the next item without explicit user approval. This ensures proper review and validation at each step of the [feature] implementation process.**
 ```
 
-#### 7. Code Examples (if helpful)
+#### 8. Code Examples (if helpful)
 
 ````markdown
 ## [Feature Context] Examples
@@ -291,6 +332,7 @@ Each task item MUST include these sections in this exact format:
 - [ ] Ruff/ESLint passes with no errors
 - [ ] Build succeeds with `pnpm run build` / backend compilation works
 - [ ] [Feature-specific validation specific to this task]
+- [ ] Changes committed with proper format: `<type>(item-X): <description>`
 
 **Context**: [Technical details about implementation approach, integration points, architectural considerations]
 ```
@@ -330,6 +372,7 @@ Each task item MUST include these sections in this exact format:
 - [ ] All type hints are explicit (no `Any` types)
 - [ ] Ruff passes with no errors: `uv run ruff check`
 - [ ] All imports resolve correctly
+- [ ] Changes committed with format: `feat(item-1): add JWT token validation service`
 
 **Context**: Uses PyJWT library for token validation. Integrates with existing User domain model. Sessions will be stored in-memory initially (Redis integration in later task). Follows existing service patterns in `services/` directory.
 ```
