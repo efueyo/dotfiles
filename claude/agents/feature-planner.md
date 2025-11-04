@@ -37,11 +37,11 @@ You are tasked with implementing [feature description]. The goal is to [specific
 
 **CRITICAL: IMPLEMENT ONLY ONE ITEM AT A TIME**
 
-1. **Read the [feature]_plan.md** to understand the implementation strategy
+1. **Read the FIX_PLAN.md** to understand the implementation strategy
 2. **Pick the NEXT SINGLE uncompleted item** from the sequential task list (start with item 1 if none are completed)
 3. **Implement ONLY that specific item completely** ensuring [feature-specific validation]
 4. **Verify no compilation errors** with build commands and **run [linter] linting**
-5. **Update the [feature]_plan.md** to mark ONLY that item as completed
+5. **Update the FIX_PLAN.md** to mark ONLY that item as completed
 6. **Commit your changes** with a descriptive message
 7. **STOP IMMEDIATELY** after committing - do not proceed to the next item
 
@@ -60,6 +60,7 @@ This is a [tech stack description] that [current purpose]. Currently [current st
 ### Current Architecture
 
 **Frontend**: [Framework + version + styling]
+
 - **Structure**: `path/to/src/` contains the main application
   - `subdirectory/` - [Purpose]
   - `another/` - [Purpose]
@@ -68,6 +69,7 @@ This is a [tech stack description] that [current purpose]. Currently [current st
 - **Styling**: [System and conventions]
 
 **Backend**: [Language + framework + patterns]
+
 - **Structure**: `path/to/src/` contains the main application
   - `http/` - [Purpose]
   - `domain/` - [Purpose]
@@ -76,14 +78,17 @@ This is a [tech stack description] that [current purpose]. Currently [current st
 - **Dependency Injection**: [Pattern used]
 
 ### Key Frontend Patterns
+
 - [Pattern 1]: [Explanation with example]
 - [Pattern 2]: [Explanation with example]
 
 ### Key Backend Patterns
+
 - [Pattern 1]: [Explanation with example]
 - [Pattern 2]: [Explanation with example]
 
 ### [Feature-Specific] Strategy
+
 - [Key architectural decision 1]
 - [Key architectural decision 2]
 ```
@@ -96,6 +101,7 @@ Language-specific requirements with code examples:
 ## Implementation Guidelines
 
 ### TypeScript Requirements
+
 - Define explicit types for all props, state, and function parameters
 - Use interfaces for complex objects
 - Import React types with `import type { ReactNode } from 'react'`
@@ -103,12 +109,14 @@ Language-specific requirements with code examples:
 - Use `useState<type>()` with explicit types
 
 ### React Patterns
+
 - Use functional components with hooks
 - Extract complex logic into custom hooks (`useSomething`)
 - Use design system components (Typography instead of h1)
 - Follow existing module structure in `web/src/modules/`
 
 ### FastAPI Patterns
+
 - Follow CQRS pattern (separate commands/queries)
 - Use dependency injection following the service container pattern
 - Implement domain protocols/interfaces
@@ -116,6 +124,7 @@ Language-specific requirements with code examples:
 - Use Pydantic models for request/response
 
 ### Python Code Quality
+
 - **CRITICAL: Use ruff for linting and formatting** - Run `uv run ruff check` and `uv run ruff check --fix` before committing
 - All Python code must pass ruff linting with no errors or warnings
 - Use ruff format to ensure consistent code formatting
@@ -123,6 +132,7 @@ Language-specific requirements with code examples:
 - Import organization: stdlib → third-party → local imports
 
 ### Pre-commit Hook Handling (if applicable)
+
 - **CRITICAL: Handle pre-commit hook failures properly**
 - When a pre-commit hook fails (e.g., `ruff-format` hook with status "Failed - files were modified by this hook"):
   1. The commit has NOT succeeded - the hook modified files but did not commit them
@@ -133,6 +143,7 @@ Language-specific requirements with code examples:
 - Pattern: `git commit -m "original message"` → hook fails → `git add . && git commit -m "original message"`
 
 ### [Feature-Specific] Requirements
+
 - **[Requirement 1]**: [Explanation]
 - **[Requirement 2]**: [Explanation]
 ```
@@ -143,6 +154,7 @@ Language-specific requirements with code examples:
 ## External Dependencies
 
 Some steps require external setup that will be provided:
+
 - [External requirement 1]
 - [External requirement 2]
 
@@ -166,7 +178,7 @@ Some steps require external setup that will be provided:
 ```markdown
 ## Getting Started
 
-1. Read `tasks/[feature]/[feature]_plan.md` to understand your specific task
+1. Read `tasks/[feature]/FIX_PLAN.md` to understand your specific task
 2. Examine existing [relevant patterns] in `[relevant directories]`
 3. Understand current [related system] patterns in `[paths]`
 4. Implement following the established conventions with [feature-specific context]
@@ -179,24 +191,27 @@ Some steps require external setup that will be provided:
 
 #### 7. Code Examples (if helpful)
 
-```markdown
+````markdown
 ## [Feature Context] Examples
 
 ### Backend Patterns
+
 \```python
+
 # Example showing expected pattern
-def example_function(org_id: str):
-    # Implementation
+
+def example_function(org_id: str): # Implementation
 \```
 
 ### Frontend Patterns
+
 \```typescript
 // Example showing expected pattern
 interface Example {
-  field: string;
+field: string;
 }
 \```
-```
+````
 
 #### PROMPT.md Quality Requirements
 
