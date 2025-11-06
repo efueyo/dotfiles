@@ -41,9 +41,10 @@ You are tasked with implementing [feature description]. The goal is to [specific
 2. **Pick the NEXT SINGLE uncompleted item** from the sequential task list (start with item 1 if none are completed)
 3. **Implement ONLY that specific item completely** ensuring [feature-specific validation]
 4. **Verify no compilation errors** with build commands and **run [linter] linting**
-5. **Update the FIX_PLAN.md** to mark ONLY that item as completed
-6. **Commit your changes** with a descriptive message
-7. **STOP IMMEDIATELY** after committing - do not proceed to the next item
+5. **Update the FIX_PLAN.md** to mark ONLY that item as completed (change status to "Completed")
+6. **Commit your changes** with a descriptive message following the format: `<type>(item-X): <description>`
+7. **Report completion** with a summary: "Item X completed and committed. Ready for review before proceeding to Item Y."
+8. **STOP IMMEDIATELY** - do not proceed to the next item without explicit user approval
 
 **DO NOT IMPLEMENT MULTIPLE ITEMS IN ONE SESSION. Each item must be implemented, tested, committed, and reviewed separately before proceeding to the next item.**
 ```
@@ -183,6 +184,7 @@ Use this format for all commits:
 **Format**: `<type>(item-<number>): <imperative description>`
 
 **Types**:
+
 - `feat` - New feature or functionality
 - `fix` - Bug fix from implementation issues
 - `refactor` - Code restructuring without behavior change
@@ -191,6 +193,7 @@ Use this format for all commits:
 - `chore` - Dependencies, configs, build changes
 
 **Rules**:
+
 - Reference item number: `(item-1)`, `(item-3)`, etc.
 - Use imperative mood: "add" not "added" or "adds"
 - Keep description under 72 characters
@@ -198,20 +201,25 @@ Use this format for all commits:
 
 **Examples**:
 ```
+
 feat(item-1): add JWT token validation service
 feat(item-3): integrate auth middleware with user routes
 fix(item-2): handle expired tokens gracefully
 test(item-5): add unit tests for token validation
 refactor(item-4): extract session logic into separate service
+
 ```
 
 **Bad examples to avoid**:
 ```
+
 ❌ "item 1" - No type, too vague
 ❌ "Added authentication" - Past tense, no item number
 ❌ "WIP" or "fix stuff" - Not descriptive
 ❌ "feat: stuff" - No item number
+
 ```
+
 ```
 
 #### 7. Getting Started
@@ -258,7 +266,8 @@ field: string;
 
 - Must be specific to the feature being implemented
 - Must reference actual file paths from the project
-- Must include concrete code examples for complex patterns
+- Code examples should show **patterns and structure**, not complete implementations (e.g., show the algorithm approach or key logic flow, but let the agent write the actual code)
+- Avoid including full function bodies with 20+ lines of implementation - these belong in the codebase, not the plan
 - Must clearly state the "stop after one item" workflow
 - Must adapt language requirements to the project's stack
 
@@ -281,8 +290,8 @@ A detailed, sequential task list where each item:
 1. **Granularity**: Each task should take 15-45 minutes to complete
 2. **Testability**: Every task should produce verifiable, working code
 3. **Incrementality**: Each task should add value and be committable
-4. **Clarity**: No ambiguity about what needs to be done
-5. **Completeness**: No hidden dependencies or assumed knowledge
+4. **Clarity**: Clear about WHAT needs to be done
+5. **Strategic Guidance**: Provide direction and constraints, not implementation code - the agent will write the actual code
 6. **Avoid Bundling**: Never group "remaining items" or "all other handlers" - list each explicitly
 7. **Time Boxing**: Each task should be completable in 15-45 minutes; split larger tasks
 
@@ -299,10 +308,23 @@ For each task in the FIX_PLAN, ensure:
 
 ## FIX_PLAN Task Structure
 
+### Status Tracking
+
+Each item MUST have a status indicator at the top. Use one of these two values:
+
+- **Not Started**: Item has not been implemented yet
+- **Completed**: Item has been fully implemented, tested, and committed
+
+The implementing agent will update this status as they work through the plan.
+
+### Task Format
+
 Each task item MUST include these sections in this exact format:
 
 ```markdown
 ## Item [Number]: [Clear, Specific Title]
+
+**Status**: Not Started | Completed
 
 **Purpose**: [One-line goal describing what this task accomplishes]
 
@@ -310,10 +332,12 @@ Each task item MUST include these sections in this exact format:
 
 **What to do**:
 
-1. [Specific action 1 with file path if applicable]
-2. [Specific action 2 with exact method/function names]
-3. [Specific action 3 with expected outcome]
-   ...
+1. [High-level action 1 - WHAT to accomplish, not HOW - e.g., "Create authentication service with token validation"]
+2. [High-level action 2 - e.g., "Add session management with expiry handling"]
+3. [High-level action 3 - e.g., "Integrate with existing User model"]
+4. [Verification step - e.g., "Verify all methods have proper type hints and error handling"]
+
+*Note: Describe WHAT needs to be accomplished, not exact method signatures or implementation details. The implementing agent will determine the specific implementation approach.*
 
 **Files to create**:
 
@@ -335,12 +359,21 @@ Each task item MUST include these sections in this exact format:
 - [ ] Changes committed with proper format: `<type>(item-X): <description>`
 
 **Context**: [Technical details about implementation approach, integration points, architectural considerations]
+
+_The Context section must include:_
+
+- **Technical approach**: What data structures, algorithms, or patterns will be used
+- **Integration points**: Which existing systems/files will this interact with
+- **Concrete values**: Specific numbers, file paths, method names, or configuration values
+- **Gotchas** (if any): Common mistakes to avoid or important considerations
 ```
 
 ### Example Task
 
 ```markdown
 ## Item 1: Create User Authentication Service
+
+**Status**: Not Started
 
 **Purpose**: Implement core JWT token validation for OAuth2 authentication
 
@@ -388,9 +421,11 @@ Each file should be well-structured, using proper markdown formatting with clear
 
 ## Critical Rules
 
+- **Plans are strategic guidance, not implementation scripts** - provide direction, constraints, and patterns, but let the implementing agent write the actual code
 - **Never create tasks with TODO items** - every task must be fully specified
 - **Never create dependencies on future tasks** - each task must be self-contained
 - **Never bundle remaining work** - "Update all remaining X" is not acceptable; list each X explicitly with its own task
+- **Check for bundling** - if a task has more than 3 distinct sub-features or touches more than 3 different components, split it into multiple tasks
 - **Always estimate task size** - if a task seems >45 minutes, break it into smaller, atomic tasks
 - **Always provide file-specific changes** - not just "update service files" but "update AgentService.ts to add authenticateUser() method"
 - **Always consider the project context** - reference CLAUDE.md for standards and patterns
