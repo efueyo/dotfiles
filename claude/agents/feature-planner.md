@@ -22,7 +22,7 @@ When a user describes a feature to implement, you will:
 
 2. **Create Two Critical Artifacts**:
 
-### PROMPT.md
+### tasks/FEATURE_Y/PROMPT.md
 
 A comprehensive guide for the implementing agent that includes these **mandatory sections**:
 
@@ -37,12 +37,12 @@ You are tasked with implementing [feature description]. The goal is to [specific
 
 **CRITICAL: IMPLEMENT ONLY ONE ITEM AT A TIME**
 
-1. **Read the FIX_PLAN.md** to understand the implementation strategy
+1. **Read the tasks/FEATURE_Y/FIX_PLAN.md** to understand the implementation strategy
 2. **Pick the NEXT SINGLE uncompleted item** from the sequential task list (start with item 1 if none are completed)
 3. **Implement ONLY that specific item completely** ensuring [feature-specific validation]
 4. **Verify no compilation errors** with build commands and **run [linter] linting**
-5. **Update the FIX_PLAN.md** to mark ONLY that item as completed (change status to "Completed")
-6. **Commit your changes** with a descriptive message following the format: `<type>(item-X): <description>`
+5. **Update the tasks/FEATURE_Y/FIX_PLAN.md** to mark ONLY that item as completed (change status to "Completed")
+6. **Commit your changes** with a descriptive message following the format: `<type>(featureY.item-X): <description>`
 7. **Report completion** with a summary: "Item X completed and committed. Ready for review before proceeding to Item Y."
 8. **STOP IMMEDIATELY** - do not proceed to the next item without explicit user approval
 
@@ -181,7 +181,7 @@ Use this format for all commits:
 ```markdown
 ## Commit Message Guidelines
 
-**Format**: `<type>(item-<number>): <imperative description>`
+**Format**: `<type>(featureY.item-<number>): <imperative description>`
 
 **Types**:
 
@@ -202,11 +202,11 @@ Use this format for all commits:
 **Examples**:
 ```
 
-feat(item-1): add JWT token validation service
-feat(item-3): integrate auth middleware with user routes
-fix(item-2): handle expired tokens gracefully
-test(item-5): add unit tests for token validation
-refactor(item-4): extract session logic into separate service
+feat(auth.item-1): add JWT token validation service
+feat(auth.item-3): integrate auth middleware with user routes
+fix(auth.item-2): handle expired tokens gracefully
+test(auth.item-5): add unit tests for token validation
+refactor(auth.item-4): extract session logic into separate service
 
 ```
 
@@ -227,7 +227,7 @@ refactor(item-4): extract session logic into separate service
 ```markdown
 ## Getting Started
 
-1. Read `tasks/[feature]/FIX_PLAN.md` to understand your specific task
+1. Read `tasks/[feature_Y]/FIX_PLAN.md` to understand your specific task
 2. Examine existing [relevant patterns] in `[relevant directories]`
 3. Understand current [related system] patterns in `[paths]`
 4. Implement following the established conventions with [feature-specific context]
@@ -271,7 +271,7 @@ field: string;
 - Must clearly state the "stop after one item" workflow
 - Must adapt language requirements to the project's stack
 
-### FIX_PLAN.md
+### tasks/FEATURE_Y/FIX_PLAN.md
 
 A detailed, sequential task list where each item:
 
@@ -337,7 +337,7 @@ Each task item MUST include these sections in this exact format:
 3. [High-level action 3 - e.g., "Integrate with existing User model"]
 4. [Verification step - e.g., "Verify all methods have proper type hints and error handling"]
 
-*Note: Describe WHAT needs to be accomplished, not exact method signatures or implementation details. The implementing agent will determine the specific implementation approach.*
+_Note: Describe WHAT needs to be accomplished, not exact method signatures or implementation details. The implementing agent will determine the specific implementation approach._
 
 **Files to create**:
 
