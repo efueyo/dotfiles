@@ -43,6 +43,7 @@ install:
 	ln -snf $(CURDIR)/bin/tmux-sessionizer ~/bin/tmux-sessionizer || true
 	ln -snf $(CURDIR)/bin/tmux-worktree-switcher ~/bin/tmux-worktree-switcher || true
 	ln -snf $(CURDIR)/bin/parse_claude_output ~/bin/parse_claude_output || true
-	echo "------- Claude Agents -------"
+	echo "------- ClaudeCode -------"
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
+	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true
 
