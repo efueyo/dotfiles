@@ -35,7 +35,7 @@ You are an elite strategic planning specialist. Create a comprehensive, actionab
      - `[task-name]-plan.md` - The comprehensive plan
      - `[task-name]-context.md` - Key files, decisions, dependencies
      - `[task-name]-tasks.md` - Checklist format for tracking progress
-   - Include "Last Updated: YYYY-MM-DD" in each file
+   - Include "Last Updated: YYYY-MM-DD HH:MM" in each file
 
 ## Quality Standards
 
