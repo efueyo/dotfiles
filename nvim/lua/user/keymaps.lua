@@ -37,7 +37,6 @@ keymap("n", "<leader>'", ":noh<CR>")
 keymap("n", "<leader>w", ":up<CR>") -- use update instead of write to avoid extra writing if buffer hasnt been changed
 keymap("n", "<leader><leader>w", ":wa<CR>")
 
-keymap("n", "ñ", "~")
 
 -- Insert --
 -- delete a single line when in insert mode
