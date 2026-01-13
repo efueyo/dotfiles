@@ -1,0 +1,201 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Check for required tools
+for cmd in op fzf diff; do
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "Error: $cmd not found"
+    exit 1
+  fi
+done
+
+# Sign in to 1Password if needed
+if ! op whoami &> /dev/null; then
+  echo "You are not currently signed in to 1Password. Please sign in:"
+  eval $(op signin)
+fi
+
+usage() {
+  echo "Usage: op_sync_env <push|pull> [file]"
+  echo ""
+  echo "Commands:"
+  echo "  push [file]   Upload .env file to 1Password (default: .env)"
+  echo "  pull [file]   Download from 1Password to file (default: .env)"
+  exit 1
+}
+
+select_vault() {
+  op vault list --format=json |
+    jq -r '.[] | "\(.id)\t\(.name)"' |
+    fzf --reverse --height 40% --with-nth=2 --delimiter='\t' |
+    cut -f1
+}
+
+select_item() {
+  op item list --format=json |
+    jq -r '.[] | "\(.id)\t\(.title) (\(.vault.name))"' |
+    fzf --reverse --height 40% --with-nth=2 --delimiter='\t' |
+    cut -f1
+}
+
+get_item_content() {
+  local item_id="$1"
+  op item get "$item_id" --format=json | jq -r '.fields[] | select(.id == "notesPlain") | .value // empty'
+}
+
+confirm() {
+  local prompt="${1:-Proceed?}"
+  while true; do
+    read -p "$prompt [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      return 0
+    elif [[ $REPLY =~ ^[Nn]$ ]]; then
+      return 1
+    fi
+    echo "Please enter 'y' or 'n'"
+  done
+}
+
+do_push() {
+  local file="${1:-.env}"
+
+  if [[ ! -f "$file" ]]; then
+    echo "Error: File '$file' not found"
+    exit 1
+  fi
+
+  local local_content
+  local_content=$(cat "$file")
+
+  echo "Create new item or update existing?"
+  local action
+  action=$(printf "new\nexisting" | fzf --reverse --height 40%)
+
+  if [[ "$action" == "new" ]]; then
+    echo ""
+    echo "Select vault:"
+    local vault_id
+    vault_id=$(select_vault)
+
+    if [[ -z "$vault_id" ]]; then
+      echo "No vault selected"
+      exit 1
+    fi
+
+    local default_name
+    # Try git remote origin, fallback to current directory name
+    default_name=$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//' || true)
+    default_name="${default_name:-${PWD##*/}}"
+    default_name="${default_name}.env"
+
+    read -p "Enter item name (default: '$default_name'): " item_name
+    item_name="${item_name:-$default_name}"
+
+    echo ""
+    echo "Content to push:"
+    echo "----------------------------------------"
+    echo "$local_content"
+    echo "----------------------------------------"
+
+    if confirm "Create '$item_name' in 1Password?"; then
+      op item create \
+        --category="Secure Note" \
+        --vault="$vault_id" \
+        --title="$item_name" \
+        "notesPlain=$local_content"
+      echo "Created '$item_name'"
+    else
+      echo "Cancelled"
+    fi
+  else
+    echo "Select item to update:"
+    local item_id
+    item_id=$(select_item)
+
+    if [[ -z "$item_id" ]]; then
+      echo "No item selected"
+      exit 1
+    fi
+
+    local remote_content
+    remote_content=$(get_item_content "$item_id")
+
+    if [[ "$local_content" == "$remote_content" ]]; then
+      echo "No changes - local and remote are identical"
+      exit 0
+    fi
+
+    echo ""
+    echo "Changes (remote → local):"
+    echo "----------------------------------------"
+    diff --color=always <(echo "$remote_content") <(echo "$local_content") || true
+    echo "----------------------------------------"
+
+    if confirm "Update item in 1Password?"; then
+      op item edit "$item_id" "notesPlain=$local_content"
+      echo "Updated"
+    else
+      echo "Cancelled"
+    fi
+  fi
+}
+
+do_pull() {
+  local file="${1:-.env}"
+
+  echo "Select item:"
+  local item_id
+  item_id=$(select_item)
+
+  if [[ -z "$item_id" ]]; then
+    echo "No item selected"
+    exit 1
+  fi
+
+  local remote_content
+  remote_content=$(get_item_content "$item_id")
+
+  if [[ -z "$remote_content" ]]; then
+    echo "Error: Item has no notes content"
+    exit 1
+  fi
+
+  if [[ -f "$file" ]]; then
+    local local_content
+    local_content=$(cat "$file")
+
+    if [[ "$local_content" == "$remote_content" ]]; then
+      echo "No changes - local and remote are identical"
+      exit 0
+    fi
+
+    echo ""
+    echo "Changes (local → remote):"
+    echo "----------------------------------------"
+    diff --color=always <(echo "$local_content") <(echo "$remote_content") || true
+    echo "----------------------------------------"
+
+    if ! confirm "Overwrite '$file'?"; then
+      echo "Cancelled"
+      exit 0
+    fi
+  fi
+
+  echo "$remote_content" > "$file"
+  echo "Saved to '$file'"
+}
+
+# Main
+case "${1:-}" in
+  push)
+    do_push "${2:-}"
+    ;;
+  pull)
+    do_pull "${2:-}"
+    ;;
+  *)
+    usage
+    ;;
+esac
