@@ -7,3 +7,4 @@ fish/conf.d/private.fish
 aichat/config.yaml
 aichat/messages.md
 aichat/sessions
+.env
