@@ -13,8 +13,6 @@ install:
 	git config --global core.excludesfile ~/.gitignore || true
 	echo "------- Neovim -------"
 	ln -snf $(CURDIR)/nvim ~/.config/nvim || true
-	echo "------- Aichat -------"
-	ln -snf $(CURDIR)/aichat ~/.config/aichat || true
 	echo "------- Hyprland -------"
 	ln -snf $(CURDIR)/hypr ~/.config/hypr || true
 	echo "------- Kitty -------"

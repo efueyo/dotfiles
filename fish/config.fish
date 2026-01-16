@@ -42,12 +42,6 @@ abbr -a t tmux-sessionizer
 abbr -a ta tmux attach
 abbr -a cc claude
 
-# aichat
-abbr -a ai aichat
-abbr -a aig aichat -m gemini
-abbr -a aid aichat -r dev:
-abbr -a aix aichat -r expert:
-
 abbr -a ficp fish_clipboard_copy
 
 abbr -a act source .venv/bin/activate.fish
