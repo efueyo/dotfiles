@@ -40,6 +40,7 @@ abbr -a dc docker compose
 abbr -a dcl docker compose logs --tail=10 -f
 abbr -a t tmux-sessionizer
 abbr -a ta tmux attach
+abbr -a cc claude
 
 # aichat
 abbr -a ai aichat
