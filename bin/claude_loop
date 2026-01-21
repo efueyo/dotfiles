@@ -1,0 +1,74 @@
+#!/bin/bash
+# Run claude in a loop for a dev plan, resuming from where it left off
+
+set -e
+
+# Color codes
+RESET='\033[0m'
+BOLD='\033[1m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+RED='\033[0;31m'
+
+# Get the plan directory
+if [[ -n "$1" ]]; then
+    PLAN_DIR="$1"
+else
+    # Use fzf to select from ./dev/active/
+    if [[ ! -d "./dev/active" ]]; then
+        echo -e "${RED}Error: ./dev/active directory not found${RESET}"
+        exit 1
+    fi
+
+    PLAN_DIR=$(find ./dev/active -mindepth 1 -maxdepth 1 -type d | fzf --prompt="Select plan: ")
+
+    if [[ -z "$PLAN_DIR" ]]; then
+        echo "No plan selected"
+        exit 0
+    fi
+fi
+
+# Validate directory has required files
+TASKS_FILE="$PLAN_DIR/tasks.json"
+PROMPT_FILE="$PLAN_DIR/prompt.md"
+
+if [[ ! -f "$TASKS_FILE" ]]; then
+    echo -e "${RED}Error: tasks.json not found in $PLAN_DIR${RESET}"
+    exit 1
+fi
+
+if [[ ! -f "$PROMPT_FILE" ]]; then
+    echo -e "${RED}Error: prompt.md not found in $PLAN_DIR${RESET}"
+    exit 1
+fi
+
+# Parse tasks.json
+TOTAL=$(jq 'length' "$TASKS_FILE")
+COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
+
+if [[ "$COMPLETED" -ge "$TOTAL" ]]; then
+    echo -e "${GREEN}All $TOTAL tasks are already completed!${RESET}"
+    exit 0
+fi
+
+START=$((COMPLETED + 1))
+
+echo -e "${BOLD}${CYAN}Plan:${RESET} $PLAN_DIR"
+echo -e "${BOLD}${CYAN}Progress:${RESET} $COMPLETED/$TOTAL completed"
+echo -e "${BOLD}${CYAN}Running:${RESET} tasks $START to $TOTAL"
+echo ""
+
+for i in $(seq "$START" "$TOTAL"); do
+    echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
+    echo -e "${BOLD}${YELLOW}Loop $i of $TOTAL${RESET}"
+    echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
+
+    cat "$PROMPT_FILE" | claude -p --verbose --output-format stream-json --dangerously-skip-permissions | parse_claude_output
+
+    # Re-check completion after each iteration
+    COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
+    echo -e "${GREEN}Completed: $COMPLETED/$TOTAL${RESET}"
+done
+
+echo -e "${BOLD}${GREEN}Loop finished!${RESET}"
