@@ -3,6 +3,16 @@
 
 set -e
 
+# Find claude binary
+if command -v claude &>/dev/null; then
+    CLAUDE_BIN="claude"
+elif [[ -x "$HOME/.claude/local/claude" ]]; then
+    CLAUDE_BIN="$HOME/.claude/local/claude"
+else
+    echo "Error: claude not found in PATH or ~/.claude/local/"
+    exit 1
+fi
+
 # Color codes
 RESET='\033[0m'
 BOLD='\033[1m'
@@ -64,7 +74,7 @@ for i in $(seq "$START" "$TOTAL"); do
     echo -e "${BOLD}${YELLOW}Loop $i of $TOTAL${RESET}"
     echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
 
-    cat "$PROMPT_FILE" | claude -p --verbose --output-format stream-json --dangerously-skip-permissions | parse_claude_output
+    cat "$PROMPT_FILE" | "$CLAUDE_BIN" -p --verbose --output-format stream-json --dangerously-skip-permissions | parse_claude_output
 
     # Re-check completion after each iteration
     COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
