@@ -103,6 +103,37 @@ do_push() {
     read -p "Enter item name (default: '$default_name'): " item_name
     item_name="${item_name:-$default_name}"
 
+    # Check if item with same name already exists in vault
+    local existing_id
+    existing_id=$(op item list --vault="$vault_id" --format=json | jq -r --arg name "$item_name" '.[] | select(.title == $name) | .id' | head -1)
+
+    if [[ -n "$existing_id" ]]; then
+      echo "An item named '$item_name' already exists in this vault."
+      if confirm "Update the existing item instead?"; then
+        local remote_content
+        remote_content=$(get_item_content "$existing_id")
+
+        if [[ "$local_content" == "$remote_content" ]]; then
+          echo "No changes - local and remote are identical"
+          exit 0
+        fi
+
+        echo ""
+        echo "Changes (remote → local):"
+        echo "----------------------------------------"
+        diff --color=always <(echo "$remote_content") <(echo "$local_content") || true
+        echo "----------------------------------------"
+
+        if confirm "Update item in 1Password?"; then
+          op item edit "$existing_id" "notesPlain=$local_content"
+          echo "Updated '$item_name'"
+        else
+          echo "Cancelled"
+        fi
+        return
+      fi
+    fi
+
     echo ""
     echo "Content to push:"
     echo "----------------------------------------"
