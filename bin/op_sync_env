@@ -10,12 +10,6 @@ for cmd in op fzf diff; do
   fi
 done
 
-# Sign in to 1Password if needed
-if ! op whoami &> /dev/null; then
-  echo "You are not currently signed in to 1Password. Please sign in:"
-  eval $(op signin)
-fi
-
 usage() {
   echo "Usage: op_sync_env <push|pull> [file]"
   echo ""
@@ -24,6 +18,22 @@ usage() {
   echo "  pull [file]   Download from 1Password to file (default: .env)"
   exit 1
 }
+
+# Check for push/pull argument before doing anything else
+case "${1:-}" in
+  push|pull) ;;
+  *) usage ;;
+esac
+
+# Sign in to 1Password if needed
+if ! op whoami &> /dev/null; then
+  echo "You are not currently signed in to 1Password. Please sign in:"
+  eval $(op signin)
+  if ! op whoami &> /dev/null; then
+    echo "Error: 1Password login failed"
+    exit 1
+  fi
+fi
 
 select_vault() {
   op vault list --format=json |
@@ -188,14 +198,7 @@ do_pull() {
 }
 
 # Main
-case "${1:-}" in
-  push)
-    do_push "${2:-}"
-    ;;
-  pull)
-    do_pull "${2:-}"
-    ;;
-  *)
-    usage
-    ;;
+case "$1" in
+  push) do_push "${2:-}" ;;
+  pull) do_pull "${2:-}" ;;
 esac
