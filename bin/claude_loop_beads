@@ -47,8 +47,8 @@ echo ""
 
 iteration=0
 while true; do
-    # Check if there's ready work
-    READY=$(bd ready 2>/dev/null | grep -c 'bd-' || true)
+    # Check if there's ready work (match any issue type)
+    READY=$(bd ready 2>/dev/null | grep -cE '\[(epic|task|bug|feature)\]' || true)
     if [[ "$READY" -eq 0 ]]; then
         echo -e "${GREEN}No more ready tasks. All done!${RESET}"
         break
