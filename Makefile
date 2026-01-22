@@ -31,18 +31,7 @@ install:
 	ln -snf $(CURDIR)/direnv ~/.config/direnv || true
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
-	ln -snf $(CURDIR)/bin/tat ~/bin/tat || true
-	ln -snf $(CURDIR)/bin/list_instances ~/bin/list_instances || true
-	ln -snf $(CURDIR)/bin/add_my_ip_to_sec_group ~/bin/add_my_ip_to_sec_group || true
-	ln -snf $(CURDIR)/bin/toggle_ec2_instance ~/bin/toggle_ec2_instance || true
-	ln -snf $(CURDIR)/bin/ec2_connect ~/bin/ec2_connect || true
-	ln -snf $(CURDIR)/bin/op_add_user ~/bin/op_add_user || true
-	ln -snf $(CURDIR)/bin/op_view_item ~/bin/op_view_item || true
-	ln -snf $(CURDIR)/bin/op_sync_env ~/bin/op_sync_env || true
-	ln -snf $(CURDIR)/bin/tmux-sessionizer ~/bin/tmux-sessionizer || true
-	ln -snf $(CURDIR)/bin/tmux-worktree-switcher ~/bin/tmux-worktree-switcher || true
-	ln -snf $(CURDIR)/bin/parse_claude_output ~/bin/parse_claude_output || true
-	ln -snf $(CURDIR)/bin/claude_loop ~/bin/claude_loop || true
+	ln -snf $(CURDIR)/bin ~/bin || true
 	echo "------- ClaudeCode -------"
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
 	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true
