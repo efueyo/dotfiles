@@ -11,10 +11,6 @@ find_dirs() {
         tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null
     fi
     find ~/repos -mindepth 1 -maxdepth 1 -type d -print |  sed "s|^$HOME/||"
-    # Find all git worktrees by looking for .git files/folders (handles any nesting depth)
-    find ~/repos/*/trees -name .git \( -type f -o -type d \) 2>/dev/null | while read -r gitpath; do
-        dirname "$gitpath"
-    done | sed "s|^$HOME/||"
 }
 
 if [[ $# -eq 1 ]]; then
