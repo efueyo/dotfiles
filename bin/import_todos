@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# import_todos - Import unchecked TODO items from todo.md into beads
+#
+# Usage: import_todos [options] [file]
+#
+# Options:
+#   --dry-run       Preview items without creating
+#   --no-confirm    Skip confirmation prompt
+#   -h, --help      Show this help
+#
+# Detects type prefixes: epic:, bug:, feature:, task:, chore:
+# Detects priority prefixes: p0:-p4: (default: p3)
+#
+# Examples:
+#   import_todos                    # Import from todo.md
+#   import_todos tasks.md           # Import from custom file
+#   import_todos --dry-run          # Preview only
+#   import_todos --no-confirm       # Skip confirmation
+
+set -euo pipefail
+
+DRY_RUN=false
+CONFIRM=true
+TODO_FILE=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dry-run) DRY_RUN=true; shift ;;
+        --no-confirm) CONFIRM=false; shift ;;
+        -h|--help)
+            sed -n '2,/^$/s/^# \?//p' "$0"
+            exit 0
+            ;;
+        -*) echo "Unknown option: $1" >&2; exit 1 ;;
+        *) TODO_FILE="$1"; shift ;;
+    esac
+done
+
+TODO_FILE="${TODO_FILE:-todo.md}"
+
+if [[ ! -f "$TODO_FILE" ]]; then
+    echo "Error: $TODO_FILE not found" >&2
+    exit 1
+fi
+
+# Read all lines
+mapfile -t lines < "$TODO_FILE"
+
+# Collect items to create
+items=()
+item_lines=()
+item_types=()
+item_priorities=()
+
+for i in "${!lines[@]}"; do
+    line="${lines[$i]}"
+
+    # Match unchecked: [] text, - [] text, [ ] text, - [ ] text
+    if [[ "$line" =~ ^[[:space:]]*([-*][[:space:]]+)?\[[[:space:]]?\][[:space:]]+(.*) ]]; then
+        raw_title="${BASH_REMATCH[2]}"
+
+        type="task"
+        title="$raw_title"
+
+        if [[ "$raw_title" =~ ^(epic|bug|feature|task|chore):[[:space:]]*(.*) ]]; then
+            type="${BASH_REMATCH[1]}"
+            title="${BASH_REMATCH[2]}"
+        fi
+
+        priority="3"
+        if [[ "$title" =~ ^[pP]([0-4]):[[:space:]]*(.*) ]]; then
+            priority="${BASH_REMATCH[1]}"
+            title="${BASH_REMATCH[2]}"
+        fi
+
+        items+=("$title")
+        item_lines+=("$((i + 1))")
+        item_types+=("$type")
+        item_priorities+=("$priority")
+    fi
+done
+
+if [[ ${#items[@]} -eq 0 ]]; then
+    echo "No unchecked items found in $TODO_FILE"
+    exit 0
+fi
+
+# Preview
+echo "Found ${#items[@]} item(s) in $TODO_FILE:"
+echo ""
+for i in "${!items[@]}"; do
+    echo "  [${item_types[$i]}/p${item_priorities[$i]}] ${items[$i]}"
+done
+echo ""
+
+if [[ "$DRY_RUN" == true ]]; then
+    echo "(dry run - nothing created)"
+    exit 0
+fi
+
+if [[ "$CONFIRM" == true ]]; then
+    read -rp "Create these items? [y/N] " answer
+    if [[ ! "$answer" =~ ^[yY] ]]; then
+        echo "Aborted"
+        exit 0
+    fi
+fi
+
+# Create items
+created=0
+for i in "${!items[@]}"; do
+    echo "Creating: [${item_types[$i]}/p${item_priorities[$i]}] ${items[$i]}"
+    id=$(bd create "${items[$i]}" --type="${item_types[$i]}" --priority="${item_priorities[$i]}" --silent)
+    echo "  -> $id"
+
+    # Mark as done in file
+    ln="${item_lines[$i]}"
+    sed -i "${ln}s/\[ \?\]/[X]/" "$TODO_FILE"
+
+    ((created++))
+done
+
+echo ""
+echo "Imported $created item(s)"
