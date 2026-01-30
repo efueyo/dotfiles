@@ -42,13 +42,27 @@ if [[ ! -f "$PROMPT_FILE" ]]; then
     exit 1
 fi
 
-echo -e "${BOLD}${CYAN}Plan:${RESET} $PLAN_DIR"
+# Read epic ID for scoping (optional - falls back to all tasks if missing)
+EPIC_FILE="$PLAN_DIR/.epic"
+EPIC_ID=""
+if [[ -f "$EPIC_FILE" ]]; then
+    EPIC_ID=$(cat "$EPIC_FILE" | tr -d '[:space:]')
+    echo -e "${BOLD}${CYAN}Plan:${RESET} $PLAN_DIR"
+    echo -e "${BOLD}${CYAN}Epic:${RESET} $EPIC_ID"
+else
+    echo -e "${BOLD}${CYAN}Plan:${RESET} $PLAN_DIR"
+    echo -e "${YELLOW}Warning: No .epic file found in $PLAN_DIR — loop checks ALL ready tasks${RESET}"
+fi
 echo ""
 
 iteration=0
 while true; do
-    # Check if there's ready work (match any issue type)
-    READY=$(bd ready 2>/dev/null | grep -cE '\[(epic|task|bug|feature)\]' || true)
+    # Check if there's ready work, scoped to epic if available
+    if [[ -n "$EPIC_ID" ]]; then
+        READY=$(bd ready 2>/dev/null | grep -c "$EPIC_ID" || true)
+    else
+        READY=$(bd ready 2>/dev/null | grep -cE '\[(epic|task|bug|feature)\]' || true)
+    fi
     if [[ "$READY" -eq 0 ]]; then
         echo -e "${GREEN}No more ready tasks. All done!${RESET}"
         break
