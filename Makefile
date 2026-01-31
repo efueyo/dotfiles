@@ -21,10 +21,6 @@ install:
 	ln -snf $(CURDIR)/waybar ~/.config/waybar || true
 	echo "------- Wofi -------"
 	ln -snf $(CURDIR)/wofi ~/.config/wofi || true
-	echo "------- Swaylock -------"
-	ln -snf $(CURDIR)/swaylock ~/.config/swaylock || true
-	echo "------- Swayidle -------"
-	ln -snf $(CURDIR)/swayidle ~/.config/swayidle || true
 	echo "------- Rofi -------"
 	ln -snf $(CURDIR)/rofi ~/.config/rofi || true
 	echo "------- direnv -------"

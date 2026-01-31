@@ -1,4 +1,0 @@
-timeout 180 'swaylock -f'
-timeout 210 'brightnessctl set 0' resume 'brightnessctl set 2+'
-# timeout 210 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on'
-before-sleep 'swaylock -f'
