@@ -2,6 +2,11 @@ set fish_greeting ""
 
 set -gx EDITOR nvim
 
+# z plugin
+set -g Z_DATA $HOME/.local/share/z/data
+set -g Z_DATA_DIR $HOME/.local/share/z
+set -g Z_EXCLUDE '^'$HOME'$'
+
 # Go
 set -g GOPATH $HOME/go
 set -gx PATH /usr/local/go/bin $PATH
@@ -45,6 +50,9 @@ abbr -a cc claude
 abbr -a ficp fish_clipboard_copy
 
 abbr -a act source .venv/bin/activate.fish
+# pyenv
+set -gx PYENV_ROOT $HOME/.pyenv
+set -gx PATH $PYENV_ROOT/bin $PATH
 pyenv init - | source
 
 abbr -a ns nix-shell -p fish
@@ -60,7 +68,7 @@ set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
 # pnpm
-set -gx PNPM_HOME "/home/efueyo/.local/share/pnpm"
+set -gx PNPM_HOME "$HOME/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end
