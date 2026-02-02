@@ -50,6 +50,7 @@ require("nvim-treesitter.configs").setup({
     "gitignore",
     "csv",
     "fish",
+    "proto",
   },
   playground = {
     enable = true,
