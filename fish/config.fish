@@ -38,6 +38,9 @@ abbr -a k kubectl
 abbr -a kctx kubectl ctx
 abbr -a kns kubectl ns
 abbr -a g git
+abbr -a gwa git worktree add
+abbr -a gwl git worktree list
+abbr -a gwr git worktree remove
 abbr -a gg ginkgo --race --cover --randomize-all -r .
 abbr -a ggu ginkgo --race --cover --randomize-all -r . -- --update
 abbr -a n nvim
