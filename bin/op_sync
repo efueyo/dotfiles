@@ -11,10 +11,10 @@ for cmd in op fzf diff; do
 done
 
 usage() {
-  echo "Usage: op_sync_env <push|pull> [file]"
+  echo "Usage: op_sync <push|pull> [file]"
   echo ""
   echo "Commands:"
-  echo "  push [file]   Upload .env file to 1Password (default: .env)"
+  echo "  push [file]   Upload file to 1Password (default: .env)"
   echo "  pull [file]   Download from 1Password to file (default: .env)"
   exit 1
 }
@@ -98,7 +98,7 @@ do_push() {
     # Try git remote origin, fallback to current directory name
     default_name=$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//' || true)
     default_name="${default_name:-${PWD##*/}}"
-    default_name="${default_name}.env"
+    default_name="${default_name}.$(basename "$file")"
 
     read -p "Enter item name (default: '$default_name'): " item_name
     item_name="${item_name:-$default_name}"
