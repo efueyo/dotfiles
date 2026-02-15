@@ -26,13 +26,21 @@ if not test $TMUX
   tat
 end
 
-direnv hook fish | source
+if type -q direnv
+  direnv hook fish | source
+end
 
-starship init fish | source
+if type -q starship
+  starship init fish | source
+end
 
-kubectl completion fish | source
+if type -q kubectl
+  kubectl completion fish | source
+end
 
-op completion fish | source
+if type -q op
+  op completion fish | source
+end
 
 abbr -a k kubectl
 abbr -a kctx kubectl ctx
@@ -56,7 +64,9 @@ abbr -a act source .venv/bin/activate.fish
 # pyenv
 set -gx PYENV_ROOT $HOME/.pyenv
 set -gx PATH $PYENV_ROOT/bin $PATH
-pyenv init - | source
+if type -q pyenv
+  pyenv init - | source
+end
 
 abbr -a ns nix-shell -p fish
 
