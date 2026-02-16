@@ -1,0 +1,165 @@
+#!/bin/bash
+# Pick up a GitHub PR labeled plan_ready and run claude_loop on it.
+# Designed for cron (every 5 min). Processes one PR per invocation, then exits.
+#
+# Usage: cd ~/repos/my_project && plan_runner
+
+set -euo pipefail
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+}
+
+swap_label() {
+    local pr_num="$1" remove="$2" add="$3"
+    gh pr edit "$pr_num" --remove-label "$remove" --add-label "$add"
+    log "Label: $remove -> $add (PR #$pr_num)"
+}
+
+# ---------------------------------------------------------------------------
+# 1. Validate we're in a git repo
+# ---------------------------------------------------------------------------
+
+if ! git rev-parse --git-dir &>/dev/null; then
+    exit 0
+fi
+
+REPO_SHORT=$(gh repo view --json name --jq '.name')
+
+log "Repo: $REPO_SHORT ($(pwd))"
+
+# ---------------------------------------------------------------------------
+# 2. Find first PR with plan_ready label
+# ---------------------------------------------------------------------------
+
+PR_INFO=$(gh pr list --label "plan_ready" --json number,headRefName --jq 'first | "\(.number) \(.headRefName)"' 2>/dev/null || true)
+
+if [[ -z "$PR_INFO" ]]; then
+    log "No PRs with plan_ready label"
+    exit 0
+fi
+
+PR_NUM=$(echo "$PR_INFO" | awk '{print $1}')
+BRANCH=$(echo "$PR_INFO" | awk '{print $2}')
+
+log "Found PR #$PR_NUM (branch: $BRANCH)"
+
+# ---------------------------------------------------------------------------
+# 3. Recheck labels (guard against race condition)
+# ---------------------------------------------------------------------------
+
+PR_LABELS=$(gh pr view "$PR_NUM" --json labels --jq '.labels[].name' 2>/dev/null || true)
+
+if ! echo "$PR_LABELS" | grep -qx "plan_ready"; then
+    log "PR #$PR_NUM no longer has plan_ready label, skipping"
+    exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# 4. Swap label: plan_ready -> plan_in_progress
+# ---------------------------------------------------------------------------
+
+swap_label "$PR_NUM" "plan_ready" "plan_in_progress"
+gh pr comment "$PR_NUM" --body "🤖 **plan_runner** picking up this PR. Running \`claude_loop\` now."
+
+# ---------------------------------------------------------------------------
+# Setup cleanup trap and worktree variables
+# ---------------------------------------------------------------------------
+
+WORKTREE_PATH="/tmp/plan_worktrees/${REPO_SHORT}_pr_${PR_NUM}"
+WORKTREE_BRANCH="plan-pr-$PR_NUM"
+LOG_FILE="${WORKTREE_PATH}.log"
+CLAUDE_EXIT_CODE=0
+
+cleanup() {
+    log "Cleaning up worktree and branch"
+    git worktree remove --force "$WORKTREE_PATH" 2>/dev/null || true
+    git branch -D "$WORKTREE_BRANCH" 2>/dev/null || true
+}
+
+trap cleanup EXIT
+
+# ---------------------------------------------------------------------------
+# 5. Detect plan directory from PR diff
+# ---------------------------------------------------------------------------
+
+PLAN_DIR=$(gh pr diff "$PR_NUM" --name-only | grep -oP '^dev/active/[^/]+' | sort -u | head -1 || true)
+
+if [[ -z "$PLAN_DIR" ]]; then
+    log "No plan directory found in PR diff"
+    gh pr comment "$PR_NUM" --body "❌ **plan_runner** could not detect a plan directory in the PR diff. Expected a path matching \`dev/active/<plan>/\`."
+    swap_label "$PR_NUM" "plan_in_progress" "plan_error"
+    exit 0
+fi
+
+log "Plan directory: $PLAN_DIR"
+
+# ---------------------------------------------------------------------------
+# 6. Create worktree
+# ---------------------------------------------------------------------------
+
+git fetch origin "$BRANCH"
+
+# Clean up stale worktree/branch from previous runs
+git worktree remove --force "$WORKTREE_PATH" 2>/dev/null || true
+git branch -D "$WORKTREE_BRANCH" 2>/dev/null || true
+
+git worktree add -b "$WORKTREE_BRANCH" "$WORKTREE_PATH" "origin/$BRANCH"
+
+log "Worktree created at $WORKTREE_PATH"
+
+# ---------------------------------------------------------------------------
+# 7. Run claude_loop
+# ---------------------------------------------------------------------------
+
+log "Running claude_loop on $PLAN_DIR (log: $LOG_FILE)"
+
+if (cd "$WORKTREE_PATH" && claude_loop "$PLAN_DIR") > "$LOG_FILE" 2>&1; then
+    log "claude_loop completed successfully"
+else
+    CLAUDE_EXIT_CODE=$?
+    log "claude_loop failed (exit code: $CLAUDE_EXIT_CODE)"
+fi
+
+# ---------------------------------------------------------------------------
+# 8. Archive plan directory (move dev/active/<plan> -> dev/archive/<plan>)
+# ---------------------------------------------------------------------------
+
+if [[ "$CLAUDE_EXIT_CODE" -eq 0 ]]; then
+    PLAN_NAME=$(basename "$PLAN_DIR")
+    ARCHIVE_DIR="dev/archive/$PLAN_NAME"
+    (
+        cd "$WORKTREE_PATH"
+        mkdir -p dev/archive
+        git mv "$PLAN_DIR" "$ARCHIVE_DIR"
+        git commit -m "docs($PLAN_NAME): archive plan"
+    )
+    log "Archived $PLAN_DIR -> $ARCHIVE_DIR"
+fi
+
+# ---------------------------------------------------------------------------
+# 9. Push results
+# ---------------------------------------------------------------------------
+
+if ! git -C "$WORKTREE_PATH" push origin "HEAD:$BRANCH" 2>/dev/null; then
+    log "Push failed"
+    CLAUDE_EXIT_CODE=1
+fi
+
+# ---------------------------------------------------------------------------
+# 10. Swap label to final state
+# ---------------------------------------------------------------------------
+
+if [[ "$CLAUDE_EXIT_CODE" -eq 0 ]]; then
+    swap_label "$PR_NUM" "plan_in_progress" "plan_completed"
+    gh pr comment "$PR_NUM" --body "✅ **plan_runner** finished successfully. Changes have been pushed."
+else
+    swap_label "$PR_NUM" "plan_in_progress" "plan_error"
+    gh pr comment "$PR_NUM" --body "❌ **plan_runner** failed. Check the log at \`$LOG_FILE\` on the runner host."
+fi
+
+log "Done with PR #$PR_NUM"
