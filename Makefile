@@ -30,6 +30,9 @@ install:
 	echo "------- binaries -------"
 	ln -snf $(CURDIR)/.rgignore ~/.rgignore || true
 	ln -snf $(CURDIR)/bin ~/bin || true
+	echo "------- Tridactyl -------"
+	mkdir -p ~/.config/tridactyl || true
+	ln -snf $(CURDIR)/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc || true
 	echo "------- ClaudeCode -------"
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
 	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true

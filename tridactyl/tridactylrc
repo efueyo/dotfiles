@@ -1,0 +1,33 @@
+" Reset to defaults
+sanitise tridactyllocal tridactylsync
+
+" Search engines
+set searchengine google
+set searchurls.gh https://github.com/search?q=%s
+set searchurls.yt https://www.youtube.com/results?search_query=%s
+
+" Smooth scrolling
+set smoothscroll true
+
+" Hint characters (home row first)
+set hintchars hjklasdfgyuiopqwertnmzxcvb
+
+" Scroll bindings
+bind j scrollline 5
+bind k scrollline -5
+bind J tabprev
+bind K tabnext
+bind d tabclose
+bind u undo
+
+" Open editor in text fields with Ctrl-i
+set editorcmd wezterm start --always-new-process -- nvim %f
+
+" Ignore tridactyl on these sites
+autocmd DocStart mail.google.com mode ignore
+autocmd DocStart docs.google.com mode ignore
+autocmd DocStart sheets.google.com mode ignore
+autocmd DocStart slides.google.com mode ignore
+
+" Theme
+colorscheme dark
