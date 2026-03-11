@@ -28,6 +28,7 @@ autocmd DocStart mail.google.com mode ignore
 autocmd DocStart docs.google.com mode ignore
 autocmd DocStart sheets.google.com mode ignore
 autocmd DocStart slides.google.com mode ignore
+autocmd DocStart localhost:5173 mode ignore
 
 " Theme
 colorscheme dark
