@@ -1,6 +1,6 @@
-@import 'frappe.css';
+@import "frappe.css";
 * {
-  font-family: 'Fira Code', monospace;
+  font-family: "Fira Code", monospace;
   font-size: 14px;
   background: #1e1e2e;
   color: #cdd6f4;
@@ -46,6 +46,7 @@ window#waybar {
 #temperature,
 #pulseaudio,
 #custom-vpn,
+#custom-eye-break,
 #custom-exit {
   padding: 0 2px;
 }
@@ -54,6 +55,15 @@ window#waybar {
 }
 #pulseaudio {
   padding-right: 6px;
+}
+
+#custom-eye-break {
+  color: @lavender;
+  padding-right: 6px;
+}
+
+#custom-eye-break.break {
+  color: @red;
 }
 
 #custom-exit {

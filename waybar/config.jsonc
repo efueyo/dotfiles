@@ -6,6 +6,7 @@
   "modules-left": ["hyprland/workspaces", "hyprland/scratchpad"],
   "modules-center": ["clock"],
   "modules-right": [
+    "custom/eye-break",
     "temperature",
     "network",
     "custom/vpn",
@@ -89,6 +90,14 @@
     "scroll-step": 1,
     "on-click": "GSK_RENDERER=ngl pavucontrol",
     "ignored-sinks": ["Easy Effects Sink"],
+  },
+  "custom/eye-break": {
+    "format": "󰀄",
+    "tooltip": true,
+    "exec": "~/.config/waybar/scripts/eye_break.sh",
+    "on-click": "~/.config/waybar/scripts/eye_break.sh reset",
+    "return-type": "json",
+    "interval": 30,
   },
   "custom/battery-notify": {
     "format": "",
