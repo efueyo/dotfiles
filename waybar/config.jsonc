@@ -12,6 +12,7 @@
     "bluetooth",
     "pulseaudio",
     "battery",
+    "custom/battery-notify",
     "custom/exit",
   ],
   // Modules configuration
@@ -88,6 +89,11 @@
     "scroll-step": 1,
     "on-click": "GSK_RENDERER=ngl pavucontrol",
     "ignored-sinks": ["Easy Effects Sink"],
+  },
+  "custom/battery-notify": {
+    "format": "",
+    "exec": "~/.config/waybar/scripts/battery_notify.sh",
+    "interval": 120,
   },
   "custom/vpn": {
     "format": "󱠾",
