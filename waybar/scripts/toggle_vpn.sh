@@ -32,7 +32,17 @@ type=$(echo "$CHOSEN" | awk '{print $1}')
 name=$(echo "$CHOSEN" | cut -d' ' -f2-)
 
 if [ "$type" = "[ovpn]" ]; then
-    wezterm start -- openvpn3 session-start --config "$name"
+    wezterm start -- bash -c '
+    export PATH=$PATH:$HOME/bin/
+    export BW_SESSION=$(bw unlock --raw)
+    bw_item=$(bw_view_item)
+    bw_user=$(echo "$bw_item" | jq -r .login.username)
+    bw_pass=$(echo "$bw_item" | jq -r .login.password)
+    bw_totp=$(echo "$bw_item" | jq -r .login.totp)
+    echo "Generating one time password..."
+    [ -n "$bw_totp" ] && bw_totp=$(bw get totp "$(echo "$bw_item" | jq -r .id)" 2>/dev/null)
+    printf "%s\\n%s\\n%s\\n" "$bw_user" "$bw_pass" "$bw_totp" | openvpn3 session-start --config '$name'
+    '
 elif [ "$type" = "[wg]" ]; then
     echo "$mypass" | sudo -S wg-quick up "$name"
 fi
