@@ -92,7 +92,7 @@
     "ignored-sinks": ["Easy Effects Sink"],
   },
   "custom/eye-break": {
-    "format": "󰀄",
+    "format": "󰈈",
     "tooltip": true,
     "exec": "~/.config/waybar/scripts/eye_break.sh",
     "on-click": "~/.config/waybar/scripts/eye_break.sh reset",

@@ -66,6 +66,19 @@ window#waybar {
   color: @red;
 }
 
+#custom-eye-break.urgent {
+  color: @red;
+  animation-name: blink;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes blink {
+  from { opacity: 1; }
+  to { opacity: 0.2; }
+}
+
 #custom-exit {
   color: @red;
   padding-right: 15px;
