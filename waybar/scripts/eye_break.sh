@@ -25,18 +25,10 @@ remaining=$((INTERVAL_SEC - elapsed))
 if [ "$remaining" -le -600 ]; then
     # 30+ minutes: blink urgently
     minutes_overdue=$(( (-remaining) / 60 ))
-    notify-send -u normal -i dialog-warning \
-        "Eye Break" \
-        "Look at something 20ft away for 20 seconds.\nClick the 󰈈 icon to reset." \
-        -h string:x-canonical-private-synchronous:eye-break
     echo "{\"tooltip\":\"Break time! (${minutes_overdue}m overdue) - click to reset\",\"class\":\"urgent\"}"
 elif [ "$remaining" -le 0 ]; then
     # 20-30 minutes: red
     minutes_overdue=$(( (-remaining) / 60 ))
-    notify-send -u normal -i dialog-warning \
-        "Eye Break" \
-        "Look at something 20ft away for 20 seconds.\nClick the 󰈈 icon to reset." \
-        -h string:x-canonical-private-synchronous:eye-break
     echo "{\"tooltip\":\"Break time! (${minutes_overdue}m overdue) - click to reset\",\"class\":\"break\"}"
 else
     mins=$((remaining / 60))
