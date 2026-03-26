@@ -42,6 +42,10 @@ if type -q op
   op completion fish | source
 end
 
+if type -q acli
+  acli completion fish | source
+end
+
 abbr -a k kubectl
 abbr -a kctx kubectl ctx
 abbr -a kns kubectl ns
