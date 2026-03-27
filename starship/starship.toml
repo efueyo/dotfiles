@@ -8,6 +8,10 @@ context_alias = "$var_cluster"
 disabled = true
 [gcloud]
 disabled = true
+[aws]
+format="on [$symbol\\[$profile\\]]($style)"
+# symbol='☁️'
+symbol=' '
 [git_branch]
 truncation_length = 20
 [shell]
