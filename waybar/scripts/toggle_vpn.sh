@@ -1,48 +1,83 @@
 #!/bin/bash
 
-# Check active VPNs
-CURRENT_WG=$(nmcli connection show --active 2>/dev/null | grep "wireguard" | awk '{ print $1 }')
-CURRENT_OVPN_PATH=$(openvpn3 sessions-list 2>/dev/null | grep "Path:" | awk '{print $2}' | head -1)
+# --- Detect active VPNs ---
+active_wg=$(nmcli connection show --active 2>/dev/null | grep "wireguard" | awk '{print $1}')
 
-# If WireGuard is active, disconnect it
-if [ -n "$CURRENT_WG" ]; then
-    mypass=$(rofi -dmenu -password --no-fixed-num-lines -p "Sudo password: ")
-    echo "$mypass" | sudo -S wg-quick down "$CURRENT_WG"
-    exit 0
-fi
+# Build associative array: ovpn config name -> session path
+declare -A ovpn_paths
+cpath=""
+while IFS= read -r line; do
+    if [[ "$line" =~ "Path:" ]]; then
+        cpath=$(echo "$line" | awk '{print $2}')
+    fi
+    if [[ "$line" =~ "Config name:" ]]; then
+        cname=$(echo "$line" | awk -F': ' '{print $2}' | xargs)
+        [ -n "$cpath" ] && ovpn_paths["$cname"]="$cpath"
+        cpath=""
+    fi
+done < <(openvpn3 sessions-list 2>/dev/null)
 
-# If openvpn3 session is active, disconnect it
-if [ -n "$CURRENT_OVPN_PATH" ]; then
-    openvpn3 session-manage --disconnect --path "$CURRENT_OVPN_PATH"
-    exit 0
-fi
-
-# No VPN active — build config list (openvpn3 first, then wireguard)
-ovpn_configs=$(openvpn3 configs-list --json 2>/dev/null | jq -r 'to_entries[].value.name // empty' 2>/dev/null | sed 's/^/[ovpn] /')
-
+# --- Sudo password (needed for wg listing and wg-quick) ---
 mypass=$(rofi -dmenu -password --no-fixed-num-lines -p "Sudo password: ")
-wg_configs=$(echo "$mypass" | sudo -S ls /etc/wireguard/ 2>/dev/null | sed 's/.conf//g' | sed 's/^/[wg] /')
+[ -z "$mypass" ] && exit 0
 
-all_configs=$(printf "%s\n%s" "$ovpn_configs" "$wg_configs" | grep -v '^$')
-CHOSEN=$(echo "$all_configs" | rofi -dmenu -p "VPN Config: ")
+# --- Gather all available configs ---
+wg_configs=$(echo "$mypass" | sudo -S ls /etc/wireguard/ 2>/dev/null | sed 's/.conf//g')
+ovpn_configs=$(openvpn3 configs-list --json 2>/dev/null | jq -r 'to_entries[].value.name // empty' 2>/dev/null)
 
+# --- Build menu ---
+menu=""
+
+while IFS= read -r name; do
+    [ -z "$name" ] && continue
+    if echo "$active_wg" | grep -qx "$name"; then
+        menu+="● [wg] $name\n"
+    else
+        menu+="○ [wg] $name\n"
+    fi
+done <<< "$wg_configs"
+
+while IFS= read -r name; do
+    [ -z "$name" ] && continue
+    if [ -n "${ovpn_paths[$name]}" ]; then
+        menu+="● [ovpn] $name\n"
+    else
+        menu+="○ [ovpn] $name\n"
+    fi
+done <<< "$ovpn_configs"
+
+# Sort: connected first (● sorts after ○)
+menu=$(echo -e "$menu" | grep -v '^$' | sort -r)
+
+CHOSEN=$(echo -e "$menu" | rofi -dmenu -p "VPN: ")
 [ -z "$CHOSEN" ] && exit 0
 
-type=$(echo "$CHOSEN" | awk '{print $1}')
-name=$(echo "$CHOSEN" | cut -d' ' -f2-)
+status=$(echo "$CHOSEN" | awk '{print $1}')
+type=$(echo "$CHOSEN" | awk '{print $2}')
+name=$(echo "$CHOSEN" | cut -d' ' -f3-)
 
-if [ "$type" = "[ovpn]" ]; then
-    wezterm start -- bash -c '
-    export PATH=$PATH:$HOME/bin/
-    export BW_SESSION=$(bw unlock --raw)
-    bw_item=$(bw_view_item)
-    bw_user=$(echo "$bw_item" | jq -r .login.username)
-    bw_pass=$(echo "$bw_item" | jq -r .login.password)
-    bw_totp=$(echo "$bw_item" | jq -r .login.totp)
-    echo "Generating one time password..."
-    [ -n "$bw_totp" ] && bw_totp=$(bw get totp "$(echo "$bw_item" | jq -r .id)" 2>/dev/null)
-    printf "%s\\n%s\\n%s\\n" "$bw_user" "$bw_pass" "$bw_totp" | openvpn3 session-start --config '$name'
-    '
-elif [ "$type" = "[wg]" ]; then
-    echo "$mypass" | sudo -S wg-quick up "$name"
+if [ "$status" = "●" ]; then
+    # Disconnect
+    if [ "$type" = "[wg]" ]; then
+        echo "$mypass" | sudo -S wg-quick down "$name"
+    elif [ "$type" = "[ovpn]" ]; then
+        openvpn3 session-manage --disconnect --path "${ovpn_paths[$name]}"
+    fi
+else
+    # Connect
+    if [ "$type" = "[wg]" ]; then
+        echo "$mypass" | sudo -S wg-quick up "$name"
+    elif [ "$type" = "[ovpn]" ]; then
+        wezterm start -- bash -c '
+        export PATH=$PATH:$HOME/bin/
+        export BW_SESSION=$(bw unlock --raw)
+        bw_item=$(bw_view_item)
+        bw_user=$(echo "$bw_item" | jq -r .login.username)
+        bw_pass=$(echo "$bw_item" | jq -r .login.password)
+        bw_totp=$(echo "$bw_item" | jq -r .login.totp)
+        echo "Generating one time password..."
+        [ -n "$bw_totp" ] && bw_totp=$(bw get totp "$(echo "$bw_item" | jq -r .id)" 2>/dev/null)
+        printf "%s\\n%s\\n%s\\n" "$bw_user" "$bw_pass" "$bw_totp" | openvpn3 session-start --config '"$name"'
+        '
+    fi
 fi

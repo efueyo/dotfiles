@@ -97,6 +97,11 @@ window#waybar {
   color: @peach;
 }
 
+/* Style when multiple VPNs are connected */
+#custom-vpn.stacked {
+  color: @green;
+}
+
 /* Style when VPN is disconnected */
 #custom-vpn.disconnected {
   color: @subtext1;
