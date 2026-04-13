@@ -1,0 +1,265 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Check for required tools
+for cmd in bw jq fzf diff; do
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "Error: $cmd not found"
+    exit 1
+  fi
+done
+
+usage() {
+  echo "Usage: bw_sync <push|pull> [file]"
+  echo ""
+  echo "Commands:"
+  echo "  push [file]   Upload file to Bitwarden (default: .env)"
+  echo "  pull [file]   Download from Bitwarden to file (default: .env)"
+  exit 1
+}
+
+# Check for push/pull argument before doing anything else
+case "${1:-}" in
+  push|pull) ;;
+  *) usage ;;
+esac
+
+# Ensure session is unlocked
+if ! bw unlock --check &> /dev/null; then
+  echo "Unlock the Bitwarden vault first..."
+  BW_SESSION=$(bw unlock --raw)
+  if [ -z "$BW_SESSION" ]; then
+    echo "Error: Failed to unlock Bitwarden vault"
+    exit 1
+  fi
+  export BW_SESSION
+fi
+
+# Refresh local cache so we see the latest state
+bw sync &> /dev/null || true
+
+select_folder() {
+  bw list folders |
+    jq -r '.[] | "\(.id // "none")\t\(.name)"' |
+    fzf --reverse --height 40% --with-nth=2 --delimiter='\t' |
+    cut -f1
+}
+
+select_item() {
+  bw list items |
+    jq -r '.[] | select(.type == 2) | "\(.id)\t\(.name)"' |
+    fzf --reverse --height 40% --with-nth=2 --delimiter='\t' |
+    cut -f1
+}
+
+get_item_content() {
+  local item_id="$1"
+  bw get item "$item_id" | jq -r '.notes // empty'
+}
+
+confirm() {
+  local prompt="${1:-Proceed?}"
+  while true; do
+    read -p "$prompt [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      return 0
+    elif [[ $REPLY =~ ^[Nn]$ ]]; then
+      return 1
+    fi
+    echo "Please enter 'y' or 'n'"
+  done
+}
+
+create_secure_note() {
+  local name="$1"
+  local notes="$2"
+  local folder_id="$3"
+
+  bw get template item |
+    jq \
+      --arg name "$name" \
+      --arg notes "$notes" \
+      --arg folder "$folder_id" \
+      '.type = 2
+       | .name = $name
+       | .notes = $notes
+       | .secureNote = {type: 0}
+       | .login = null
+       | .folderId = (if $folder == "" or $folder == "none" then null else $folder end)' |
+    bw encode |
+    bw create item > /dev/null
+}
+
+update_item_notes() {
+  local item_id="$1"
+  local notes="$2"
+
+  bw get item "$item_id" |
+    jq --arg notes "$notes" '.notes = $notes' |
+    bw encode |
+    bw edit item "$item_id" > /dev/null
+}
+
+do_push() {
+  local file="${1:-.env}"
+
+  if [[ ! -f "$file" ]]; then
+    echo "Error: File '$file' not found"
+    exit 1
+  fi
+
+  local local_content
+  local_content=$(cat "$file")
+
+  echo "Create new item or update existing?"
+  local action
+  action=$(printf "new\nexisting" | fzf --reverse --height 40%)
+
+  if [[ "$action" == "new" ]]; then
+    echo ""
+    echo "Select folder (choose 'No Folder' for none):"
+    local folder_id
+    folder_id=$(select_folder)
+
+    if [[ -z "$folder_id" ]]; then
+      echo "No folder selected"
+      exit 1
+    fi
+
+    local default_name
+    # Try git remote origin, fallback to current directory name
+    default_name=$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//' || true)
+    default_name="${default_name:-${PWD##*/}}"
+    default_name="${default_name}.$(basename "$file")"
+
+    read -p "Enter item name (default: '$default_name'): " item_name
+    item_name="${item_name:-$default_name}"
+
+    # Check if a secure note with the same name already exists
+    local existing_id
+    existing_id=$(bw list items --search "$item_name" | jq -r --arg name "$item_name" '.[] | select(.name == $name and .type == 2) | .id' | head -1)
+
+    if [[ -n "$existing_id" ]]; then
+      echo "A secure note named '$item_name' already exists."
+      if confirm "Update the existing item instead?"; then
+        local remote_content
+        remote_content=$(get_item_content "$existing_id")
+
+        if [[ "$local_content" == "$remote_content" ]]; then
+          echo "No changes - local and remote are identical"
+          exit 0
+        fi
+
+        echo ""
+        echo "Changes (remote → local):"
+        echo "----------------------------------------"
+        diff --color=always <(echo "$remote_content") <(echo "$local_content") || true
+        echo "----------------------------------------"
+
+        if confirm "Update item in Bitwarden?"; then
+          update_item_notes "$existing_id" "$local_content"
+          echo "Updated '$item_name'"
+        else
+          echo "Cancelled"
+        fi
+        return
+      fi
+    fi
+
+    echo ""
+    echo "Content to push:"
+    echo "----------------------------------------"
+    echo "$local_content"
+    echo "----------------------------------------"
+
+    if confirm "Create '$item_name' in Bitwarden?"; then
+      create_secure_note "$item_name" "$local_content" "$folder_id"
+      echo "Created '$item_name'"
+    else
+      echo "Cancelled"
+    fi
+  else
+    echo "Select item to update:"
+    local item_id
+    item_id=$(select_item)
+
+    if [[ -z "$item_id" ]]; then
+      echo "No item selected"
+      exit 1
+    fi
+
+    local remote_content
+    remote_content=$(get_item_content "$item_id")
+
+    if [[ "$local_content" == "$remote_content" ]]; then
+      echo "No changes - local and remote are identical"
+      exit 0
+    fi
+
+    echo ""
+    echo "Changes (remote → local):"
+    echo "----------------------------------------"
+    diff --color=always <(echo "$remote_content") <(echo "$local_content") || true
+    echo "----------------------------------------"
+
+    if confirm "Update item in Bitwarden?"; then
+      update_item_notes "$item_id" "$local_content"
+      echo "Updated"
+    else
+      echo "Cancelled"
+    fi
+  fi
+}
+
+do_pull() {
+  local file="${1:-.env}"
+
+  echo "Select item:"
+  local item_id
+  item_id=$(select_item)
+
+  if [[ -z "$item_id" ]]; then
+    echo "No item selected"
+    exit 1
+  fi
+
+  local remote_content
+  remote_content=$(get_item_content "$item_id")
+
+  if [[ -z "$remote_content" ]]; then
+    echo "Error: Item has no notes content"
+    exit 1
+  fi
+
+  if [[ -f "$file" ]]; then
+    local local_content
+    local_content=$(cat "$file")
+
+    if [[ "$local_content" == "$remote_content" ]]; then
+      echo "No changes - local and remote are identical"
+      exit 0
+    fi
+
+    echo ""
+    echo "Changes (local → remote):"
+    echo "----------------------------------------"
+    diff --color=always <(echo "$local_content") <(echo "$remote_content") || true
+    echo "----------------------------------------"
+
+    if ! confirm "Overwrite '$file'?"; then
+      echo "Cancelled"
+      exit 0
+    fi
+  fi
+
+  echo "$remote_content" > "$file"
+  echo "Saved to '$file'"
+}
+
+# Main
+case "$1" in
+  push) do_push "${2:-}" ;;
+  pull) do_pull "${2:-}" ;;
+esac
