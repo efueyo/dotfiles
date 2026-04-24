@@ -22,8 +22,14 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*",
-	command = "%s/\\s\\+$//e",
-	desc = "Clean whitespaces at the end of the lines",
+	callback = function()
+		local name = vim.api.nvim_buf_get_name(0)
+		if name:match("/data/[^/]+%.txt$") then
+			return
+		end
+		vim.cmd([[keeppatterns %s/\s\+$//e]])
+	end,
+	desc = "Clean whitespaces at the end of the lines (skipped for */data/*.txt)",
 	group = group,
 })
 require("user.options")
