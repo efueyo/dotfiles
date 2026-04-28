@@ -102,7 +102,18 @@ local servers = {
   rust_analyzer = {},
   ts_ls = {},
   terraformls = {},
-  basedpyright = {},
+  basedpyright = {
+    basedpyright = {
+      analysis = {
+        typeCheckingMode = "standard",
+        diagnosticSeverityOverrides = {
+          reportUnusedImport = "none",
+        },
+      },
+      disableOrganizeImports = true,
+    },
+  },
+  ruff = {},
 
   lua_ls = {
     Lua = {
