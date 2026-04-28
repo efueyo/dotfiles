@@ -36,4 +36,12 @@ return {
     i(1, "variable"),
     t(")"),
   }),
+  s({
+    trig = "printerr",
+    name = "print(..., file=sys.stderr)",
+  }, {
+    t("print("),
+    i(1),
+    t(", file=sys.stderr)"),
+  }),
 }
