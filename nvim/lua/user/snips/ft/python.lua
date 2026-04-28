@@ -44,4 +44,20 @@ return {
     i(1),
     t(", file=sys.stderr)"),
   }),
+  s({
+    trig = "clftime",
+    name = "datetime.strptime(s, CLF format)",
+  }, {
+    t('datetime.strptime('),
+    i(1, "s"),
+    t(', "%d/%b/%Y:%H:%M:%S %z")'),
+  }),
+  s({
+    trig = "isotime",
+    name = "datetime.fromisoformat(s)",
+  }, {
+    t("datetime.fromisoformat("),
+    i(1, "s"),
+    t(")"),
+  }),
 }
