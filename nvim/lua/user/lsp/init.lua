@@ -108,6 +108,10 @@ local servers = {
         typeCheckingMode = "standard",
         diagnosticSeverityOverrides = {
           reportUnusedImport = "none",
+          -- Catches discarded return of pure calls like `dt.replace(tzinfo=tz)`.
+          reportUnusedCallResult = "warning",
+          -- Catches always-True/False conditions like `ts.timetz() is None`.
+          reportUnnecessaryComparison = "warning",
         },
       },
       disableOrganizeImports = true,
