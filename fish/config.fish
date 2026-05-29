@@ -2,6 +2,13 @@ set fish_greeting ""
 
 set -gx EDITOR nvim
 
+# Homebrew (macOS)
+if test -x /opt/homebrew/bin/brew
+  eval (/opt/homebrew/bin/brew shellenv)
+else if test -x /usr/local/bin/brew
+  eval (/usr/local/bin/brew shellenv)
+end
+
 # z plugin
 set -g Z_DATA $HOME/.local/share/z/data
 set -g Z_DATA_DIR $HOME/.local/share/z

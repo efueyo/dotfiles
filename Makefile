@@ -1,30 +1,31 @@
-.PHONY: install
-.SILENT: install
-install:
+.PHONY: install install-common install-linux install-macos brew
+.SILENT: install install-common install-linux install-macos brew
+
+UNAME := $(shell uname -s)
+
+install: install-common
+ifeq ($(UNAME),Darwin)
+	$(MAKE) install-macos
+else
+	$(MAKE) install-linux
+endif
+
+install-common:
+	mkdir -p ~/.config ~/.claude
 	echo "------- WezTerm -------"
 	ln -snf $(CURDIR)/wezterm ~/.config/wezterm || true
 	echo "------- tmux -------"
-	ln -snf $(CURDIR)/tmux/.tmux.conf ~/.tmux.conf || true
+	ln -snf $(CURDIR)/tmux/.tmux.conf ~/.tmux.conf || true
 	echo "------- starship -------"
-	ln -snf $(CURDIR)/starship/starship.toml ~/.config/starship.toml || true
+	ln -snf $(CURDIR)/starship/starship.toml ~/.config/starship.toml || true
 	echo "------- .gitignore -------"
-	ln -snf $(CURDIR)/.gitignore ~/.gitignore || true
+	ln -snf $(CURDIR)/.gitignore ~/.gitignore || true
 	echo "Configuring git global ~/.gitignore"
 	git config --global core.excludesfile ~/.gitignore || true
 	echo "------- Neovim -------"
 	ln -snf $(CURDIR)/nvim ~/.config/nvim || true
 	echo "------- Fish -------"
 	ln -snf $(CURDIR)/fish ~/.config/fish || true
-	echo "------- Hyprland -------"
-	ln -snf $(CURDIR)/hypr ~/.config/hypr || true
-	echo "------- Kitty -------"
-	ln -snf $(CURDIR)/kitty ~/.config/kitty || true
-	echo "------- Waybar -------"
-	ln -snf $(CURDIR)/waybar ~/.config/waybar || true
-	echo "------- Wofi -------"
-	ln -snf $(CURDIR)/wofi ~/.config/wofi || true
-	echo "------- Rofi -------"
-	ln -snf $(CURDIR)/rofi ~/.config/rofi || true
 	echo "------- direnv -------"
 	ln -snf $(CURDIR)/direnv ~/.config/direnv || true
 	echo "------- binaries -------"
@@ -37,3 +38,18 @@ install:
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
 	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true
 
+install-linux:
+	echo "------- Hyprland -------"
+	ln -snf $(CURDIR)/hypr ~/.config/hypr || true
+	echo "------- Waybar -------"
+	ln -snf $(CURDIR)/waybar ~/.config/waybar || true
+	echo "------- Wofi -------"
+	ln -snf $(CURDIR)/wofi ~/.config/wofi || true
+	echo "------- Rofi -------"
+	ln -snf $(CURDIR)/rofi ~/.config/rofi || true
+
+install-macos: brew
+
+brew:
+	echo "------- Homebrew bundle -------"
+	brew bundle --file=$(CURDIR)/Brewfile
