@@ -1,12 +1,13 @@
-.PHONY: install install-common install-linux install-macos brew
-.SILENT: install install-common install-linux install-macos brew
+.PHONY: install install-common install-linux brew
+.SILENT: install install-common install-linux brew
 
 UNAME := $(shell uname -s)
 
+# `make install` only links config files. Package installation is opt-in via
+# `make brew` (skipped by default — on unsupported macOS, brew has no bottles
+# and would build everything from source).
 install: install-common
-ifeq ($(UNAME),Darwin)
-	$(MAKE) install-macos
-else
+ifneq ($(UNAME),Darwin)
 	$(MAKE) install-linux
 endif
 
@@ -47,8 +48,6 @@ install-linux:
 	ln -snf $(CURDIR)/wofi ~/.config/wofi || true
 	echo "------- Rofi -------"
 	ln -snf $(CURDIR)/rofi ~/.config/rofi || true
-
-install-macos: brew
 
 brew:
 	echo "------- Homebrew bundle -------"

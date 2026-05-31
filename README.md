@@ -18,11 +18,14 @@ Linux desktop (Wayland):
 
 ## Install
 
-`make install` detects the OS and links the common configs, then:
+`make install` only links config files (it never installs packages):
 
-- **macOS**: runs `brew bundle` to install packages from the `Brewfile`. The
-  Nerd Font is installed as a cask, so there's no font step.
-- **Linux**: links the Wayland desktop configs (Hyprland, Waybar, Wofi, Rofi).
-  Install the fonts with `./etc/fonts.sh`.
+- **All platforms**: links the common configs (fish, nvim, wezterm, tmux,
+  starship, direnv, bin, claude, ...).
+- **Linux**: also links the Wayland desktop configs (Hyprland, Waybar, Wofi,
+  Rofi) and you can install fonts with `./etc/fonts.sh`.
 
-Run `make brew` to (re)install Homebrew packages only.
+Packages are opt-in. On a supported macOS, `make brew` runs `brew bundle`
+against the `Brewfile`. On older/unsupported macOS (no Homebrew bottles)
+install the tools manually instead — `make install` keeps the configs in sync
+either way.
