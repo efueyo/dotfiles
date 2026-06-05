@@ -1,7 +1,15 @@
 local wezterm = require("wezterm")
 
 return {
-  font = wezterm.font("Fira Code"),
+  font = wezterm.font_with_fallback({
+    "FiraCode Nerd Font", -- macOS Homebrew cask: font-fira-code-nerd-font
+    "Fira Code",          -- plain Fira Code (font-fira-code / Linux fonts-firacode)
+    "FiraCode Nerd Font Mono",
+  }),
+  -- Different machines have different ones of the above installed; wezterm uses
+  -- the first that exists. This silences the "Unable to load a font" popup for
+  -- the entries that aren't present on a given machine.
+  warn_about_missing_glyphs = false,
   font_size = 13.0,
   color_scheme = "Catppuccin Frappe",
   hide_tab_bar_if_only_one_tab = true,
