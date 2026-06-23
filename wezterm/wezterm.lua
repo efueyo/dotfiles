@@ -1,6 +1,6 @@
 local wezterm = require("wezterm")
 
-return {
+local conf = {
   font = wezterm.font_with_fallback({
     "FiraCode Nerd Font", -- macOS Homebrew cask: font-fira-code-nerd-font
     "Fira Code",          -- plain Fira Code (font-fira-code / Linux fonts-firacode)
@@ -24,3 +24,13 @@ return {
   }
 
 }
+
+-- letters with ctrl- binding in vim or tmux that I want to use with CMD in mac
+local modified_keys = { 'a', 'c', 'd', 'f', 'h', 'k', 'j', 'l', 'n', 'r', 's', 'x', 'w' }
+for _, k in ipairs(modified_keys) do
+  table.insert(conf.keys,
+    { key = k, mods = "CMD", action = wezterm.action { SendKey = { key = k, mods = "CTRL" } } }
+  )
+end
+
+return conf
