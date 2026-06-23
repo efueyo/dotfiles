@@ -10,7 +10,7 @@ local conf = {
   -- the first that exists. This silences the "Unable to load a font" popup for
   -- the entries that aren't present on a given machine.
   warn_about_missing_glyphs = false,
-  font_size = 13.0,
+  font_size = 16.0,
   color_scheme = "Catppuccin Frappe",
   hide_tab_bar_if_only_one_tab = true,
   window_padding = {
