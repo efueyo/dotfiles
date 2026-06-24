@@ -1,4 +1,6 @@
 return {
   "efueyo/mybot-notes.nvim",
-  opts = {},
+  opts = {
+    cond = vim.env.IS_ON_ONA == nil,
+  },
 }
