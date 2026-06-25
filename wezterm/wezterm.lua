@@ -1,5 +1,12 @@
 local wezterm = require("wezterm")
 
+local mux = wezterm.mux
+
+wezterm.on('gui-startup', function(cmd)
+  local _, _, window = mux.spawn_window(cmd or {})
+  window:gui_window():maximize()
+end)
+
 local conf = {
   font = wezterm.font_with_fallback({
     "FiraCode Nerd Font", -- macOS Homebrew cask: font-fira-code-nerd-font
