@@ -155,6 +155,14 @@ export PATH
 unset -f _pathprepend
 command -v starship >/dev/null 2>&1 && eval "$(starship init bash)"
 command -v direnv   >/dev/null 2>&1 && eval "$(direnv hook bash)"
+# Auto-attach to a tmux session on interactive login (mirrors fish config.fish).
+case $- in
+  *i*)
+    if [ -z "$TMUX" ] && command -v tat >/dev/null 2>&1; then
+      tat
+    fi
+    ;;
+esac
 # <<< dotfiles (ona) <<<
 EOF
 }
@@ -187,7 +195,38 @@ setup_bash() {
 }
 
 # ----------------------------------------------------------------------------
-# 6. (Optional) pre-sync neovim plugins so the first real launch is instant.
+# 6. tmux theme. .tmux.conf loads catppuccin directly via `run` (no tpm —
+#    tmux-sensible and vim-tmux-navigator are inlined in the config). We pin to an
+#    immutable commit SHA rather than a branch or tag, so a future upstream
+#    compromise can't reach the CDE without an explicit bump here.
+# ----------------------------------------------------------------------------
+CATPPUCCIN_SHA="b2f219c00609ea1772bcfbdae0697807184743e4"  # v2.1.3
+
+install_tmux_theme() {
+  if ! command -v git >/dev/null 2>&1; then
+    warn "git not found; skipping catppuccin tmux theme"
+    return 0
+  fi
+
+  local dir="$HOME/.config/tmux/plugins/catppuccin/tmux"
+  if [ -d "$dir/.git" ]; then
+    log "catppuccin tmux already installed"
+    return 0
+  fi
+
+  log "installing catppuccin tmux theme (pinned ${CATPPUCCIN_SHA})…"
+  mkdir -p "$(dirname "$dir")"
+  if git clone -q https://github.com/catppuccin/tmux.git "$dir" \
+     && git -C "$dir" checkout -q "$CATPPUCCIN_SHA"; then
+    log "catppuccin tmux installed at ${CATPPUCCIN_SHA}"
+  else
+    warn "catppuccin tmux install failed; status bar theme will be missing"
+    rm -rf "$dir"
+  fi
+}
+
+# ----------------------------------------------------------------------------
+# 7. (Optional) pre-sync neovim plugins so the first real launch is instant.
 #    Guarded with a timeout and made non-fatal; lazy.nvim also auto-installs
 #    on first interactive launch, so failure here is harmless.
 # ----------------------------------------------------------------------------
@@ -207,6 +246,7 @@ main() {
   install_starship
   link_configs
   setup_bash
+  install_tmux_theme
   sync_neovim
   log "done. Open a new shell (or 'source ~/.bashrc') to pick up changes."
 }
