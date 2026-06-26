@@ -33,7 +33,7 @@ local conf = {
 }
 
 -- letters with ctrl- binding in vim or tmux that I want to use with CMD in mac
-local modified_keys = { 'a', 'c', 'd', 'f', 'h', 'i', 'k', 'j', 'l', 'n', 'o', 'r', 's', 'u', 'x', 'w' }
+local modified_keys = { 'a', 'c', 'd', 'f', 'h', 'i', 'k', 'j', 'l', 'n', 'p', 'o', 'r', 's', 'u', 'x', 'w' }
 for _, k in ipairs(modified_keys) do
   table.insert(conf.keys,
     { key = k, mods = "CMD", action = wezterm.action { SendKey = { key = k, mods = "CTRL" } } }
