@@ -8,6 +8,25 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 log()  { printf '\033[1;34m[dotfiles]\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m[dotfiles] WARN:\033[0m %s\n' "$*" >&2; }
 
+# verify_sha256 <file> <expected-hex> — returns non-zero (and warns) on mismatch.
+# Downloaded binaries below are pinned by content hash so a swapped/compromised
+# release asset can't be installed without the pin here changing too.
+verify_sha256() {
+  local file="$1" want="$2" got
+  if command -v sha256sum >/dev/null 2>&1; then
+    got="$(sha256sum "$file" | awk '{print $1}')"
+  elif command -v shasum >/dev/null 2>&1; then
+    got="$(shasum -a 256 "$file" | awk '{print $1}')"
+  else
+    warn "no sha256 tool found; refusing to install unverified $file"
+    return 1
+  fi
+  if [ "$got" != "$want" ]; then
+    warn "checksum mismatch for $(basename "$file"): got $got, want $want"
+    return 1
+  fi
+}
+
 # sudo only if we're not already root and sudo exists.
 if [ "$(id -u)" -eq 0 ]; then
   SUDO=""
@@ -48,8 +67,13 @@ install_packages() {
 
 # ----------------------------------------------------------------------------
 # 2. Neovim — install a current stable build (noble's apt nvim lags behind what
-#    lazy.nvim + recent plugins expect). Pinned configs deserve a modern nvim.
+#    lazy.nvim + recent plugins expect). Pinned to an exact version + checksum
+#    (not 'latest') so the bytes don't change out from under a CDE rebuild.
+#    Neovim publishes no checksum file, so these were captured by hand — bump the
+#    version and both hashes together.
 # ----------------------------------------------------------------------------
+NEOVIM_VERSION="0.12.3"
+
 install_neovim() {
   if [ "$(uname -s)" != "Linux" ]; then
     command -v nvim >/dev/null 2>&1 || warn "install neovim manually on this host"
@@ -60,24 +84,24 @@ install_neovim() {
     return 0
   fi
 
-  local arch asset url tmp
+  local arch asset sha url tmp
   arch="$(uname -m)"
   case "$arch" in
-    x86_64)          asset="nvim-linux-x86_64" ;;
-    aarch64|arm64)   asset="nvim-linux-arm64" ;;
+    x86_64)        asset="nvim-linux-x86_64"; sha="c441b547142860bf01bcce39e36cbed185c41112813e15443b16e5237750724d" ;;
+    aarch64|arm64) asset="nvim-linux-arm64";  sha="e055af73fa9c72b37456da8d204fa5c09850bc07e80e9176fe3b87d4afb7a3fc" ;;
     *) warn "unsupported arch '$arch' for neovim release; skipping"; return 0 ;;
   esac
-  url="https://github.com/neovim/neovim/releases/latest/download/${asset}.tar.gz"
+  url="https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/${asset}.tar.gz"
   tmp="$(mktemp -d)"
 
-  log "downloading neovim ($asset)…"
-  if curl -fsSL "$url" -o "$tmp/nvim.tar.gz"; then
+  log "downloading neovim v${NEOVIM_VERSION} ($asset)…"
+  if curl -fsSL "$url" -o "$tmp/nvim.tar.gz" && verify_sha256 "$tmp/nvim.tar.gz" "$sha"; then
     $SUDO rm -rf "/opt/${asset}" /opt/nvim
     $SUDO tar -xzf "$tmp/nvim.tar.gz" -C /opt
     $SUDO ln -sfn "/opt/${asset}" /opt/nvim
     log "neovim installed to /opt/nvim"
   else
-    warn "neovim download failed; falling back to apt"
+    warn "neovim download/verify failed; falling back to apt"
     $SUDO apt-get install -y -qq neovim || warn "apt neovim install failed too"
   fi
   rm -rf "$tmp"
@@ -102,29 +126,37 @@ install_tree_sitter() {
     return 0
   fi
 
-  local arch asset url tmp
+  local arch asset sha url tmp
   arch="$(uname -m)"
   case "$arch" in
-    x86_64)        asset="tree-sitter-linux-x64" ;;
-    aarch64|arm64) asset="tree-sitter-linux-arm64" ;;
+    x86_64)        asset="tree-sitter-linux-x64";   sha="ca9a7bf542473e956aab7d69e2154a60e4b4ac9f8eaf56f248692fc6d340efa4" ;;
+    aarch64|arm64) asset="tree-sitter-linux-arm64"; sha="0dbc9e41f374a4310d560bcd6ff886dc9d23f40ba7b014ebb6df498f788a1505" ;;
     *) warn "unsupported arch '$arch' for tree-sitter release; skipping"; return 0 ;;
   esac
   url="https://github.com/tree-sitter/tree-sitter/releases/download/v${TREE_SITTER_VERSION}/${asset}.gz"
   tmp="$(mktemp -d)"
 
+  # sha is of the decompressed binary (no checksum file is published upstream), so
+  # verify after gunzip and before placing it on PATH.
   log "downloading tree-sitter CLI v${TREE_SITTER_VERSION} ($asset)…"
-  if curl -fsSL "$url" -o "$tmp/tree-sitter.gz" && gunzip -f "$tmp/tree-sitter.gz"; then
+  if curl -fsSL "$url" -o "$tmp/tree-sitter.gz" && gunzip -f "$tmp/tree-sitter.gz" \
+     && verify_sha256 "$tmp/tree-sitter" "$sha"; then
     $SUDO install -m 0755 "$tmp/tree-sitter" /usr/local/bin/tree-sitter
     log "tree-sitter installed to /usr/local/bin/tree-sitter"
   else
-    warn "tree-sitter CLI download failed; nvim-treesitter parsers won't compile"
+    warn "tree-sitter CLI download/verify failed; nvim-treesitter parsers won't compile"
   fi
   rm -rf "$tmp"
 }
 
 # ----------------------------------------------------------------------------
-# 3. starship prompt — official installer to /usr/local/bin (best-effort).
+# 3. starship prompt — pinned release binary verified against its published
+#    .sha256, installed to /usr/local/bin. We deliberately avoid the upstream
+#    `curl https://starship.rs/install.sh | sh` one-liner: that runs an unpinned
+#    remote script as root. Bump the version + both hashes together.
 # ----------------------------------------------------------------------------
+STARSHIP_VERSION="1.25.1"
+
 install_starship() {
   if command -v starship >/dev/null 2>&1; then
     log "starship already installed"
@@ -134,10 +166,27 @@ install_starship() {
     warn "install starship manually on this host"
     return 0
   fi
-  log "installing starship…"
-  curl -fsSL https://starship.rs/install.sh \
-    | $SUDO sh -s -- --yes >/dev/null 2>&1 \
-    || warn "starship install failed (prompt will fall back to default)"
+
+  local arch asset sha url tmp
+  arch="$(uname -m)"
+  case "$arch" in
+    x86_64)        asset="starship-x86_64-unknown-linux-gnu";   sha="4488c11ca632327d1f1f16fb2f102c0646094c35479cd5435991385da43c61ac" ;;
+    aarch64|arm64) asset="starship-aarch64-unknown-linux-musl"; sha="01517aab398959ea9ea73bdb4f032ea4dbb51dff5c8e5eb05b4a1b9b7ab872b8" ;;
+    *) warn "unsupported arch '$arch' for starship release; skipping"; return 0 ;;
+  esac
+  url="https://github.com/starship/starship/releases/download/v${STARSHIP_VERSION}/${asset}.tar.gz"
+  tmp="$(mktemp -d)"
+
+  log "downloading starship v${STARSHIP_VERSION} ($asset)…"
+  if curl -fsSL "$url" -o "$tmp/starship.tar.gz" && verify_sha256 "$tmp/starship.tar.gz" "$sha" \
+     && tar -xzf "$tmp/starship.tar.gz" -C "$tmp"; then
+    $SUDO install -m 0755 "$tmp/starship" /usr/local/bin/starship \
+      && log "starship installed to /usr/local/bin/starship" \
+      || warn "starship install failed (prompt will fall back to default)"
+  else
+    warn "starship download/verify failed (prompt will fall back to default)"
+  fi
+  rm -rf "$tmp"
 }
 
 # ----------------------------------------------------------------------------
