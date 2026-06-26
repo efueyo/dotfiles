@@ -84,6 +84,45 @@ install_neovim() {
 }
 
 # ----------------------------------------------------------------------------
+# 2b. tree-sitter CLI — nvim-treesitter's `main` branch compiles parsers by
+#     shelling out to the `tree-sitter` binary (the old `master` branch used cc
+#     directly, so build-essential alone was enough). noble's apt build is too
+#     old, so grab the pinned release binary. `main` requires >= 0.26.1.
+# ----------------------------------------------------------------------------
+TREE_SITTER_VERSION="0.26.9"
+
+install_tree_sitter() {
+  if [ "$(uname -s)" != "Linux" ]; then
+    command -v tree-sitter >/dev/null 2>&1 \
+      || warn "install the tree-sitter CLI manually on this host ('brew install tree-sitter')"
+    return 0
+  fi
+  if command -v tree-sitter >/dev/null 2>&1; then
+    log "tree-sitter already installed ($(tree-sitter --version))"
+    return 0
+  fi
+
+  local arch asset url tmp
+  arch="$(uname -m)"
+  case "$arch" in
+    x86_64)        asset="tree-sitter-linux-x64" ;;
+    aarch64|arm64) asset="tree-sitter-linux-arm64" ;;
+    *) warn "unsupported arch '$arch' for tree-sitter release; skipping"; return 0 ;;
+  esac
+  url="https://github.com/tree-sitter/tree-sitter/releases/download/v${TREE_SITTER_VERSION}/${asset}.gz"
+  tmp="$(mktemp -d)"
+
+  log "downloading tree-sitter CLI v${TREE_SITTER_VERSION} ($asset)…"
+  if curl -fsSL "$url" -o "$tmp/tree-sitter.gz" && gunzip -f "$tmp/tree-sitter.gz"; then
+    $SUDO install -m 0755 "$tmp/tree-sitter" /usr/local/bin/tree-sitter
+    log "tree-sitter installed to /usr/local/bin/tree-sitter"
+  else
+    warn "tree-sitter CLI download failed; nvim-treesitter parsers won't compile"
+  fi
+  rm -rf "$tmp"
+}
+
+# ----------------------------------------------------------------------------
 # 3. starship prompt — official installer to /usr/local/bin (best-effort).
 # ----------------------------------------------------------------------------
 install_starship() {
@@ -243,6 +282,7 @@ main() {
   log "installing dotfiles from $DOTFILES_DIR"
   install_packages
   install_neovim
+  install_tree_sitter
   install_starship
   link_configs
   setup_bash
