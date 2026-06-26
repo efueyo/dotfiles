@@ -1,6 +1,5 @@
 local q = require("vim.treesitter")
 local parse_query = vim.treesitter.query.parse
-local ts_utils = require("nvim-treesitter.ts_utils")
 
 local lang = "go"
 
@@ -27,8 +26,10 @@ M.find_structs = function()
 	)
 	local bufnr, root = get_ts_root()
 	local res = {}
-	for _, captures, _ in query:iter_matches(root, bufnr) do
-		table.insert(res, q.get_node_text(captures[1], bufnr))
+	-- Single capture (@struct_name); iter_captures yields one node at a time,
+	-- avoiding the list-of-nodes semantics `iter_matches` gained in Neovim 0.11+.
+	for _, node in query:iter_captures(root, bufnr) do
+		table.insert(res, q.get_node_text(node, bufnr))
 	end
 	return res
 end
@@ -47,8 +48,9 @@ M.find_interfaces = function()
 	)
 	local bufnr, root = get_ts_root()
 	local res = {}
-	for _, captures, _ in query:iter_matches(root, bufnr) do
-		table.insert(res, q.get_node_text(captures[1], bufnr))
+	-- Single capture (@interface_name); see find_structs for why iter_captures.
+	for _, node in query:iter_captures(root, bufnr) do
+		table.insert(res, q.get_node_text(node, bufnr))
 	end
 	return res
 end
@@ -111,7 +113,7 @@ M.ret_values = function()
    ]
   ]]
 	)
-	local cur_node = ts_utils.get_node_at_cursor()
+	local cur_node = vim.treesitter.get_node()
 	local function_node
 	while cur_node do
 		if
@@ -172,19 +174,32 @@ M.find_structs_info = function()
   ]]
 	)
 	local bufnr, root = get_ts_root()
+	local capture_names = query.captures
 	local structs = {}
-	for _, captures, _ in query:iter_matches(root, bufnr) do
-		local struct_name = q.get_node_text(captures[1], bufnr)
-		local field_name = q.get_node_text(captures[2], bufnr)
-		local field_type = q.get_node_text(captures[3], bufnr)
-		if structs[struct_name] == nil then
-			structs[struct_name] = { name = struct_name, fields = {} }
+	local order = {}
+	local current
+	-- iter_captures yields captures in document order: each @struct_name is
+	-- followed by its (@field_name, @field_type) pairs. Group them as we go
+	-- rather than relying on iter_matches, whose multi-node capture semantics
+	-- changed in Neovim 0.11+.
+	for id, node in query:iter_captures(root, bufnr) do
+		local cname = capture_names[id]
+		local text = q.get_node_text(node, bufnr)
+		if cname == "struct_name" then
+			if structs[text] == nil then
+				structs[text] = { name = text, fields = {} }
+				table.insert(order, text)
+			end
+			current = structs[text]
+		elseif cname == "field_name" and current then
+			table.insert(current.fields, { fname = text, ftype = nil })
+		elseif cname == "field_type" and current and #current.fields > 0 then
+			current.fields[#current.fields].ftype = text
 		end
-		table.insert(structs[struct_name].fields, { fname = field_name, ftype = field_type })
 	end
 	local res = {}
-	for _, struct_info in pairs(structs) do
-		table.insert(res, struct_info)
+	for _, name in ipairs(order) do
+		table.insert(res, structs[name])
 	end
 	return res
 end
