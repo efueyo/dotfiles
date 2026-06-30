@@ -241,6 +241,16 @@ _pathprepend "$HOME/.local/bin"
 _pathprepend "/opt/nvim/bin"
 export PATH
 unset -f _pathprepend
+# Personal aliases (fish abbreviations ported to bash).
+alias n='nvim'
+alias cc='claude'
+alias g='git'
+alias gwa='git worktree add'
+alias gwl='git worktree list'
+alias gwr='git worktree remove'
+alias ta='tmux attach'
+alias d='docker'
+command -v eza >/dev/null 2>&1 && alias ll='eza -l -g --icons'
 command -v starship >/dev/null 2>&1 && eval "$(starship init bash)"
 command -v direnv   >/dev/null 2>&1 && eval "$(direnv hook bash)"
 # Auto-attach to a tmux session on interactive login (mirrors fish config.fish).
