@@ -1,4 +1,5 @@
 local wezterm = require("wezterm")
+local act = wezterm.action
 
 local mux = wezterm.mux
 
@@ -28,6 +29,18 @@ local conf = {
   },
   keys = {
     { key = "Enter", mods = "SHIFT", action = wezterm.action { SendString = "\x1b\r" } },
+    {
+      key = 'E',
+      mods = 'CMD|SHIFT',
+      action = act.PromptInputLine {
+        description = 'Enter new name for tab',
+        action = wezterm.action_callback(function(window, pane, line)
+          if line then
+            window:active_tab():set_title(line)
+          end
+        end),
+      },
+    },
   }
 
 }
