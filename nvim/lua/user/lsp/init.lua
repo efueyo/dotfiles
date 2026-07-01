@@ -88,7 +88,22 @@ local servers = {
     },
   },
   rust_analyzer = {},
-  ts_ls = {},
+  ts_ls = {
+    typescript = {
+      preferences = {
+        includePackageJsonAutoImports = "on",
+        includeCompletionsForModuleExports = true,
+        includeCompletionsForImportStatements = true,
+        importModuleSpecifierPreference = "non-relative",
+      },
+    },
+    javascript = {
+      preferences = {
+        includePackageJsonAutoImports = "on",
+        includeCompletionsForModuleExports = true,
+      },
+    },
+  },
   terraformls = {},
   basedpyright = {
     basedpyright = {
@@ -140,10 +155,19 @@ mason_lspconfig.setup({
   ensure_installed = vim.tbl_keys(servers),
 })
 
+-- Per-server init_options (sent at initialize, before workspace/configuration).
+-- typescript-language-server reads its tsserver memory budget from here.
+local init_options = {
+  ts_ls = {
+    maxTsServerMemory = 8192,
+  },
+}
+
 for server_name, settings in pairs(servers) do
-  vim.lsp.config( server_name, {
+  vim.lsp.config(server_name, {
     capabilities = capabilities,
     on_attach = on_attach,
     settings = settings,
+    init_options = init_options[server_name],
   })
 end
