@@ -6,8 +6,6 @@ return {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
 
-      "nvimtools/none-ls.nvim",
-
       -- Additional lua configuration, makes nvim stuff amazing
       "folke/neodev.nvim",
     },
