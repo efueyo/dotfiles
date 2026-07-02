@@ -34,6 +34,9 @@ local options = {
 
   cursorline = true,
 
+  foldmethod="expr",
+  foldexpr="v:lua.vim.treesitter.foldexpr()",
+  foldlevelstart=99,
   laststatus=3,
   winbar="%=%m %f %n", -- aligned to the right + isModified + filename + buf number
 }

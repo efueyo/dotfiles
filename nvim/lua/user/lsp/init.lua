@@ -33,9 +33,13 @@ local lsp_keymaps = function(bufnr)
   -- nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
 end
 
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
   lsp_keymaps(bufnr)
 
+  if client:supports_method("textDocument/foldingRange") then
+    vim.wo[0][0].foldmethod = "expr"
+    vim.wo[0][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+  end
   vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
     vim.lsp.buf.format()
   end, { desc = "Format current buffer with LSP" })
