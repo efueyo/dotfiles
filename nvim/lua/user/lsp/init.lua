@@ -175,3 +175,52 @@ for server_name, settings in pairs(servers) do
     init_options = init_options[server_name],
   })
 end
+
+-- :LspRestart [name] — stop LSP client(s) and re-attach across loaded buffers.
+-- Useful after tsserver dies (SIGABRT) and Nvim gives up auto-restarting.
+-- Re-attaches by re-firing FileType (via vim.lsp.enable) rather than :edit,
+-- so unsaved buffer changes are preserved.
+vim.api.nvim_create_user_command("LspRestart", function(opts)
+  local filter = opts.args ~= "" and { name = opts.args } or nil
+  local clients = vim.lsp.get_clients(filter)
+  if vim.tbl_isempty(clients) then
+    vim.notify("LspRestart: no active LSP clients", vim.log.levels.WARN)
+    return
+  end
+
+  local ids = {}
+  for _, client in ipairs(clients) do
+    ids[#ids + 1] = client.id
+    client:stop(true)
+  end
+
+  local stopped = vim.wait(5000, function()
+    for _, id in ipairs(ids) do
+      local c = vim.lsp.get_client_by_id(id)
+      if c and not c:is_stopped() then
+        return false
+      end
+    end
+    return true
+  end, 50)
+
+  if not stopped then
+    vim.notify("LspRestart: clients did not stop within 5s", vim.log.levels.ERROR)
+    return
+  end
+
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= "" then
+      vim.api.nvim_exec_autocmds("FileType", { buffer = buf, modeline = false })
+    end
+  end
+  vim.notify("LspRestart: restarted " .. #ids .. " client(s)", vim.log.levels.INFO)
+end, {
+  nargs = "?",
+  desc = "Restart LSP client(s) and re-attach loaded buffers",
+  complete = function()
+    return vim.tbl_map(function(c)
+      return c.name
+    end, vim.lsp.get_clients())
+  end,
+})
