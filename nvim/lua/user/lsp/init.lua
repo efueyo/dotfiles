@@ -163,7 +163,7 @@ mason_lspconfig.setup({
 -- typescript-language-server reads its tsserver memory budget from here.
 local init_options = {
   ts_ls = {
-    maxTsServerMemory = 8192,
+    maxTsServerMemory = 16384,
   },
 }
 
