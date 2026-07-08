@@ -1,7 +1,21 @@
 return {
 
   -- GIT
-  "tpope/vim-fugitive",
+  {
+    "tpope/vim-fugitive",
+    config = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "fugitive",
+        callback = function()
+          -- 'cc' runs all git hooks; 'cn' commits skipping them (CI reruns them anyway)
+          vim.keymap.set("n", "cn", ":Git commit --no-verify<CR>", {
+            buffer = true,
+            desc = "Commit skipping hooks",
+          })
+        end,
+      })
+    end,
+  },
 
   {
     -- Autocompletion
