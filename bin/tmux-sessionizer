@@ -27,7 +27,7 @@ fi
 
 if [[ "$selected" =~ ^\[TMUX\]\ (.+)$ ]]; then
     selected="${BASH_REMATCH[1]}"
-else
+elif [[ ! "$selected" =~ ^/workspaces/(.+)$ ]]; then
     selected="$HOME/$selected"
 fi
 
