@@ -212,9 +212,10 @@ link_configs() {
   link bin                  "$HOME/bin"
   link .rgignore            "$HOME/.rgignore"
 
-  # Personal Claude Code agents/commands (repo also ships its own .claude/).
+  # Personal Claude Code agents/commands/skills (repo also ships its own .claude/).
   link claude/agents        "$HOME/.claude/agents"
   link claude/commands      "$HOME/.claude/commands"
+  link claude/skills        "$HOME/.claude/skills"
 
   # Global gitignore (cheap, useful).
   link .gitignore           "$HOME/.gitignore"
