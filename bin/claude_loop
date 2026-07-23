@@ -25,13 +25,17 @@ RED='\033[0;31m'
 if [[ -n "$1" ]]; then
     PLAN_DIR="$1"
 else
-    # Use fzf to select from ./dev/active/
-    if [[ ! -d "./dev/active" ]]; then
-        echo -e "${RED}Error: ./dev/active directory not found${RESET}"
+    # Use fzf to select from ./dev/active/ and/or ./mytasks/active/
+    ROOTS=()
+    [[ -d "./dev/active" ]] && ROOTS+=("./dev/active")
+    [[ -d "./mytasks/active" ]] && ROOTS+=("./mytasks/active")
+
+    if [[ "${#ROOTS[@]}" -eq 0 ]]; then
+        echo -e "${RED}Error: neither ./dev/active nor ./mytasks/active directory found${RESET}"
         exit 1
     fi
 
-    PLAN_DIR=$(find ./dev/active -mindepth 1 -maxdepth 1 -type d | fzf --prompt="Select plan: ")
+    PLAN_DIR=$(find "${ROOTS[@]}" -mindepth 1 -maxdepth 1 -type d | fzf --prompt="Select plan: ")
 
     if [[ -z "$PLAN_DIR" ]]; then
         echo "No plan selected"
