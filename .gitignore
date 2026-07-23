@@ -6,3 +6,4 @@ nvim/plugin/packer_compiled.lua
 fish/conf.d/private.fish
 fish/fish_variables
 .env
+mytasks
