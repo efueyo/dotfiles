@@ -317,10 +317,6 @@ Fields:
   modify. Must be real paths verified by exploring the codebase
 - **completed**: Always `false` when creating the plan
 
-If the repo is a monorepo with multiple independent build/test layers (discovered above), add a
-**layer** field (e.g. `"layer": "server"` / `"layer": "web"`) so the implementing agent knows
-which build/test command applies without re-deriving it.
-
 #### Level of Detail for tasks.json
 
 Each task must be **specific enough to implement without design decisions** but **not so
