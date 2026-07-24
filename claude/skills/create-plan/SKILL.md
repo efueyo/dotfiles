@@ -321,6 +321,28 @@ Fields:
 - **files**: Array of file paths (relative to repo root) that this task will create, delete, or
   modify. Must be real paths verified by exploring the codebase
 - **completed**: Always `false` when creating the plan
+- **model_size** (optional): `"SMALL"` if this task is low-cognitive-load enough to hand to a
+  smaller/cheaper model. Omit the field entirely otherwise — omission is the default and means
+  "use the full model," not `"LARGE"`. Model-agnostic on purpose: mapping `SMALL`/`LARGE` to an
+  actual model name is the job of whatever consumes tasks.json, not this plan, so the mapping
+  can change without editing every plan. Only set `SMALL` when confident — see criteria below.
+
+#### Choosing a `model_size`
+
+- **Mark `SMALL`**: mechanical scaffolding copied from an existing analog (e.g. copying and
+  renaming `package.json`/`tsconfig.json` from a sibling package), boilerplate with no branching
+  logic, changes that mirror an existing pattern verbatim with no judgment calls. A task can also
+  be `SMALL` even when it writes tests or touches a normally-sensitive area, *if* the task
+  description (plus context.md) already pins down every convention it needs — exact assertion
+  API/style, mocking approach, the specific example file to mirror — so nothing is left for the
+  implementing agent to infer or decide.
+- **Leave unset (default/full model)**: anything with edge cases, new algorithms or business
+  logic, or that requires matching a subtle existing convention that isn't already spelled out
+  verbatim in the task. The real test is whether the description leaves any judgment call for the
+  implementing agent — if it does, that task needs the full model, whether or not it's a test.
+- **Never mark `SMALL`**: any task touching auth, authorization, or data access — the same
+  categories context.md already calls out for risk classification. That's a risk-tolerance line,
+  not a judgment-call line, so it holds regardless of how fully specified the task is.
 
 #### Level of Detail for tasks.json
 
@@ -395,3 +417,6 @@ Before finishing, verify:
 - [ ] Risk is classified in context.md if the feature touches auth, authorization, or data access
 - [ ] Non-trivial local conventions this feature must follow (test style, error handling,
       logging, etc.) were checked against a real example, not assumed from a tool/framework name
+- [ ] No task tagged `"model_size": "SMALL"` touches auth, authorization, or data access; any
+      `SMALL` task involving tests fully specifies the conventions to follow, leaving no judgment
+      call to the implementing agent
