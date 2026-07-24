@@ -13,6 +13,12 @@ else
     exit 1
 fi
 
+# Maps tasks.json "model_size" values to a --model argument. To support another
+# category (e.g. "MEDIUM"), add one entry here — nothing else in this script changes.
+declare -A MODEL_SIZE_MAP=(
+    [SMALL]="${CLAUDE_LOOP_SMALL_MODEL:-sonnet}"
+)
+
 # Color codes
 RESET='\033[0m'
 BOLD='\033[1m'
@@ -78,7 +84,16 @@ for i in $(seq "$START" "$TOTAL"); do
     echo -e "${BOLD}${YELLOW}Loop $i of $TOTAL${RESET}"
     echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
 
-    cat "$PROMPT_FILE" | "$CLAUDE_BIN" -p --verbose --output-format stream-json --dangerously-skip-permissions | parse_claude_output
+    # The next incomplete task determines which model runs this iteration
+    MODEL_SIZE=$(jq -r '[.[] | select(.completed == false)][0].model_size // empty' "$TASKS_FILE")
+
+    MODEL_ARGS=()
+    if [[ -n "$MODEL_SIZE" && -n "${MODEL_SIZE_MAP[$MODEL_SIZE]+set}" ]]; then
+        MODEL_ARGS=(--model "${MODEL_SIZE_MAP[$MODEL_SIZE]}")
+        echo -e "${CYAN}model_size: $MODEL_SIZE -> using ${MODEL_SIZE_MAP[$MODEL_SIZE]}${RESET}"
+    fi
+
+    cat "$PROMPT_FILE" | "$CLAUDE_BIN" -p --verbose --output-format stream-json --dangerously-skip-permissions "${MODEL_ARGS[@]}" | parse_claude_output
 
     # Re-check completion after each iteration
     COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
