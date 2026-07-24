@@ -24,12 +24,11 @@ Before writing anything:
 - **Verify every command before writing it down.** Check it actually exists (a script in
   `package.json`, a target in the `Makefile`, a recipe in the `justfile`) rather than assuming
   a common one like `make test` exists just because it's common elsewhere.
-- **If any task will add or modify tests, open one existing test file** (in the package being
-  touched, or in a package it's modeled on) and note the actual conventions verbatim: assertion
-  API/style (e.g. Vitest's `expect(x).toStrictEqual(y)`, not Node's `assert` module), mocking
-  approach, and fixture helpers. Naming the test framework (e.g. "uses Vitest") is not enough —
-  an implementing agent will default to whatever it knows generically unless shown the local
-  house style, and a brand-new package has no sibling test file of its own to copy from.
+- **Naming a tool isn't the same as knowing its local convention.** For any pattern tasks will
+  need to follow (test assertion style, error handling, logging, etc.), open one real example in
+  the codebase rather than assuming generic/textbook usage — an implementing agent defaults to
+  what it knows unless shown the house style. If the code is brand new, use whatever it's
+  modeled on as the example.
 - If the repo has its own skill/command for writing plans, UI-specific implementation plans, or
   commit/PR conventions, prefer that repo's own guidance over this skill's generic defaults for
   those parts — this skill is the fallback when the repo doesn't already have one.
@@ -145,10 +144,7 @@ Numbered list of edge cases and how they're handled.
 
 ## Existing Infrastructure
 
-What already exists in the codebase that this feature builds on. If any task adds or modifies
-tests, include the example test file(s) checked during discovery and the concrete conventions to
-follow (assertion API/style, mocking approach, fixture helpers) — not just which test framework
-is configured.
+What already exists in the codebase that this feature builds on.
 
 ## Files to Modify
 
@@ -277,8 +273,6 @@ You can read the previous commits and the codebase if you need to verify what ha
 - {Feature-specific constraints, e.g., "no breaking changes to the public API"}
 - {Patterns to follow, e.g., "follow the existing handler pattern in X"}
 - {Things to avoid, e.g., "never bypass the existing validation layer"}
-- {Test conventions, if tasks add/modify tests, e.g., "tests use Vitest's `expect` API with
-  `toStrictEqual`, not Node's `assert` module — see `path/to/example.test.ts`"}
 - {Ownership/risk notes from the discussion, if any}
 ```
 
@@ -399,5 +393,5 @@ Before finishing, verify:
 - [ ] Each task's files array contains real, verified paths
 - [ ] Edge cases from discussion are captured as tasks
 - [ ] Risk is classified in context.md if the feature touches auth, authorization, or data access
-- [ ] If any task adds or modifies tests, an existing test file's conventions (assertion style,
-      mocking approach) were checked and named in context.md and/or prompt.md's Important Notes
+- [ ] Non-trivial local conventions this feature must follow (test style, error handling,
+      logging, etc.) were checked against a real example, not assumed from a tool/framework name
