@@ -1,0 +1,30 @@
+[core]
+	excludesfile = ~/.gitignore
+[worktree]
+	guessRemote = true
+[rerere]
+	enabled = true
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+	default = current
+[fetch]
+	prune = true
+[rebase]
+	autoStash = true
+[merge]
+	conflictStyle = zdiff3
+[diff]
+	algorithm = histogram
+	colorMoved = default
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[help]
+	autocorrect = prompt

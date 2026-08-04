@@ -21,8 +21,8 @@ install-common:
 	ln -snf $(CURDIR)/starship/starship.toml ~/.config/starship.toml || true
 	echo "------- .gitignore -------"
 	ln -snf $(CURDIR)/.gitignore ~/.gitignore || true
-	echo "Configuring git global ~/.gitignore"
-	git config --global core.excludesfile ~/.gitignore || true
+	echo "------- .gitconfig -------"
+	ln -snf $(CURDIR)/.gitconfig ~/.gitconfig || true
 	echo "------- Neovim -------"
 	ln -snf $(CURDIR)/nvim ~/.config/nvim || true
 	echo "------- Fish -------"
