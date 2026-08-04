@@ -1,0 +1,21 @@
+.gitconfig
+  s_70e2e21a6ab443::t_e70cc281198892 1-30
+Makefile
+  s_70e2e21a6ab443::t_c76ec7ab984ca8 24-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "badfe600fa47123c10a694222a03d13d23a33c6a",
+  "prompts": {},
+  "sessions": {
+    "s_70e2e21a6ab443": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dd3c53bf-ab5b-4db2-979b-254497627d40",
+        "model": "unknown"
+      },
+      "human_author": "Enrique Fueyo <enrique.fueyoramirez@vanta.com>"
+    }
+  }
+}
