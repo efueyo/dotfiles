@@ -23,8 +23,11 @@ keymap("x", "<leader>p", '"_dP')
 -- yank from cursor
 keymap("n", "Y", "yg$")
 
--- yank from cursor
+-- yank link in this line
 keymap("n", "<leader>yl", 'f/"+yiW', { desc = "[Y]ank [L]ink" })
+
+-- yank file name
+keymap("n", "<leader>yf", "<cmd>let @+=expand('%')<CR>", { desc = "[Y]ank [F]ile" })
 
 -- keep the screen centered while searching
 keymap("n", "n", "nzzzv")
