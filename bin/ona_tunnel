@@ -1,0 +1,345 @@
+#!/usr/bin/env bash
+
+# Forward an Ona CDE's dev-server ports to loopback on this machine.
+#
+# Run `ona environment ssh-config` once before first use.
+
+set -euo pipefail
+
+DEFAULT_PORTS="${ONA_TUNNEL_PORTS:-8080 9000 9876 27017}"
+APP_PORT=8080
+SOCKET_DIR="${HOME}/.cache/ona_tunnel"
+REPLACE=false
+
+_die() {
+  echo "ona_tunnel: $*" >&2
+  exit 1
+}
+
+_require() {
+  for cmd in "$@"; do
+    command -v "$cmd" >/dev/null 2>&1 || _die "missing dependency: $cmd"
+  done
+}
+
+_usage() {
+  cat <<'EOF'
+Forward an Ona CDE's dev ports to 127.0.0.1
+
+Usage: ona_tunnel [command] [env] [-p PORT[:REMOTE]]... [--replace]
+
+Commands:
+  start      open the tunnel in the background (default)
+  status     report the master connection and each forwarded port
+  stop       close the tunnel
+  restart    stop, then start
+  list       list running environments
+
+  --replace  take over ports held by an ssh tunnel started by hand
+
+env is a substring of an environment ID or name. Omit it to use the only
+running environment, or to pick from fzf when several are running.
+
+Forwards are fixed when the tunnel starts, so change ports with
+`ona_tunnel restart -p ...` — passing -p to a live tunnel only narrows what
+`status` inspects. The port set is remembered per environment, so bare
+`status`/`restart` reuse it and flag any port that stopped being forwarded.
+
+  ona_tunnel                    # 8080, 9000, 9876, 27017
+  ona_tunnel 019fcd8e           # skip the picker
+  ona_tunnel -p 8080 -p 27017   # custom ports (27017 = mongo)
+  ona_tunnel status
+  ona_tunnel stop
+
+Override the defaults persistently with ONA_TUNNEL_PORTS="8080 9000".
+EOF
+}
+
+# Resolve a running environment to "<id>\t<name>", prompting only when the
+# choice is genuinely ambiguous.
+_resolve_env() {
+  local filter="${1:-}" envs count
+  envs=$(ona environment list --running-only -o json 2>/dev/null) ||
+    _die "could not list environments (is the ona CLI logged in?)"
+
+  if [[ -n "$filter" ]]; then
+    envs=$(jq --arg f "$filter" \
+      '[.[] | select((.id + " " + .metadata.name) | test($f; "i"))]' <<<"$envs")
+  fi
+
+  count=$(jq 'length' <<<"$envs")
+  if [[ "$count" -eq 0 ]]; then
+    if [[ -n "$filter" ]]; then
+      _die "no running environment matches '$filter' — see: ona_tunnel list"
+    fi
+    _die "no running environments — start one with: ona environment start"
+  fi
+
+  local lines
+  lines=$(jq -r '.[] | "\(.id)\t\(.metadata.name)"' <<<"$envs")
+  if [[ "$count" -eq 1 ]]; then
+    echo "$lines"
+    return
+  fi
+
+  _require fzf
+  fzf --reverse --height 40% --with-nth 2.. \
+    --prompt "environment> " <<<"$lines" ||
+    _die "no environment selected"
+}
+
+_socket_for() {
+  echo "${SOCKET_DIR}/$1.sock"
+}
+
+# Remember the port set a tunnel was started with, so `status` reports on the
+# ports you actually asked for and `restart` preserves them. Without this a
+# master that dies and gets replaced with a different port set looks healthy.
+_ports_file_for() {
+  echo "${SOCKET_DIR}/$1.ports"
+}
+
+_save_ports() {
+  local env_id="$1"
+  shift
+  mkdir -p "$SOCKET_DIR"
+  echo "$*" >"$(_ports_file_for "$env_id")"
+}
+
+_load_ports() {
+  local file
+  file="$(_ports_file_for "$1")"
+  [[ -r "$file" ]] && cat "$file" || true
+}
+
+_master_alive() {
+  local env_id="$1"
+  ssh -O check -o ControlPath="$(_socket_for "$env_id")" \
+    "${env_id}.ona.environment" >/dev/null 2>&1
+}
+
+# `|| true` because lsof exits 1 when nothing is listening, which pipefail would
+# otherwise turn into a silent `set -e` abort at the caller's assignment.
+_listener_pid() {
+  lsof -nP -iTCP:"$1" -sTCP:LISTEN -t 2>/dev/null | head -1 || true
+}
+
+# A hand-rolled `ssh -L` for the same environment is the common blocker, and it
+# is safe to take over. Anything else on the port is not ours to kill.
+_is_unmanaged_tunnel() {
+  local cmd
+  cmd=$(ps -o command= -p "$1" 2>/dev/null || true)
+  [[ "$cmd" == ssh\ * && "$cmd" == *"$2"* ]]
+}
+
+_wait_for_free_port() {
+  local port="$1" attempt
+  for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    [[ -z "$(_listener_pid "$port")" ]] && return 0
+    sleep 0.2
+  done
+  return 1
+}
+
+# The local listener accepts regardless of what's on the far end, so probe the
+# app port over HTTP to tell "tunnel up" apart from "nothing serving in the CDE".
+_probe_app_port() {
+  local port="$1" code
+  command -v curl >/dev/null 2>&1 || return 0
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 \
+    "http://127.0.0.1:${port}/" 2>/dev/null || true)
+  if [[ -z "$code" || "$code" == "000" ]]; then
+    echo "  warning: nothing answered on :${port} — is the stack up in the CDE?"
+    echo "           run 'just dev-start-web' there, then 'ona_tunnel status'"
+    return 1
+  fi
+  echo "  :${port} answered HTTP ${code}"
+}
+
+cmd_start() {
+  local env_id="$1" env_name="$2"
+  shift 2
+  local ports=("$@")
+
+  if _master_alive "$env_id"; then
+    echo "already up: ${env_name} (${env_id})"
+    cmd_status "$env_id" "$env_name" "${ports[@]}"
+    return
+  fi
+
+  local forwards=() spec local_port remote_port blocker
+  for spec in "${ports[@]}"; do
+    local_port="${spec%%:*}"
+    remote_port="${spec##*:}"
+    blocker=$(_listener_pid "$local_port")
+    if [[ -n "$blocker" ]]; then
+      if ! _is_unmanaged_tunnel "$blocker" "$env_id"; then
+        _die "port ${local_port} is already taken by pid ${blocker} ($(ps -o comm= -p "$blocker" 2>/dev/null || echo unknown)).
+       Free it first — remapping is not an option for :${APP_PORT}, the dev
+       stack's cookies and OAuth callbacks hardcode 127.0.0.1:${APP_PORT}."
+      fi
+      if [[ "$REPLACE" != true ]]; then
+        _die "an ssh tunnel for this environment already holds :${local_port} (pid ${blocker}),
+       started outside ona_tunnel. It works — leave it be, or re-run with
+       --replace to hand control over to ona_tunnel."
+      fi
+      echo "replacing tunnel started outside ona_tunnel (pid ${blocker})"
+      kill "$blocker" 2>/dev/null || true
+      _wait_for_free_port "$local_port" ||
+        _die "pid ${blocker} still holds :${local_port}"
+    fi
+    forwards+=(-L "127.0.0.1:${local_port}:127.0.0.1:${remote_port}")
+  done
+
+  mkdir -p "$SOCKET_DIR"
+  # `ssh -f` daemonizes but its ProxyCommand child inherits our stderr, which
+  # keeps a caller's pipe open forever (a backgrounded `ona_tunnel` never looks
+  # finished). Point it at a file instead, and surface it only on failure.
+  local err
+  err=$(mktemp)
+  # ExitOnForwardFailure so a port that can't bind fails loudly here instead of
+  # leaving a connected session with silently missing forwards.
+  if ! ssh -f -N \
+    -o ControlMaster=yes \
+    -o ControlPath="$(_socket_for "$env_id")" \
+    -o ExitOnForwardFailure=yes \
+    -o ServerAliveInterval=30 \
+    -o ServerAliveCountMax=3 \
+    "${forwards[@]}" \
+    "${env_id}.ona.environment" </dev/null 2>"$err"; then
+    local detail
+    detail=$(head -3 "$err" 2>/dev/null || true)
+    rm -f "$err"
+    _die "ssh failed to open the tunnel (run 'ona environment ssh-config' if you haven't)
+       ${detail}"
+  fi
+
+  _save_ports "$env_id" "${ports[@]}"
+  echo "tunnel up: ${env_name} (${env_id})"
+  echo "  forwards: ${ports[*]}"
+  for spec in "${ports[@]}"; do
+    [[ "${spec%%:*}" == "$APP_PORT" ]] || continue
+    _probe_app_port "$APP_PORT" || true
+  done
+  echo "  app: http://127.0.0.1:${APP_PORT}"
+  echo "  stop with: ona_tunnel stop"
+}
+
+cmd_status() {
+  local env_id="$1" env_name="$2"
+  shift 2
+  local ports=("$@")
+
+  if ! _master_alive "$env_id"; then
+    echo "down: ${env_name} (${env_id})"
+    return 1
+  fi
+
+  echo "up: ${env_name} (${env_id})"
+  local spec local_port pid missing=0
+  for spec in "${ports[@]}"; do
+    local_port="${spec%%:*}"
+    pid=$(_listener_pid "$local_port")
+    if [[ -n "$pid" ]]; then
+      echo "  :${local_port} listening (pid ${pid})"
+    else
+      echo "  :${local_port} NOT listening"
+      missing=1
+    fi
+  done
+  if [[ "$missing" -eq 1 ]]; then
+    echo "  warning: a port you started with is unforwarded — the master was"
+    echo "           probably replaced. Fix with: ona_tunnel restart"
+  fi
+  for spec in "${ports[@]}"; do
+    [[ "${spec%%:*}" == "$APP_PORT" ]] || continue
+    _probe_app_port "$APP_PORT" || true
+  done
+}
+
+cmd_stop() {
+  local env_id="$1" env_name="$2"
+
+  if ! _master_alive "$env_id"; then
+    rm -f "$(_ports_file_for "$env_id")"
+    echo "already down: ${env_name} (${env_id})"
+    return
+  fi
+
+  ssh -O exit -o ControlPath="$(_socket_for "$env_id")" \
+    "${env_id}.ona.environment" >/dev/null 2>&1 ||
+    _die "failed to close the tunnel for ${env_id}"
+  rm -f "$(_ports_file_for "$env_id")"
+  echo "tunnel down: ${env_name} (${env_id})"
+}
+
+cmd_list() {
+  ona environment list --running-only
+}
+
+main() {
+  _require ona jq ssh
+
+  local command="start" env_filter="" ports=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      start | stop | status | restart | list)
+        command="$1"
+        shift
+        ;;
+      -p | --port)
+        [[ $# -ge 2 ]] || _die "$1 needs a port"
+        ports+=("$2")
+        shift 2
+        ;;
+      --replace)
+        REPLACE=true
+        shift
+        ;;
+      -h | --help)
+        _usage
+        return 0
+        ;;
+      -*)
+        _die "unknown flag: $1 (see ona_tunnel --help)"
+        ;;
+      *)
+        [[ -z "$env_filter" ]] || _die "unexpected argument: $1"
+        env_filter="$1"
+        shift
+        ;;
+    esac
+  done
+
+  if [[ "$command" == "list" ]]; then
+    cmd_list
+    return
+  fi
+
+  local resolved env_id env_name
+  resolved=$(_resolve_env "$env_filter")
+  env_id="${resolved%%$'\t'*}"
+  env_name="${resolved#*$'\t'}"
+
+  # Fall back to the port set this tunnel was started with before the built-in
+  # defaults, so `status`/`restart` don't silently narrow a custom set.
+  if [[ ${#ports[@]} -eq 0 ]]; then
+    local remembered
+    remembered=$(_load_ports "$env_id")
+    # shellcheck disable=SC2206 -- intentional word splitting of the port list
+    ports=(${remembered:-$DEFAULT_PORTS})
+  fi
+
+  case "$command" in
+    start) cmd_start "$env_id" "$env_name" "${ports[@]}" ;;
+    status) cmd_status "$env_id" "$env_name" "${ports[@]}" ;;
+    stop) cmd_stop "$env_id" "$env_name" ;;
+    restart)
+      cmd_stop "$env_id" "$env_name"
+      cmd_start "$env_id" "$env_name" "${ports[@]}"
+      ;;
+  esac
+}
+
+main "$@"
