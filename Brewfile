@@ -3,6 +3,9 @@
 
 brew "fish"
 brew "neovim"
+# Provides the `tree-sitter` executable that nvim-treesitter's `main` branch
+# invokes to build parsers (the `tree-sitter` formula is the library only).
+brew "tree-sitter-cli"
 brew "tmux"
 brew "starship"
 brew "direnv"
