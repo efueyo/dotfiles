@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+# SSH into an Ona CDE, picking it from fzf.
+#
+# Run `ona environment ssh-config` once before first use.
+
+set -euo pipefail
+
+_die() {
+  echo "ona_connect: $*" >&2
+  exit 1
+}
+
+_require() {
+  for cmd in "$@"; do
+    command -v "$cmd" >/dev/null 2>&1 || _die "missing dependency: $cmd"
+  done
+}
+
+_usage() {
+  cat <<'EOF'
+SSH into an Ona CDE
+
+Usage: ona_connect [env] [-- ssh options...]
+
+env is a substring of an environment ID or name. Omit it to pick from fzf.
+Anything after -- is passed to ssh as options, ahead of the host.
+
+  ona_connect                                  # pick from the list
+  ona_connect 019fcd8e                         # skip the picker
+  ona_connect main -- -L 3000:localhost:3000   # extra ssh options
+EOF
+}
+
+# Resolve an environment to its id, prompting only when the choice is
+# genuinely ambiguous.
+_select_ona() {
+  local filter="${1:-}" envs count lines
+
+  envs=$(ona environment list -o json 2>/dev/null) ||
+    _die "could not list environments (is the ona CLI logged in?)"
+
+  if [[ -n "$filter" ]]; then
+    envs=$(jq --arg f "$filter" \
+      '[.[] | select((.id + " " + .metadata.name) | test($f; "i"))]' <<<"$envs")
+  fi
+
+  count=$(jq 'length' <<<"$envs")
+  if [[ "$count" -eq 0 ]]; then
+    [[ -n "$filter" ]] &&
+      _die "no environment matches '$filter' — see: ona environment list"
+    _die "no environments — create one with: ona environment create"
+  fi
+
+  # id first so the caller can split on it, but hidden from the picker.
+  lines=$(jq -r '
+    .[] | [
+      .id,
+      (.status.phase // "ENVIRONMENT_PHASE_UNSPECIFIED" | sub("^ENVIRONMENT_PHASE_"; "") | ascii_downcase),
+      .metadata.name,
+      (.status.content.git.branch // "-")
+    ] | @tsv' <<<"$envs")
+
+  if [[ "$count" -eq 1 ]]; then
+    cut -f1 <<<"$lines"
+    return
+  fi
+
+  _require fzf
+  local picked
+  picked=$(column -t -s $'\t' <<<"$lines" |
+    fzf --reverse --height 40% --with-nth 2.. --prompt "environment> ") ||
+    _die "no environment selected"
+
+  # column -t pads with spaces, so re-split on whitespace rather than tabs.
+  awk '{print $1}' <<<"$picked"
+}
+
+main() {
+  _require ona jq ssh
+
+  local filter="" ssh_args=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h | --help)
+        _usage
+        return 0
+        ;;
+      --)
+        shift
+        ssh_args=("$@")
+        break
+        ;;
+      -*)
+        _die "unknown flag: $1 (see ona_connect --help)"
+        ;;
+      *)
+        [[ -z "$filter" ]] || _die "unexpected argument: $1"
+        filter="$1"
+        shift
+        ;;
+    esac
+  done
+
+  local env_id
+  env_id=$(_select_ona "$filter")
+
+  # A stopped environment is fine — the ssh ProxyCommand starts it on connect.
+  # ${a[@]+...} so an empty array doesn't trip `set -u` on bash 3.2.
+  exec ssh ${ssh_args[@]+"${ssh_args[@]}"} "${env_id}.gitpod.environment"
+}
+
+main "$@"
