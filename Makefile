@@ -1,5 +1,5 @@
-.PHONY: install install-common install-linux brew
-.SILENT: install install-common install-linux brew
+.PHONY: install install-common install-linux install-macos brew
+.SILENT: install install-common install-linux install-macos brew
 
 UNAME := $(shell uname -s)
 
@@ -7,7 +7,9 @@ UNAME := $(shell uname -s)
 # `make brew` (skipped by default — on unsupported macOS, brew has no bottles
 # and would build everything from source).
 install: install-common
-ifneq ($(UNAME),Darwin)
+ifeq ($(UNAME),Darwin)
+	$(MAKE) install-macos
+else
 	$(MAKE) install-linux
 endif
 
@@ -38,6 +40,11 @@ install-common:
 	echo "------- ClaudeCode -------"
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
 	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true
+
+install-macos:
+	echo "------- AeroSpace -------"
+	mkdir -p ~/.config/aerospace || true
+	ln -snf $(CURDIR)/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml || true
 
 install-linux:
 	echo "------- Hyprland -------"

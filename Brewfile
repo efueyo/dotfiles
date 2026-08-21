@@ -20,6 +20,10 @@ brew "kubectl"
 brew "go"
 brew "pnpm"
 
+# AeroSpace (tiling WM) lives in the author's tap, not homebrew-cask core.
+tap "nikitabobko/tap"
+
 cask "wezterm"
+cask "aerospace"
 cask "1password-cli"
 cask "font-fira-code-nerd-font"

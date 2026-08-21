@@ -1,0 +1,202 @@
+# AeroSpace — tiling window manager for macOS.
+# The macOS counterpart to hypr/hyprland.conf + hypr/bind.conf.
+#
+# MODIFIER MAP vs Hyprland
+#   Hyprland SUPER  ->  alt (Option)   window management
+#   Hyprland CTRL   ->  ctrl           workspace switching (unchanged)
+# SUPER is Cmd on macOS and Cmd+C/V/M/Q are load-bearing there, so window
+# management moved to alt. Key *positions* (hjkl, arrows, numbers) are identical.
+#
+# Why alt-e / alt-i / alt-n / alt-u / alt-backtick are never bound below: those
+# are the macOS dead keys for ´ ˆ ˜ ¨ ` (á, ñ, ü, ...). AeroSpace grabs hotkeys
+# globally and cannot tell left Option from right, so binding them would break
+# accented input everywhere — the equivalent of losing `kb_options = compose:ralt`.
+#
+# Docs: https://nikitabobko.github.io/AeroSpace/guide
+
+config-version = 2
+
+start-at-login = true
+auto-reload-config = true
+
+# Hyprland: layout = dwindle. 'tiles' + auto orientation is the closest analog.
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+accordion-padding = 30
+
+# Hyprland: input { follow_mouse = 1 }
+focus-follows-mouse.enabled = true
+
+# Warp the pointer when the focused monitor changes (multi-monitor QoL).
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+automatically-unhide-macos-hidden-apps = false
+
+key-mapping.preset = 'qwerty'
+
+# Keep the numbered workspaces alive even when empty, so switching to an empty
+# one behaves like Hyprland and a future bar can render a stable set.
+persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "S"]
+
+# Hyprland: gaps_in = 5 / gaps_out = 10 30  (10 vertical, 30 horizontal).
+# Drop the left/right values to 10 if 30 feels too roomy on this display.
+gaps.inner.horizontal = 5
+gaps.inner.vertical   = 5
+gaps.outer.top        = 10
+gaps.outer.bottom     = 10
+gaps.outer.left       = 10
+gaps.outer.right      = 10
+
+[mode.main.binding]
+
+    # --- Launch / window actions -------------------------------------------
+    # Hyprland: SUPER+RETURN -> wezterm
+    # `open -na` spawns a new window; use `open -a WezTerm` to focus an existing one.
+    alt-enter = 'exec-and-forget open -na WezTerm'
+
+    # Hyprland: SUPER+C -> killactive  (alt-q here; Cmd+Q still quits the app)
+    alt-q = 'close'
+
+    # Hyprland: SUPER+V -> togglefloating
+    alt-v = 'layout floating tiling'
+
+    # Hyprland: SUPER+P -> pseudo. Accordion is the nearest AeroSpace layout.
+    alt-comma = 'layout accordion horizontal vertical'
+    alt-slash = 'layout tiles horizontal vertical'
+
+    alt-f = 'fullscreen'
+
+    # Hyprland: SUPER+M -> exit. There is no "quit the WM" here; toggling
+    # AeroSpace off hands every window back to plain macOS (handy for screen
+    # sharing or Zoom), and the same chord turns tiling back on.
+    alt-shift-space = 'exec-and-forget aerospace enable toggle'
+
+    # Lock screen (Hyprland: SUPER+U -> hyprlock) is left to the native
+    # ctrl-cmd-q, since alt-u is the ¨ dead key.
+
+    # --- Focus (Hyprland: SUPER + hjkl / arrows) ---------------------------
+    alt-h = 'focus left'
+    alt-j = 'focus down'
+    alt-k = 'focus up'
+    alt-l = 'focus right'
+
+    alt-left  = 'focus left'
+    alt-down  = 'focus down'
+    alt-up    = 'focus up'
+    alt-right = 'focus right'
+
+    # --- Move the focused window -------------------------------------------
+    alt-shift-h = 'move left'
+    alt-shift-j = 'move down'
+    alt-shift-k = 'move up'
+    alt-shift-l = 'move right'
+
+    alt-shift-left  = 'move left'
+    alt-shift-down  = 'move down'
+    alt-shift-up    = 'move up'
+    alt-shift-right = 'move right'
+
+    # --- Resize (Hyprland used SUPER + RMB drag) ---------------------------
+    alt-minus = 'resize smart -50'
+    alt-equal = 'resize smart +50'
+    alt-shift-0 = 'balance-sizes'
+
+    # --- Workspaces (Hyprland: Control_L + 0-9, unchanged) -----------------
+    ctrl-1 = 'workspace 1'
+    ctrl-2 = 'workspace 2'
+    ctrl-3 = 'workspace 3'
+    ctrl-4 = 'workspace 4'
+    ctrl-5 = 'workspace 5'
+    ctrl-6 = 'workspace 6'
+    ctrl-7 = 'workspace 7'
+    ctrl-8 = 'workspace 8'
+    ctrl-9 = 'workspace 9'
+    ctrl-0 = 'workspace 10'
+
+    # Move window to workspace (Hyprland: Control_L+SHIFT + 1-8).
+    # 9 and 0 stay unbound upstream because Shift+9/0 are ( and ).
+    ctrl-shift-1 = 'move-node-to-workspace 1'
+    ctrl-shift-2 = 'move-node-to-workspace 2'
+    ctrl-shift-3 = 'move-node-to-workspace 3'
+    ctrl-shift-4 = 'move-node-to-workspace 4'
+    ctrl-shift-5 = 'move-node-to-workspace 5'
+    ctrl-shift-6 = 'move-node-to-workspace 6'
+    ctrl-shift-7 = 'move-node-to-workspace 7'
+    ctrl-shift-8 = 'move-node-to-workspace 8'
+
+    # Scratchpad analog (Hyprland: SUPER+S / SUPER+SHIFT+S on special:magic).
+    # Workspace "S" plus alt-tab to bounce back where you came from.
+    alt-s = 'workspace S'
+    alt-shift-s = 'move-node-to-workspace S'
+
+    alt-tab = 'workspace-back-and-forth'
+
+    # --- Monitors ----------------------------------------------------------
+    alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+    # --- Service mode ------------------------------------------------------
+    alt-shift-semicolon = 'mode service'
+
+[mode.service.binding]
+    esc = ['reload-config', 'mode main']
+    r = ['flatten-workspace-tree', 'mode main']   # reset layout
+    f = ['layout floating tiling', 'mode main']
+    backspace = ['close-all-windows-but-current', 'mode main']
+
+    # Join the focused window into its neighbour's container.
+    alt-shift-h = ['join-with left', 'mode main']
+    alt-shift-j = ['join-with down', 'mode main']
+    alt-shift-k = ['join-with up', 'mode main']
+    alt-shift-l = ['join-with right', 'mode main']
+
+# ---------------------------------------------------------------------------
+# Window rules — the macOS port of hypr/windowrule.conf.
+# App IDs come from `osascript -e 'id of app "Name"'`, or `aerospace list-apps`.
+# ---------------------------------------------------------------------------
+
+# workspace 1: Slack
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = 'move-node-to-workspace 1'
+
+# workspace 2: terminal
+[[on-window-detected]]
+if.app-id = 'com.github.wez.wezterm'
+run = 'move-node-to-workspace 2'
+
+# workspace 3: browsers (Hyprland had brave + firefox here)
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = 'move-node-to-workspace 3'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+run = 'move-node-to-workspace 3'
+
+# workspace 4: music
+[[on-window-detected]]
+if.app-id = 'com.spotify.client'
+run = 'move-node-to-workspace 4'
+
+# Floating utilities. Hyprland floated 1Password (centred, 60%x80%),
+# pavucontrol and blueman; these are the macOS equivalents.
+[[on-window-detected]]
+if.app-id = 'com.1password.1password'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+# Zoom tiles badly and is usually transient.
+[[on-window-detected]]
+if.app-id = 'us.zoom.xos'
+run = 'layout floating'
