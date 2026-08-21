@@ -40,7 +40,11 @@ either way.
 
 `aerospace/aerospace.toml` mirrors the Hyprland keymap, with one substitution:
 Hyprland's `SUPER` becomes `alt` (Option), because `Cmd` is load-bearing on
-macOS. Workspace switching stays on `ctrl + 1-9`, exactly as on Linux.
+macOS. Workspace switching moves to `alt` too: macOS Mission Control claims
+`ctrl + 1-9` for "Switch to Desktop N" and takes precedence over AeroSpace,
+and the Linux setup relies on `ctrl:swap_lalt_lctl` to put Ctrl beside the
+spacebar — a position Cmd already occupies on a Mac. Key *positions* still
+match Linux; only the modifier differs.
 
 | Action | Hyprland | AeroSpace |
 | --- | --- | --- |
@@ -49,8 +53,8 @@ macOS. Workspace switching stays on `ctrl + 1-9`, exactly as on Linux.
 | Terminal | `SUPER + RETURN` | `alt + enter` |
 | Close window | `SUPER + C` | `alt + q` |
 | Toggle floating | `SUPER + V` | `alt + v` |
-| Workspace 1-10 | `CTRL + 0-9` | `ctrl + 0-9` |
-| Move to workspace | `CTRL-SHIFT + 1-8` | `ctrl-shift + 1-8` |
+| Workspace 1-10 | `CTRL + 0-9` | `alt + 0-9` |
+| Move to workspace | `CTRL-SHIFT + 1-8` | `alt-shift + 1-8` |
 | Scratchpad | `SUPER + S` | `alt + s` (workspace `S`) |
 | Disable tiling | `SUPER + M` (exit) | `alt-shift + space` |
 | Service mode | — | `alt-shift + ;` then `esc`/`r`/`f` |

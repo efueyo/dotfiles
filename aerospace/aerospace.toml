@@ -3,9 +3,17 @@
 #
 # MODIFIER MAP vs Hyprland
 #   Hyprland SUPER  ->  alt (Option)   window management
-#   Hyprland CTRL   ->  ctrl           workspace switching (unchanged)
+#   Hyprland CTRL   ->  alt (Option)   workspace switching
 # SUPER is Cmd on macOS and Cmd+C/V/M/Q are load-bearing there, so window
 # management moved to alt. Key *positions* (hjkl, arrows, numbers) are identical.
+#
+# CTRL also moved to alt, for two reasons. Mission Control owns ctrl+1-9 for
+# "Switch to Desktop N" and wins over AeroSpace's global hotkeys, so ctrl would
+# need those system shortcuts disabled to work at all. And on Linux this config
+# assumes `ctrl:swap_lalt_lctl` (hyprland.conf), which puts Ctrl beside the
+# spacebar; a Mac keyboard has no such slot free -- Cmd occupies it -- leaving
+# Ctrl a far-corner pinky stretch. alt for everything is also the AeroSpace
+# upstream default. alt+digits are not dead keys, so accented input is safe.
 #
 # Why alt-e / alt-i / alt-n / alt-u / alt-backtick are never bound below: those
 # are the macOS dead keys for ´ ˆ ˜ ¨ ` (á, ñ, ü, ...). AeroSpace grabs hotkeys
@@ -105,28 +113,28 @@ gaps.outer.right      = 10
     alt-equal = 'resize smart +50'
     alt-shift-0 = 'balance-sizes'
 
-    # --- Workspaces (Hyprland: Control_L + 0-9, unchanged) -----------------
-    ctrl-1 = 'workspace 1'
-    ctrl-2 = 'workspace 2'
-    ctrl-3 = 'workspace 3'
-    ctrl-4 = 'workspace 4'
-    ctrl-5 = 'workspace 5'
-    ctrl-6 = 'workspace 6'
-    ctrl-7 = 'workspace 7'
-    ctrl-8 = 'workspace 8'
-    ctrl-9 = 'workspace 9'
-    ctrl-0 = 'workspace 10'
+    # --- Workspaces (Hyprland: Control_L + 0-9, remapped to alt) ----------
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+    alt-5 = 'workspace 5'
+    alt-6 = 'workspace 6'
+    alt-7 = 'workspace 7'
+    alt-8 = 'workspace 8'
+    alt-9 = 'workspace 9'
+    alt-0 = 'workspace 10'
 
-    # Move window to workspace (Hyprland: Control_L+SHIFT + 1-8).
+    # Move window to workspace (Hyprland: Control_L+SHIFT + 1-8, alt here).
     # 9 and 0 stay unbound upstream because Shift+9/0 are ( and ).
-    ctrl-shift-1 = 'move-node-to-workspace 1'
-    ctrl-shift-2 = 'move-node-to-workspace 2'
-    ctrl-shift-3 = 'move-node-to-workspace 3'
-    ctrl-shift-4 = 'move-node-to-workspace 4'
-    ctrl-shift-5 = 'move-node-to-workspace 5'
-    ctrl-shift-6 = 'move-node-to-workspace 6'
-    ctrl-shift-7 = 'move-node-to-workspace 7'
-    ctrl-shift-8 = 'move-node-to-workspace 8'
+    alt-shift-1 = 'move-node-to-workspace 1'
+    alt-shift-2 = 'move-node-to-workspace 2'
+    alt-shift-3 = 'move-node-to-workspace 3'
+    alt-shift-4 = 'move-node-to-workspace 4'
+    alt-shift-5 = 'move-node-to-workspace 5'
+    alt-shift-6 = 'move-node-to-workspace 6'
+    alt-shift-7 = 'move-node-to-workspace 7'
+    alt-shift-8 = 'move-node-to-workspace 8'
 
     # Scratchpad analog (Hyprland: SUPER+S / SUPER+SHIFT+S on special:magic).
     # Workspace "S" plus alt-tab to bounce back where you came from.
