@@ -43,27 +43,29 @@ Hyprland's `SUPER` becomes `alt` (Option), because `Cmd` is load-bearing on
 macOS. Workspace switching moves to `alt` too: macOS Mission Control claims
 `ctrl + 1-9` for "Switch to Desktop N" and takes precedence over AeroSpace,
 and the Linux setup relies on `ctrl:swap_lalt_lctl` to put Ctrl beside the
-spacebar — a position Cmd already occupies on a Mac. Key *positions* still
+spacebar — a position Cmd already occupies on a Mac. Key _positions_ still
 match Linux; only the modifier differs.
 
-| Action | Hyprland | AeroSpace |
-| --- | --- | --- |
-| Focus | `SUPER + hjkl` / arrows | `alt + hjkl` / arrows |
-| Move window | — | `alt-shift + hjkl` / arrows |
-| Terminal | `SUPER + RETURN` | `alt + enter` |
-| Close window | `SUPER + C` | `alt + q` |
-| Toggle floating | `SUPER + V` | `alt + v` |
-| Workspace 1-10 | `CTRL + 0-9` | `alt + 0-9` |
-| Move to workspace | `CTRL-SHIFT + 1-8` | `alt-shift + 1-8` |
-| Scratchpad | `SUPER + S` | `alt + s` (workspace `S`) |
-| Disable tiling | `SUPER + M` (exit) | `alt-shift + space` |
-| Service mode | — | `alt-shift + ;` then `esc`/`r`/`f` |
+| Action                     | Hyprland                | AeroSpace                          |
+| -------------------------- | ----------------------- | ---------------------------------- |
+| Focus                      | `SUPER + hjkl` / arrows | `alt + hjkl` / arrows              |
+| Move window                | —                       | `alt-shift + hjkl` / arrows        |
+| Terminal                   | `SUPER + RETURN`        | `alt + enter`                      |
+| Close window               | `SUPER + C`             | `alt + q`                          |
+| Toggle floating            | `SUPER + V`             | `alt + v`                          |
+| Workspace 1-10             | `CTRL + 0-9`            | `alt + 0-9`                        |
+| Move to workspace          | `CTRL-SHIFT + 1-8`      | `alt-shift + 1-8`                  |
+| Scratchpad                 | `SUPER + S`             | `alt + s` (workspace `S`)          |
+| Other monitor              | —                       | `alt + o`                          |
+| Window to other monitor    | —                       | `alt-shift + o`                    |
+| Workspace to other monitor | —                       | `alt-shift + tab`                  |
+| Disable tiling             | `SUPER + M` (exit)      | `alt-shift + space`                |
+| Service mode               | —                       | `alt-shift + ;` then `esc`/`r`/`f` |
 
 `alt-e`, `alt-i`, `alt-n`, `alt-u` and `alt-backtick` are deliberately left
 unbound: they are the macOS dead keys for `´ ˆ ˜ ¨ \``, and AeroSpace grabs
 hotkeys globally without distinguishing left from right Option — binding them
 would break accented input system-wide.
-
 After `make brew && make install`, grant AeroSpace **Accessibility**
 permission in System Settings → Privacy & Security → Accessibility. Without it
 AeroSpace launches but cannot move windows.

@@ -59,6 +59,19 @@ gaps.outer.bottom     = 10
 gaps.outer.left       = 10
 gaps.outer.right      = 10
 
+[workspace-to-monitor-force-assignment]
+1  = ['secondary', 'built-in']   # Slack
+2  = ['secondary', 'built-in']   # terminal
+3  = ['secondary', 'built-in']   # browser
+4  = 'built-in'
+5  = 'built-in'
+6  = 'built-in'
+7  = 'built-in'
+8  = 'built-in'
+9  = 'built-in'
+10 = 'built-in'
+S  = 'built-in'                  # scratchpad stays on the laptop screen
+
 [mode.main.binding]
 
     # --- Launch / window actions -------------------------------------------
@@ -144,6 +157,12 @@ gaps.outer.right      = 10
     alt-tab = 'workspace-back-and-forth'
 
     # --- Monitors ----------------------------------------------------------
+    # 'o' for "other monitor". With two displays, `next --wrap-around` is just
+    # a toggle; with three it cycles. Not a dead key, unlike alt-e/i/n/u.
+    alt-o = 'focus-monitor --wrap-around next'
+    alt-shift-o = 'move-node-to-monitor --wrap-around --focus-follows-window next'
+
+    # Move the whole visible workspace to the other display.
     alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
 
     # --- Service mode ------------------------------------------------------
