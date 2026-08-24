@@ -1,0 +1,115 @@
+#!/bin/bash
+# Run Codex in a bounded loop for a dev plan, resuming from where it left off
+
+set -e
+
+if command -v codex &>/dev/null; then
+    CODEX_BIN="codex"
+else
+    echo "Error: codex not found in PATH"
+    exit 1
+fi
+
+# Maps tasks.json "model_size" values to a --model argument. Tasks without a
+# mapped size use the normal Codex default model.
+declare -A MODEL_SIZE_MAP=(
+    [SMALL]="gpt-5.6-luna"
+)
+
+RESET='\033[0m'
+BOLD='\033[1m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+RED='\033[0;31m'
+
+if [[ -n "$1" ]]; then
+    PLAN_DIR="$1"
+else
+    ROOTS=()
+    [[ -d "./dev/active" ]] && ROOTS+=("./dev/active")
+    [[ -d "./mytasks/active" ]] && ROOTS+=("./mytasks/active")
+
+    if [[ "${#ROOTS[@]}" -eq 0 ]]; then
+        echo -e "${RED}Error: neither ./dev/active nor ./mytasks/active directory found${RESET}"
+        exit 1
+    fi
+
+    PLAN_DIR=$(find "${ROOTS[@]}" -mindepth 1 -maxdepth 1 -type d | fzf --prompt="Select plan: ")
+
+    if [[ -z "$PLAN_DIR" ]]; then
+        echo "No plan selected"
+        exit 0
+    fi
+fi
+
+TASKS_FILE="$PLAN_DIR/tasks.json"
+PROMPT_FILE="$PLAN_DIR/prompt.md"
+
+if [[ ! -f "$TASKS_FILE" ]]; then
+    echo -e "${RED}Error: tasks.json not found in $PLAN_DIR${RESET}"
+    exit 1
+fi
+
+if [[ ! -f "$PROMPT_FILE" ]]; then
+    echo -e "${RED}Error: prompt.md not found in $PLAN_DIR${RESET}"
+    exit 1
+fi
+
+TOTAL=$(jq 'length' "$TASKS_FILE")
+COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
+
+if [[ "$COMPLETED" -ge "$TOTAL" ]]; then
+    echo -e "${GREEN}All $TOTAL tasks are already completed!${RESET}"
+    exit 0
+fi
+
+START=$((COMPLETED + 1))
+
+echo -e "${BOLD}${CYAN}Plan:${RESET} $PLAN_DIR"
+echo -e "${BOLD}${CYAN}Progress:${RESET} $COMPLETED/$TOTAL completed"
+echo -e "${BOLD}${CYAN}Running:${RESET} at most $((TOTAL - COMPLETED)) iterations"
+echo ""
+
+for i in $(seq "$START" "$TOTAL"); do
+    echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
+    echo -e "${BOLD}${YELLOW}Loop $i of $TOTAL${RESET}"
+    echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
+
+    CURRENT_TOTAL=$(jq 'length' "$TASKS_FILE")
+    if [[ "$CURRENT_TOTAL" -ne "$TOTAL" ]]; then
+        echo -e "${RED}Error: tasks.json changed size from $TOTAL to $CURRENT_TOTAL; stopping${RESET}"
+        exit 1
+    fi
+
+    MODEL_SIZE=$(jq -r '[.[] | select(.completed == false)][0].model_size // empty' "$TASKS_FILE")
+
+    MODEL_ARGS=()
+    if [[ -n "$MODEL_SIZE" && -n "${MODEL_SIZE_MAP[$MODEL_SIZE]+set}" ]]; then
+        MODEL_ARGS=(--model "${MODEL_SIZE_MAP[$MODEL_SIZE]}")
+        echo -e "${CYAN}model_size: $MODEL_SIZE -> using ${MODEL_SIZE_MAP[$MODEL_SIZE]}${RESET}"
+    fi
+
+    "$CODEX_BIN" exec \
+        --sandbox workspace-write \
+        --approve-for-me \
+        "${MODEL_ARGS[@]}" \
+        - < "$PROMPT_FILE"
+
+    CURRENT_TOTAL=$(jq 'length' "$TASKS_FILE")
+    if [[ "$CURRENT_TOTAL" -ne "$TOTAL" ]]; then
+        echo -e "${RED}Error: tasks.json changed size from $TOTAL to $CURRENT_TOTAL; stopping${RESET}"
+        exit 1
+    fi
+
+    COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
+    echo -e "${GREEN}Completed: $COMPLETED/$TOTAL${RESET}"
+
+    if [[ "$COMPLETED" -ge "$TOTAL" ]]; then
+        echo -e "${BOLD}${GREEN}All tasks completed!${RESET}"
+        exit 0
+    fi
+done
+
+echo -e "${RED}Loop budget exhausted with $COMPLETED/$TOTAL tasks completed${RESET}"
+exit 1
