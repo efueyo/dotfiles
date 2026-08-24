@@ -1,12 +1,11 @@
 ---
 name: review-plan
 description: Review a feature implementation plan (context.md, prompt.md, tasks.json) for completeness and quality
-argument-hint: [feature-name]
 ---
 
 # Review Implementation Plan
 
-Analyze the feature plan for `$ARGUMENTS` for completeness and quality. Companion skill to
+Analyze the feature plan named in the user's request for completeness and quality. Companion skill to
 `create-plan` — same generic, any-repo approach, no fixed language or architecture assumed.
 
 ## Discover Project Architecture First
