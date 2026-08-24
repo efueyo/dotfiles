@@ -1,0 +1,19 @@
+bin/codex_loop
+  s_a2a767b36e0b64::t_f416174aa38282 1-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "469169804871a589f5cb2a6072f6cc318e9ec136",
+  "prompts": {},
+  "sessions": {
+    "s_a2a767b36e0b64": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0356c-3cad-75c0-ba20-8b8fcc0b7e9a",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Enrique Fueyo <enrique.fueyoramirez@vanta.com>"
+    }
+  }
+}
