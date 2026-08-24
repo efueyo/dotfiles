@@ -91,7 +91,6 @@ for i in $(seq "$START" "$TOTAL"); do
     fi
 
     "$CODEX_BIN" exec \
-        --sandbox workspace-write \
         --approve-for-me \
         "${MODEL_ARGS[@]}" \
         - < "$PROMPT_FILE"
