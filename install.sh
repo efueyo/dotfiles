@@ -190,6 +190,27 @@ install_starship() {
 }
 
 # ----------------------------------------------------------------------------
+# 3b. pi coding agent — installed globally via npm (same as `make install`).
+#     --ignore-scripts avoids running arbitrary postinstall hooks. Requires a
+#     node/npm toolchain; best-effort so a nodeless CDE still gets everything
+#     else.
+# ----------------------------------------------------------------------------
+install_pi() {
+  if command -v pi >/dev/null 2>&1; then
+    log "pi already installed ($(pi --version 2>/dev/null | head -1))"
+    return 0
+  fi
+  if ! command -v npm >/dev/null 2>&1; then
+    warn "npm not found; skipping pi install (install Node.js, then 'npm install -g --ignore-scripts @earendil-works/pi-coding-agent')"
+    return 0
+  fi
+  log "installing pi coding agent via npm…"
+  npm install -g --ignore-scripts @earendil-works/pi-coding-agent \
+    && log "pi installed" \
+    || warn "pi install failed (retry manually with 'npm install -g --ignore-scripts @earendil-works/pi-coding-agent')"
+}
+
+# ----------------------------------------------------------------------------
 # 4. Symlink configs. Only the ones that make sense in a remote CDE.
 # ----------------------------------------------------------------------------
 link() {
@@ -346,6 +367,7 @@ main() {
   install_neovim
   install_tree_sitter
   install_starship
+  install_pi
   link_configs
   setup_bash
   install_tmux_theme
