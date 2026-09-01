@@ -37,8 +37,6 @@ install-common:
 	echo "------- Tridactyl -------"
 	mkdir -p ~/.config/tridactyl || true
 	ln -snf $(CURDIR)/tridactyl/tridactylrc ~/.config/tridactyl/tridactylrc || true
-	echo "------- Agent skills (cross-harness) -------"
-	ln -snf $(CURDIR)/agents ~/.agents || true
 	echo "------- ClaudeCode -------"
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
 	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true
