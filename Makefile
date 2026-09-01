@@ -41,7 +41,7 @@ install-common:
 	ln -snf $(CURDIR)/claude/agents ~/.claude/agents || true
 	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true
 	echo "------- pi -------"
-	pnpm add -g --ignore-scripts @earendil-works/pi-coding-agent
+	npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
 install-macos:
 	echo "------- AeroSpace -------"
