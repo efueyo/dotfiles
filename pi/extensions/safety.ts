@@ -14,7 +14,7 @@ const commandRules: CommandRule[] = [
   { label: "force push", pattern: /\bgit\s+(?:-[^\s]+\s+)*push\b[^\n;&|]*(?:--force(?:-with-lease)?\b|-f\b)/i },
   { label: "GitHub review or merge", pattern: /\bgh\b[^\n;&|]*\bpr\s+(?:merge|review)\b/i },
   { label: "GitHub mutation", pattern: /\bgh\b[^\n;&|]*\b(?:pr|issue)\s+(?:create|edit|comment|close|reopen|delete)\b/i },
-  { label: "Jira mutation", pattern: /\bjira\b[^\n;&|]*\b(?:create|edit|transition|comment|delete|assign|move)\b/i },
+  { label: "Jira mutation", pattern: /\bacli\b[^\n;&|]*\b(?:create|edit|transition|comment|delete|assign|move|update|remove)\b/i },
   {
     label: "Datadog mutation",
     pattern: /\bpup\b[^\n;&|]*\b(?:monitors?|downtimes?|incidents?|dashboards?|synthetics?|users?|teams?|service-accounts?|api-keys?|application-keys?)\s+(?:create|update|edit|delete|cancel|mute|unmute|resolve|archive|restore)\b/i,
