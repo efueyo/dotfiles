@@ -49,6 +49,7 @@ async function confirm(
 
 export default function safetyExtension(pi: ExtensionAPI): void {
   pi.on("tool_call", async (event, ctx) => {
+    if (process.env.PI_DANGEROUSLY_SKIP_PERMISSIONS === "1") return;
     if (event.toolName === "write" || event.toolName === "edit") {
       const rawPath = (event.input as { path?: unknown }).path;
       if (typeof rawPath !== "string") return;
