@@ -210,6 +210,16 @@ install_pi() {
     || warn "pi install failed (retry manually with 'npm install -g --ignore-scripts @earendil-works/pi-coding-agent')"
 }
 
+install_pi_extensions() {
+  if ! command -v npm >/dev/null 2>&1; then
+    warn "npm not found; skipping pi MCP dependencies"
+    return 0
+  fi
+  log "installing locked pi MCP extension dependencies…"
+  npm ci --prefix "$DOTFILES_DIR/pi/extensions/mcp" --omit=dev --ignore-scripts \
+    || warn "pi MCP dependency install failed; retry 'npm ci --prefix pi/extensions/mcp --omit=dev --ignore-scripts'"
+}
+
 # ----------------------------------------------------------------------------
 # 4. Symlink configs. Only the ones that make sense in a remote CDE.
 # ----------------------------------------------------------------------------
@@ -369,6 +379,7 @@ main() {
   install_tree_sitter
   install_starship
   install_pi
+  install_pi_extensions
   link_configs
   setup_bash
   install_tmux_theme
