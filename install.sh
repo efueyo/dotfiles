@@ -235,6 +235,7 @@ link_configs() {
 
   # Personal agent configuration (repo also ships its own .claude/ and .agents/).
   link agents/skills        "$HOME/.agents/skills"
+  link pi/settings.json      "$HOME/.pi/agent/settings.json"
   link pi/extensions        "$HOME/.pi/agent/extensions"
   link claude/agents        "$HOME/.claude/agents"
   link claude/commands      "$HOME/.claude/commands"

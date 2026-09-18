@@ -42,6 +42,10 @@ install-common:
 	ln -snf $(CURDIR)/claude/commands ~/.claude/commands || true
 	echo "------- pi -------"
 	npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+	npm ci --prefix $(CURDIR)/pi/extensions/mcp --omit=dev --ignore-scripts
+	mkdir -p ~/.pi/agent
+	ln -snf $(CURDIR)/pi/settings.json ~/.pi/agent/settings.json || true
+	ln -snf $(CURDIR)/pi/extensions ~/.pi/agent/extensions || true
 
 install-macos:
 	echo "------- AeroSpace -------"
