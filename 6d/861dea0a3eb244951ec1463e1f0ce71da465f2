@@ -1,0 +1,19 @@
+agents/skills/create-plan/SKILL.md
+  s_73fec9c1038961::t_6af3695a2bcf6d 263-266,284,286-288,413-414
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "6d861dea0a3eb244951ec1463e1f0ce71da465f2",
+  "prompts": {},
+  "sessions": {
+    "s_73fec9c1038961": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23bc257d-a36d-44f5-b044-e56c37771c2b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Enrique Fueyo <enrique.fueyoramirez@vanta.com>"
+    }
+  }
+}
