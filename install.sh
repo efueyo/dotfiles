@@ -221,6 +221,35 @@ install_pi_extensions() {
 }
 
 # ----------------------------------------------------------------------------
+# 3c. Developer CLIs — these vendors publish installer scripts rather than
+#     versioned, checksummed release assets. Run them as the current user so
+#     they install only to the user's home directory.
+# ----------------------------------------------------------------------------
+install_langsmith() {
+  if command -v langsmith >/dev/null 2>&1; then
+    log "langsmith already installed"
+    return 0
+  fi
+
+  log "installing LangSmith CLI…"
+  curl -fsSL https://cli.langsmith.com/install.sh | sh \
+    && log "LangSmith CLI installed" \
+    || warn "LangSmith CLI install failed; retry 'curl -fsSL https://cli.langsmith.com/install.sh | sh'"
+}
+
+install_acli() {
+  if command -v acli >/dev/null 2>&1; then
+    log "Atlassian CLI already installed"
+    return 0
+  fi
+
+  log "installing Atlassian CLI…"
+  curl -fsSL https://acli.atlassian.com/install.sh | sh \
+    && log "Atlassian CLI installed" \
+    || warn "Atlassian CLI install failed; retry 'curl -fsSL https://acli.atlassian.com/install.sh | sh'"
+}
+
+# ----------------------------------------------------------------------------
 # 4. Symlink configs. Only the ones that make sense in a remote CDE.
 # ----------------------------------------------------------------------------
 link() {
@@ -380,6 +409,8 @@ main() {
   install_starship
   install_pi
   install_pi_extensions
+  install_langsmith
+  install_acli
   link_configs
   setup_bash
   install_tmux_theme
