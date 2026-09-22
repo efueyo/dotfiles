@@ -260,9 +260,10 @@ Your job is to:
 4. Ensure that the code compiles/builds: {verified build command(s) for this feature's layer(s)}
    4b. If this task changes a schema or IDL (proto/GraphQL/OpenAPI/etc.), run the repo's codegen command and include all regenerated files in the commit
 5. Ensure that tests pass: {verified test command(s) for this feature's layer(s)}
-6. Mark the task as completed in tasks.json (set `completed: true`)
-7. Commit your changes with a one line message, e.g. `feat(feature): description`
-8. **Exit immediately** — do NOT pick up another task
+6. Ensure lint and formatting pass: {verified lint/format command(s) for this feature's layer(s)}
+7. Mark the task as completed in tasks.json (set `completed: true`)
+8. Commit your changes with a one line message, e.g. `feat(feature): description`
+9. **Exit immediately** — do NOT pick up another task
 
 **If you discover additional work needed** (edge cases, refactoring, missing pieces) that is directly related to the current task, add a new task entry to tasks.json with the next sequential id.
 
@@ -280,9 +281,11 @@ You can read the previous commits and the codebase if you need to verify what ha
 
 The prompt.md template above is mostly fixed. The parts you customize are:
 
-- **Build/test commands** (steps 4 and 5): Use the commands verified in "Discover Project
+- **Build/test/lint commands** (steps 4–6): Use the commands verified in "Discover Project
   Architecture" — scoped to the layer(s) this feature actually touches, not the whole repo if
-  the repo supports scoped commands.
+  the repo supports scoped commands. Step 6 must carry the repo's lint command, not just its
+  formatter — formatting passing says nothing about lint rules, and lint failures the workflow
+  never runs will surface as CI blockers after every task has already reported success.
 - **Important Notes**: 2-5 bullet points covering architectural constraints, existing patterns
   to follow (name specific files), pitfalls to avoid, and any ownership/risk notes.
 
@@ -407,6 +410,8 @@ Before finishing, verify:
 - [ ] context.md file paths were verified by exploring the codebase
 - [ ] prompt.md uses the template exactly, only customizing build/test commands and Important Notes
 - [ ] prompt.md's build/test commands were verified to actually exist in this repo
+- [ ] prompt.md includes the repo's lint/format command(s) in step 6, verified to exist and
+      scoped to the touched layers — a formatter alone does not satisfy this
 - [ ] tasks.json has sequential IDs and all tasks start with `completed: false`
 - [ ] Shared/schema type changes (if any) are their own early task, before tasks that consume the generated/derived code
 - [ ] Task ordering respects dependencies (foundational tasks first)

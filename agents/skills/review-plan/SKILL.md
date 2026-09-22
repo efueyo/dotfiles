@@ -61,7 +61,8 @@ Before reviewing anything:
 
 - **Template compliance**: Does it follow the standard template without extra sections or
   workflow steps?
-- **Build/test commands**: Do they match commands verified to actually exist for the layer(s)
+- **Build/test/lint commands**: Does the workflow run the repo's lint command (not just its
+  formatter) in addition to build and tests? Do they match commands verified to actually exist for the layer(s)
   this feature touches (not generic guesses)?
 - **Important Notes**: Are feature-specific constraints, patterns to follow, and pitfalls to
   avoid clearly and concretely stated (not placeholders)?
