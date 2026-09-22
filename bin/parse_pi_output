@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Render pi's JSONL event stream without buffering or repeating messages."""
+
+import json
+import sys
+
+
+def main():
+    streamed = set()
+    line_open = False
+    failed = False
+
+    def emit(text):
+        nonlocal line_open
+        sys.stdout.write(text)
+        sys.stdout.flush()
+        if text:
+            line_open = not text.endswith("\n")
+
+    def finish_line():
+        if line_open:
+            emit("\n")
+
+    # Split only on LF: Unicode line separators are valid inside JSON strings.
+    for line in sys.stdin:
+        if not line.strip():
+            continue
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            print(line.rstrip("\n"), file=sys.stderr, flush=True)
+            continue
+        if not isinstance(event, dict):
+            continue
+        kind = event.get("type")
+        if kind == "message_start":
+            streamed.clear()
+        elif kind == "message_update":
+            update = event.get("assistantMessageEvent", {})
+            if update.get("type") == "text_delta":
+                streamed.add(update.get("contentIndex", 0))
+                emit(update.get("delta", ""))
+        elif kind == "message_end":
+            message = event.get("message", {})
+            if message.get("role") != "assistant":
+                continue
+            for index, block in enumerate(message.get("content", [])):
+                if block.get("type") == "text" and index not in streamed:
+                    emit(block.get("text", ""))
+            finish_line()
+            if message.get("stopReason") in ("error", "aborted"):
+                emit("Error: " + message.get("errorMessage", message["stopReason"]) + "\n")
+                failed = True
+            streamed.clear()
+        elif kind == "tool_execution_start":
+            finish_line()
+            args = event.get("args") or {}
+            detail = args.get("command") or args.get("path") or args.get("pattern")
+            if detail is None:
+                detail = json.dumps(args, ensure_ascii=False)
+            emit(f"  → {event.get('toolName', 'tool')}: {detail}\n")
+        elif kind == "tool_execution_end":
+            finish_line()
+            error = event.get("isError", False)
+            emit(f"  {'✗' if error else '✓'} {event.get('toolName', 'tool')}\n")
+            blocks = (event.get("result") or {}).get("content", [])
+            text = "\n".join(block.get("text", "") for block in blocks if block.get("type") == "text")
+            # Keep file reads and command logs from overwhelming the progress log.
+            if text:
+                preview = text[:2000].splitlines()
+                for output_line in preview[:8]:
+                    emit("    " + output_line + "\n")
+                if len(text) > 2000 or len(preview) > 8:
+                    emit("    … (output truncated)\n")
+        elif kind in ("auto_retry_start", "auto_retry_end", "auto_compaction_start", "auto_compaction_end", "compaction_start", "compaction_end"):
+            finish_line()
+            emit(f"  … {kind.replace('_', ' ')}\n")
+    finish_line()
+    return int(failed)
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except BrokenPipeError:
+        sys.exit(1)

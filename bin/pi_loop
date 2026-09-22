@@ -1,0 +1,138 @@
+#!/bin/bash
+# Run pi in a bounded loop for a dev plan, resuming from where it left off
+
+set -eo pipefail
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+OUTPUT_PARSER="$SCRIPT_DIR/parse_pi_output"
+if ! command -v python3 &>/dev/null; then
+    echo "Error: python3 is required for streaming output"
+    exit 1
+fi
+
+if command -v pi &>/dev/null; then
+    PI_BIN="pi"
+else
+    echo "Error: pi not found in PATH"
+    exit 1
+fi
+
+# Maps tasks.json "model_size" values to a --model argument. Tasks without a
+# mapped size use the normal pi default model.
+declare -A MODEL_SIZE_MAP=(
+    [SMALL]="${PI_LOOP_SMALL_MODEL:-}"
+)
+
+RESET='\033[0m'
+BOLD='\033[1m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+RED='\033[0;31m'
+
+if [[ -n "$1" ]]; then
+    PLAN_DIR="$1"
+else
+    ROOTS=()
+    [[ -d "./dev/active" ]] && ROOTS+=("./dev/active")
+    [[ -d "./mytasks/active" ]] && ROOTS+=("./mytasks/active")
+
+    if [[ "${#ROOTS[@]}" -eq 0 ]]; then
+        echo -e "${RED}Error: neither ./dev/active nor ./mytasks/active directory found${RESET}"
+        exit 1
+    fi
+
+    PLAN_DIR=$(find "${ROOTS[@]}" -mindepth 1 -maxdepth 1 -type d | fzf --prompt="Select plan: ")
+
+    if [[ -z "$PLAN_DIR" ]]; then
+        echo "No plan selected"
+        exit 0
+    fi
+fi
+
+TASKS_FILE="$PLAN_DIR/tasks.json"
+PROMPT_FILE="$PLAN_DIR/prompt.md"
+SAFETY_EXTENSION="${PI_LOOP_SAFETY_EXTENSION:-pi/extensions/safety.ts}"
+
+if [[ ! -f "$TASKS_FILE" ]]; then
+    echo -e "${RED}Error: tasks.json not found in $PLAN_DIR${RESET}"
+    exit 1
+fi
+
+if [[ ! -f "$PROMPT_FILE" ]]; then
+    echo -e "${RED}Error: prompt.md not found in $PLAN_DIR${RESET}"
+    exit 1
+fi
+
+TOTAL=$(jq 'length' "$TASKS_FILE")
+COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
+
+if [[ "$COMPLETED" -ge "$TOTAL" ]]; then
+    echo -e "${GREEN}All $TOTAL tasks are already completed!${RESET}"
+    exit 0
+fi
+
+START=$((COMPLETED + 1))
+
+PI_ARGS=(--print --mode json --approve --no-session)
+if [[ -f "$SAFETY_EXTENSION" ]]; then
+    PI_ARGS+=(--extension "$SAFETY_EXTENSION")
+fi
+
+if [[ -n "${PI_LOOP_PROVIDER:-}" ]]; then
+    PI_ARGS+=(--provider "$PI_LOOP_PROVIDER")
+fi
+
+if [[ -n "${PI_LOOP_EXTRA_ARGS:-}" ]]; then
+    # shellcheck disable=SC2206
+    EXTRA_ARGS=($PI_LOOP_EXTRA_ARGS)
+    PI_ARGS+=("${EXTRA_ARGS[@]}")
+fi
+
+echo -e "${BOLD}${CYAN}Plan:${RESET} $PLAN_DIR"
+echo -e "${BOLD}${CYAN}Progress:${RESET} $COMPLETED/$TOTAL completed"
+echo -e "${BOLD}${CYAN}Running:${RESET} at most $((TOTAL - COMPLETED)) iterations"
+echo -e "${BOLD}${CYAN}Safety:${RESET} PI_DANGEROUSLY_SKIP_PERMISSIONS=1"
+echo ""
+
+for i in $(seq "$START" "$TOTAL"); do
+    echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
+    echo -e "${BOLD}${YELLOW}Loop $i of $TOTAL${RESET}"
+    echo -e "${BOLD}${YELLOW}════════════════════════════════════════${RESET}"
+
+    CURRENT_TOTAL=$(jq 'length' "$TASKS_FILE")
+    if [[ "$CURRENT_TOTAL" -ne "$TOTAL" ]]; then
+        echo -e "${RED}Error: tasks.json changed size from $TOTAL to $CURRENT_TOTAL; stopping${RESET}"
+        exit 1
+    fi
+
+    MODEL_SIZE=$(jq -r '[.[] | select(.completed == false)][0].model_size // empty' "$TASKS_FILE")
+
+    MODEL_ARGS=()
+    if [[ -n "$MODEL_SIZE" && -n "${MODEL_SIZE_MAP[$MODEL_SIZE]+set}" && -n "${MODEL_SIZE_MAP[$MODEL_SIZE]}" ]]; then
+        MODEL_ARGS=(--model "${MODEL_SIZE_MAP[$MODEL_SIZE]}")
+        echo -e "${CYAN}model_size: $MODEL_SIZE -> using ${MODEL_SIZE_MAP[$MODEL_SIZE]}${RESET}"
+    fi
+
+    PI_DANGEROUSLY_SKIP_PERMISSIONS=1 "$PI_BIN" \
+        "${PI_ARGS[@]}" \
+        "${MODEL_ARGS[@]}" \
+        "@$PROMPT_FILE" | python3 "$OUTPUT_PARSER"
+
+    CURRENT_TOTAL=$(jq 'length' "$TASKS_FILE")
+    if [[ "$CURRENT_TOTAL" -ne "$TOTAL" ]]; then
+        echo -e "${RED}Error: tasks.json changed size from $TOTAL to $CURRENT_TOTAL; stopping${RESET}"
+        exit 1
+    fi
+
+    COMPLETED=$(jq '[.[] | select(.completed == true)] | length' "$TASKS_FILE")
+    echo -e "${GREEN}Completed: $COMPLETED/$TOTAL${RESET}"
+
+    if [[ "$COMPLETED" -ge "$TOTAL" ]]; then
+        echo -e "${BOLD}${GREEN}All tasks completed!${RESET}"
+        exit 0
+    fi
+done
+
+echo -e "${RED}Loop budget exhausted with $COMPLETED/$TOTAL tasks completed${RESET}"
+exit 1
