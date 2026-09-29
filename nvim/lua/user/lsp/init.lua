@@ -40,9 +40,6 @@ local on_attach = function(client, bufnr)
     vim.wo[0][0].foldmethod = "expr"
     vim.wo[0][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
   end
-  vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-    vim.lsp.buf.format()
-  end, { desc = "Format current buffer with LSP" })
 end
 
 local signs = {

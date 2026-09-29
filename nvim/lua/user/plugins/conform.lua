@@ -1,13 +1,13 @@
 -- Formatting is centralized here so that, per repo, we use whatever formatter
 -- the project actually configures:
---   * oxfmt   -> only runs when the repo has an .oxfmtrc(.jsonc) at its root
+--   * oxfmt   -> only runs when the repo has an oxfmt config
 --   * prettier -> fallback for repos that don't use oxfmt
 --   * LSP      -> fallback for everything else (lua, python, rust, ...)
 return {
   {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
-    cmd = { "ConformInfo" },
+    cmd = { "ConformInfo", "Format" },
     config = function()
       local conform = require("conform")
       local util = require("conform.util")
@@ -18,13 +18,13 @@ return {
         command = util.from_node_modules("oxfmt"),
         args = { "--stdin-filepath", "$FILENAME" },
         stdin = true,
-        cwd = util.root_file({ ".oxfmtrc.jsonc", ".oxfmtrc.json", ".oxfmtrc" }),
+        cwd = util.root_file({ "oxfmt.config.mts", ".oxfmtrc.jsonc", ".oxfmtrc.json", ".oxfmtrc" }),
         require_cwd = true,
       }
 
       -- For each web filetype, try formatters in order and use the first one
       -- that's available + applicable. oxfmt self-skips (require_cwd) in repos
-      -- without an .oxfmtrc, so prettier takes over there.
+      -- without an oxfmt config, so prettier takes over there.
       local web = { "oxfmt", "prettierd", "prettier", stop_after_first = true }
       local prettier_only = { "prettierd", "prettier", stop_after_first = true }
 
@@ -45,6 +45,18 @@ return {
         graphql = true,
         handlebars = true,
       }
+
+      local function format_options(bufnr)
+        return {
+          bufnr = bufnr,
+          timeout_ms = 2000,
+          lsp_format = web_filetypes[vim.bo[bufnr].filetype] and "never" or "fallback",
+        }
+      end
+
+      vim.api.nvim_create_user_command("Format", function()
+        conform.format(format_options(vim.api.nvim_get_current_buf()))
+      end, { desc = "Format current buffer with Conform" })
 
       conform.setup({
         formatters_by_ft = {
@@ -76,10 +88,7 @@ return {
           if ft == "go" or ft == "gomod" then
             return nil
           end
-          return {
-            timeout_ms = 2000,
-            lsp_format = web_filetypes[ft] and "never" or "fallback",
-          }
+          return format_options(bufnr)
         end,
       })
     end,
