@@ -1,0 +1,19 @@
+nvim/lua/user/plugins/conform.lua
+  s_02c228febbe4ba::t_2ed7235d6077d4 3,10,21,27,49-60,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "26367c70c8a9e6ac21110d5b2ff64a7a3a621c21",
+  "prompts": {},
+  "sessions": {
+    "s_02c228febbe4ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d8c6d9d4-54b1-44bc-a1c3-fc875666f59b",
+        "model": "unknown"
+      },
+      "human_author": "Enrique Fueyo <enrique.fueyo@gmail.com>"
+    }
+  }
+}
