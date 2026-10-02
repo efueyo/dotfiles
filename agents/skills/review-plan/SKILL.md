@@ -69,8 +69,7 @@ Before reviewing anything:
 
 ### tasks.json Quality
 
-- **Schema**: Does each task have `id`, `title`, `description`, `files`, `completed` (and
-  `layer`, if this is a multi-layer repo)?
+- **Schema**: Does each task have `id`, `title`, `description`, `files`, `completed`?
 - **Titles**: Are they action-oriented (5-15 words) naming specific functions, structs,
   components, or schemas?
 - **Descriptions**: Are they self-contained paragraphs (3-6 sentences) with concrete types and
