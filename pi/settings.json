@@ -8,5 +8,6 @@
     "openai-codex/gpt-6\\.*",
     "anthropic/claude-+([a-z])-4-8*",
     "anthropic/claude-+([a-z])-5*"
-  ]
+  ],
+  "tuiMode": "regular"
 }
