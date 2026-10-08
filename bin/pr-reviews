@@ -26,7 +26,7 @@ done
 
 cwd=$PWD
 pi_command=$(command -v pi)
-prs=$(gh pr list --state open --search "${1:-user-review-requested:@me}" --limit 1000 \
+prs=$(gh pr list --state open --search "${1:-user-review-requested:@me draft:false}" --limit 1000 \
     --json number,title,author \
     --jq '.[] | [.number, .title, .author.login] | @tsv')
 if [[ -z $prs ]]; then
