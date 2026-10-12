@@ -35,7 +35,44 @@ Before reviewing anything:
 2. **Review the current code state** in the repo — verify file paths and integration points
    mentioned in the plan exist, and cross-check them against the architecture discovered above
 
-3. **Present an overview covering**:
+3. **Check approval requirements and unattended readiness** using the process below. Resolve
+   approval gates before declaring the plan ready for unattended execution.
+
+4. **Present an overview covering**:
+
+### Approval Gates and Unattended Readiness
+
+- Read the repository's autonomy and approval rules. Identify every task that requires human
+  approval and cite the applicable rule; do not invent approval gates where none are required.
+- Explain the exact restricted change, its purpose, and its scope in plain language. Separate
+  implementation/local verification from production deployment, data inspection, feature
+  enablement, or other operations requiring distinct authorization.
+- A request to review a plan is **not** approval to implement it. Explicit human approval
+  during plan review can satisfy an ask-first rule before unattended execution. Approval of
+  the whole plan counts only when it clearly covers the disclosed restricted operations.
+- If approval is missing or ambiguous, ask for scoped approval and report the affected task IDs
+  as blocked. Do not call the plan unattended-ready.
+- When the human explicitly approves, record that approval in each affected task's
+  `description` in `tasks.json`, preserving its implementation requirements and leaving
+  `completed: false`. This narrow provenance update is part of the approval workflow, not
+  permission to rewrite the plan. Record who approved, what they approved, where the approval
+  was given, and any exclusions. Never fabricate approval or infer it from tool permission
+  settings, an automated runner, or a request for unattended operation.
+- Make the task gate recognize the recorded approval, so a fresh implementing agent does not
+  ask again for the same authorized operation. Keep unapproved operations blocked and flag
+  contradictory instructions elsewhere in the plan. Material scope changes require renewed
+  approval; existing approval is not blanket authorization.
+- After recording approval, validate the JSON and review the targeted diff. Respect plan-file
+  gitignore rules; do not force-add or commit local plan files.
+- Report approval status separately from technical plan quality: **unattended-ready**,
+  **blocked pending approval** (with task IDs), or **blocked by other prerequisites**. All
+  required approvals and other blocking prerequisites must be resolved for unattended-ready.
+  A blocked agent should stop; repeated unattended invocations do not resolve approval gates.
+
+Example task-description addition, only after actual approval:
+
+> Human approval recorded: the user explicitly approved declaring the compound message index
+> `{ domainId: 1, userId: 1, createdAt: -1, _id: -1 }` in this plan-review conversation.
 
 ### Plan Quality
 
@@ -94,4 +131,5 @@ Before reviewing anything:
 - Risks or concerns
 
 Keep the review focused on the plan's readiness for an implementing agent — don't rewrite the
-plan yourself unless the user asks you to; report findings and let them decide what to fix.
+plan yourself unless the user asks you to. The exception is the narrow recording of explicit
+human approval described above; otherwise report findings and let them decide what to fix.
