@@ -78,7 +78,9 @@ Example task-description addition, only after actual approval:
 ### Design Challenge
 
 Judge whether the proposed mechanism is necessary and correctly placed, not just executable.
-Keep this proportional: concise evidence and conclusions, not extra plan files or schema fields.
+Keep this proportional: skip inapplicable checks and prioritize material risks rather than
+exhaustively tracing every effect or defending every test. Use concise evidence and conclusions,
+not extra plan files or schema fields.
 
 - **Requirements versus mechanisms:** Distinguish user requirements and explicitly agreed
   decisions from planner proposals and unconfirmed assumptions. Do not infer agreement from
@@ -92,21 +94,24 @@ Keep this proportional: concise evidence and conclusions, not extra plan files o
   feature's required behavior, not from its proposed file list or insertion points. Discover
   relevant callers/entry points in the codebase and trace representative paths to existing shared
   hooks or capabilities. Briefly identify which paths the proposal covers or excludes, citing
-  inspected functions/files. If the intended coverage is unstated, ask whether uncovered paths
-  should participate; do not assume the proposed boundary defines the feature's scope.
+  inspected functions/files. Ask whether uncovered paths should participate only when requirements
+  and code leave a material scope ambiguity; otherwise state the supported interpretation or a
+  reasonable, low-risk assumption. Do not assume the proposed boundary defines the feature's scope.
   Can an existing capability or simpler boundary eliminate the largest new mechanism, plumbing,
   or prerequisite refactor? Compare the strongest credible alternative against the requirements,
   not against the proposed implementation's shape. An alternative needing adaptation or having
   different persistence/lifecycle timing is not by itself grounds to reject it: explain whether
-  those differences violate a requirement or could be accommodated. Report a supported reason to
-  retain or change the design; if no credible alternative applies, explain why briefly. Do not
-  manufacture objections or assume fewer lines always means better.
-- **Side-effect failure dependencies:** For each new side effect, trace preceding awaited
-  operations and enclosing error handling in the actual caller. Could an unrelated rejection
-  prevent the effect from running, even if its own errors are caught? Verify that the dependency
-  is intentional; where effects must be independent, specify failure-isolation coverage at the
-  orchestration boundary. Preserve necessary prerequisites and do not recommend indiscriminate
-  error swallowing or parallelization.
+  those differences violate a requirement or could be accommodated. Evidenced operational risk,
+  migration cost, performance, or maintainability trade-offs can also justify retaining the
+  proposal. Report a supported reason to retain or change the design; if no credible alternative
+  applies, explain why briefly. Do not manufacture objections or assume fewer lines always means
+  better.
+- **Side-effect failure dependencies:** For consequential new side effects, trace relevant
+  prerequisite operations and failure handling in the actual caller, whether synchronous or
+  asynchronous. Could an unrelated failure prevent the effect from running, even if its own
+  errors are caught? Verify that the dependency is intentional; where effects must be independent,
+  specify failure-isolation coverage at the orchestration boundary. Preserve necessary
+  prerequisites and do not recommend indiscriminate error swallowing or parallelization.
 - **Test value and ownership:** For each significant behavior, identify the plausible application
   regression and owning test boundary. Flag repeated full-policy assertions across layers unless
   they protect distinct integration/lifecycle risks. Distinguish testing our library configuration
