@@ -88,13 +88,25 @@ Keep this proportional: concise evidence and conclusions, not extra plan files o
   requiring confirmation. Do not call the plan implementation-ready or unattended-ready while
   these remain unresolved; report affected tasks as blocked by other prerequisites and ask the
   focused question needed to resolve them. This is not an invented human-approval requirement.
-- **Boundary and simpler alternative:** Independently trace representative relevant entry
-  points/surfaces to existing shared hooks or capabilities, including paths outside the plan's
-  proposed files. Can an existing capability or simpler boundary eliminate the largest new
-  mechanism, plumbing, or prerequisite refactor? Compare the strongest credible alternative with
-  the proposal using inspected functions/files. Check intended coverage and explicit exclusions.
-  Report a supported reason to retain or change the design; if no credible alternative applies,
-  explain why briefly. Do not manufacture objections or assume fewer lines always means better.
+- **Boundary and simpler alternative:** Establish intended execution-surface coverage from the
+  feature's required behavior, not from its proposed file list or insertion points. Discover
+  relevant callers/entry points in the codebase and trace representative paths to existing shared
+  hooks or capabilities. Briefly identify which paths the proposal covers or excludes, citing
+  inspected functions/files. If the intended coverage is unstated, ask whether uncovered paths
+  should participate; do not assume the proposed boundary defines the feature's scope.
+  Can an existing capability or simpler boundary eliminate the largest new mechanism, plumbing,
+  or prerequisite refactor? Compare the strongest credible alternative against the requirements,
+  not against the proposed implementation's shape. An alternative needing adaptation or having
+  different persistence/lifecycle timing is not by itself grounds to reject it: explain whether
+  those differences violate a requirement or could be accommodated. Report a supported reason to
+  retain or change the design; if no credible alternative applies, explain why briefly. Do not
+  manufacture objections or assume fewer lines always means better.
+- **Side-effect failure dependencies:** For each new side effect, trace preceding awaited
+  operations and enclosing error handling in the actual caller. Could an unrelated rejection
+  prevent the effect from running, even if its own errors are caught? Verify that the dependency
+  is intentional; where effects must be independent, specify failure-isolation coverage at the
+  orchestration boundary. Preserve necessary prerequisites and do not recommend indiscriminate
+  error swallowing or parallelization.
 - **Test value and ownership:** For each significant behavior, identify the plausible application
   regression and owning test boundary. Flag repeated full-policy assertions across layers unless
   they protect distinct integration/lifecycle risks. Distinguish testing our library configuration
