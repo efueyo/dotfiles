@@ -39,6 +39,8 @@ Before writing the plan, review our conversation and extract:
 
 ### Design Decisions
 
+- Distinguish user requirements and explicitly agreed decisions from planner-proposed mechanisms.
+  Do not describe a proposal or an inferred preference as something the user agreed to.
 - What approach did we agree on? Document the "what" and "why"
 - Were there trade-offs discussed? Note what we prioritized
 
@@ -79,6 +81,34 @@ Before writing the plan, review our conversation and extract:
 
 ---
 
+## Challenge the Design Before Decomposing It
+
+Concrete instructions do not establish that a mechanism is necessary. Before creating tasks:
+
+- **Separate requirements from mechanisms.** Record required behavior, proposed design choices,
+  and consequential unconfirmed assumptions distinctly in context.md. Define business terms such
+  as "completed" or "eligible" before mapping them to framework events or statuses; verify that
+  mapping against actual code or installed dependency behavior. Ask about unresolved product
+  choices affecting correctness or scope rather than silently treating them as requirements.
+- **Justify the integration boundary.** Identify the relevant entry points/surfaces, including
+  explicit exclusions, and trace representative paths to existing shared hooks or capabilities.
+  Before prescribing new plumbing, wrappers, or prerequisite refactors, compare the chosen
+  boundary with the strongest credible simpler alternative. Cite inspected functions/files and
+  explain the comparison's outcome; adopt the simpler alternative when it meets the requirements,
+  or justify retaining the proposal. If none applies, explain why briefly. Do not invent drawbacks
+  to defend the first idea.
+- **Assign test ownership by behavior.** For each significant behavior, identify a plausible
+  application regression and its owning test boundary. Other layers should cover distinct wiring
+  or lifecycle risks, not repeat the full policy. Integration tests may protect our configuration
+  or library contract; do not retest library internals without an application-specific reason.
+  Exact logs, placeholder outputs, or trivial constants need a contractual, operational, or
+  privacy reason for dedicated assertions, not merely an opportunity to add coverage.
+
+Keep this proportional: short bullets or a compact table in context.md's existing sections are
+sufficient. Do not add plan files or task-schema fields. Resolve consequential assumptions before
+calling the plan implementation-ready; if answers are unavailable, label it blocked and identify
+what needs confirmation rather than presenting a speculative design as settled.
+
 ## Instructions
 
 1. **Determine feature name**: Use the argument provided, or derive a kebab-case name that
@@ -111,7 +141,9 @@ What issue does this solve? What's wrong with current behavior?
 
 ### Solution
 
-High-level approach to solving the problem.
+High-level approach to solving the problem. Distinguish requirements, agreed decisions, proposed
+mechanisms, and unresolved assumptions. Justify the integration boundary and compare the strongest
+credible simpler alternative, citing inspected code and relevant entry points/surfaces.
 
 ### Success Criteria
 
@@ -141,6 +173,11 @@ Detailed specification with:
 ### Edge Cases
 
 Numbered list of edge cases and how they're handled.
+
+### Test Strategy
+
+Map significant behaviors to plausible application regressions and owning test boundaries.
+Explain distinct integration coverage and any dedicated assertions on incidental outputs.
 
 ## Existing Infrastructure
 
@@ -405,6 +442,12 @@ granular that it becomes a line-by-line script**.
 
 Before finishing, verify:
 
+- [ ] context.md distinguishes requirements/agreed decisions from proposals and assumptions;
+      consequential correctness/scope questions are resolved or the plan is explicitly blocked
+- [ ] The integration boundary covers intended surfaces and is justified against an inspected,
+      credible simpler alternative (or evidence that no such alternative applies)
+- [ ] Significant behaviors have regression-focused test ownership; overlapping coverage and
+      dedicated incidental-output assertions have an application-specific justification
 - [ ] context.md covers all design decisions from our discussion
 - [ ] context.md has actual type definitions (structs, interfaces, proto messages, schema fields — whichever fits the layer) — not prose
 - [ ] context.md file paths were verified by exploring the codebase

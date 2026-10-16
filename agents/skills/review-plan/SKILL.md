@@ -32,8 +32,9 @@ Before reviewing anything:
    - `mytasks/active/{feature-name}/prompt.md` — agent instructions
    - `mytasks/active/{feature-name}/tasks.json` — task list
 
-2. **Review the current code state** in the repo — verify file paths and integration points
-   mentioned in the plan exist, and cross-check them against the architecture discovered above
+2. **Review the current code state and independently challenge the design** — verify paths and
+   integration points against the discovered architecture, then apply the Design Challenge below
+   before evaluating task completeness. Do not limit exploration to files named in the plan.
 
 3. **Check approval requirements and unattended readiness** using the process below. Resolve
    approval gates before declaring the plan ready for unattended execution.
@@ -73,6 +74,34 @@ Example task-description addition, only after actual approval:
 
 > Human approval recorded: the user explicitly approved declaring the compound message index
 > `{ domainId: 1, userId: 1, createdAt: -1, _id: -1 }` in this plan-review conversation.
+
+### Design Challenge
+
+Judge whether the proposed mechanism is necessary and correctly placed, not just executable.
+Keep this proportional: concise evidence and conclusions, not extra plan files or schema fields.
+
+- **Requirements versus mechanisms:** Distinguish user requirements and explicitly agreed
+  decisions from planner proposals and unconfirmed assumptions. Do not infer agreement from
+  confident specification wording. Check the business meaning of terms such as "completed" or
+  "eligible" before accepting a framework status as their definition; inspect code or installed
+  dependency behavior to validate the mapping. Identify consequential correctness/scope questions
+  requiring confirmation. Do not call the plan implementation-ready or unattended-ready while
+  these remain unresolved; report affected tasks as blocked by other prerequisites and ask the
+  focused question needed to resolve them. This is not an invented human-approval requirement.
+- **Boundary and simpler alternative:** Independently trace representative relevant entry
+  points/surfaces to existing shared hooks or capabilities, including paths outside the plan's
+  proposed files. Can an existing capability or simpler boundary eliminate the largest new
+  mechanism, plumbing, or prerequisite refactor? Compare the strongest credible alternative with
+  the proposal using inspected functions/files. Check intended coverage and explicit exclusions.
+  Report a supported reason to retain or change the design; if no credible alternative applies,
+  explain why briefly. Do not manufacture objections or assume fewer lines always means better.
+- **Test value and ownership:** For each significant behavior, identify the plausible application
+  regression and owning test boundary. Flag repeated full-policy assertions across layers unless
+  they protect distinct integration/lifecycle risks. Distinguish testing our library configuration
+  or contract from retesting library internals. Challenge dedicated exact-log, placeholder-output,
+  or trivial-constant assertions unless they protect a contractual, operational, or privacy
+  requirement. Preserve justified integration and failure-isolation tests; test count and coverage
+  percentage alone do not establish value or validate the intended policy.
 
 ### Plan Quality
 
